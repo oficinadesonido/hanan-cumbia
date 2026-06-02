@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HANAN CUMBIA · Web Flasher</title>
+<style>
+  :root {
+    --bg: #0a0a0a; --panel: #141414; --pink: #ff1f8e; --yellow: #ffd400;
+    --orange: #ff6a00; --text: #f3f3f3; --muted: #9a9a9a;
+    --ok: #3ddc84; --err: #ff5252; --warn: #ffb300;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: radial-gradient(circle at 50% -10%, #1a1a1a, var(--bg) 60%);
+    color: var(--text); font-family: "Segoe UI", system-ui, Roboto, sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+  }
+  .wrap { width: 100%; max-width: 760px; padding: 24px 18px 48px; }
+  header img { width: 100%; max-width: 560px; display: block; margin: 8px auto 4px; }
+  h1 { text-align: center; font-size: 15px; letter-spacing: 3px; color: var(--pink);
+       text-transform: uppercase; margin: 0 0 24px; }
+  .card { background: var(--panel); border: 1px solid #262626; border-radius: 16px;
+          padding: 22px; box-shadow: 0 10px 40px rgba(0,0,0,.5); }
+  .meta { font-size: 12px; color: var(--muted); text-align: center; margin: -6px 0 18px;
+          font-family: ui-monospace, "Cascadia Code", monospace; }
+  button#flashBtn {
+    display: block; width: 100%; padding: 18px; font-size: 18px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border: none;
+    border-radius: 12px; color: #111;
+    background: linear-gradient(90deg, var(--yellow), var(--orange) 60%, var(--pink));
+    transition: transform .05s ease, filter .15s ease;
+  }
+  button#flashBtn:hover { filter: brightness(1.08); }
+  button#flashBtn:active { transform: translateY(1px); }
+  button#flashBtn:disabled { filter: grayscale(.7) brightness(.6); cursor: wait; }
+  .opts { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;
+          margin: 16px 0 4px; font-size: 13px; color: var(--muted); }
+  .opts label { cursor: pointer; user-select: none; }
+  .progress { height: 22px; background: #000; border-radius: 8px; overflow: hidden;
+              margin: 18px 0 12px; border: 1px solid #2c2c2c; }
+  #bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--yellow));
+         color: #111; font-size: 12px; font-weight: 700; line-height: 22px; text-align: center;
+         transition: width .15s ease; }
+  #log { background: #000; border: 1px solid #222; border-radius: 8px; padding: 12px;
+         height: 220px; overflow-y: auto; font-family: ui-monospace, monospace; font-size: 12.5px;
+         line-height: 1.5; white-space: pre-wrap; }
+  #log .ok { color: var(--ok); } #log .err { color: var(--err); } #log .warn { color: var(--warn); }
+  .note { font-size: 12px; color: var(--muted); margin-top: 18px; line-height: 1.6; }
+  .note b { color: var(--text); }
+  a { color: var(--pink); }
+  .foot { text-align: center; font-size: 11px; color: #555; margin-top: 22px;
+          font-family: ui-monospace, monospace; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="hanan_micro.png" alt="HANAN CUMBIA"></header>
+  <h1>Web Flasher · Taller 2026</h1>
+
+  <div class="card">
+    <button id="flashBtn">⚡ Conectar y grabar firmware</button>
+    <div class="opts">
+      <label><input type="checkbox" id="verify" checked> Verificar al grabar</label>
+      <label><input type="checkbox" id="invert"> Invertir reset (DTR/RTS)</label>
+    </div>
+    <div class="progress"><div id="bar">0%</div></div>
+    <div id="log"></div>
+    <div class="meta" id="meta"></div>
+  </div>
+
+  <div class="note">
+    <b>Cómo usar:</b> conectá el Arduino Nano por USB, hacé clic en
+    <b>Conectar y grabar</b> y elegí el puerto (suele aparecer como <i>CH340</i> o
+    <i>USB-Serial</i>). No abras el Monitor Serie ni el IDE al mismo tiempo.<br>
+    Si dice que el bootloader no responde, marcá <b>Invertir reset</b> y reintentá.<br>
+    Requiere <b>Chrome, Edge u Opera</b> de escritorio (la Web Serial API no existe en Firefox/Safari ni móvil).
+  </div>
+
+  <div class="foot">oficinadesonido.org · hanan cumbia</div>
+</div>
+
+<script src="firmware.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

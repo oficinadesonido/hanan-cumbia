@@ -1,0 +1,9 @@
+# Artefactos de compilación de arduino-cli
+build/
+*.elf
+*.bin
+*.eep
+
+# Sistema
+.DS_Store
+Thumbs.db
