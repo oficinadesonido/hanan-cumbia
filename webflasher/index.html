@@ -37,6 +37,8 @@
   .opts { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;
           margin: 16px 0 4px; font-size: 13px; color: var(--muted); }
   .opts label { cursor: pointer; user-select: none; }
+  .opts select { background: #000; color: var(--text); border: 1px solid #2c2c2c;
+                 border-radius: 6px; padding: 3px 6px; font-size: 13px; }
   .progress { height: 22px; background: #000; border-radius: 8px; overflow: hidden;
               margin: 18px 0 12px; border: 1px solid #2c2c2c; }
   #bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--yellow));
@@ -61,6 +63,13 @@
   <div class="card">
     <button id="flashBtn">⚡ Conectar y grabar firmware</button>
     <div class="opts">
+      <label>Bootloader:
+        <select id="baud">
+          <option value="auto">Auto (probar ambos)</option>
+          <option value="115200">Nuevo (115200)</option>
+          <option value="57600">Viejo / clon (57600)</option>
+        </select>
+      </label>
       <label><input type="checkbox" id="verify" checked> Verificar al grabar</label>
       <label><input type="checkbox" id="invert"> Invertir reset (DTR/RTS)</label>
     </div>

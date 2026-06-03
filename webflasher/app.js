@@ -90,16 +90,16 @@ async function write(bytes) {
 
 /* ---------- Reset del Nano (auto-reset por DTR/RTS) ---------- */
 async function resetBoard(invert) {
-  // El pin DTR/RTS llega a RESET por un condensador: un flanco reinicia el MCU
-  // y abre la ventana (~1 s) del bootloader. La polaridad varia segun el chip
-  // USB-serial; por eso ofrecemos invertir.
-  const on = !invert, off = !!invert;
+  // Replica la secuencia de avrdude (programmer "arduino"): descarga el cap del
+  // auto-reset (DTR/RTS desactivados ~250 ms) y luego los activa, generando el
+  // flanco que reinicia el MCU y abre la ventana del bootloader (~1 s).
+  // La polaridad fisica varia segun el chip USB-serial; por eso se puede invertir.
+  const A = !invert;   // estado "activado"
+  const D = !!invert;  // estado "desactivado"
   try {
-    await port.setSignals({ dataTerminalReady: on, requestToSend: on });
-    await sleep(50);
-    await port.setSignals({ dataTerminalReady: off, requestToSend: off });
-    await sleep(50);
-    await port.setSignals({ dataTerminalReady: on, requestToSend: on });
+    await port.setSignals({ dataTerminalReady: D, requestToSend: D });
+    await sleep(250);
+    await port.setSignals({ dataTerminalReady: A, requestToSend: A });
     await sleep(50);
   } catch (e) {
     log('Aviso: setSignals fallo (' + e.message + '). Probare igual.', 'warn');
@@ -129,8 +129,8 @@ async function getSync() {
   if (tail[0] !== STK.OK) throw new Error('no OK tras sync');
 }
 
-async function syncWithRetries(invert) {
-  for (let attempt = 1; attempt <= 4; attempt++) {
+async function syncWithRetries(invert, attempts = 4) {
+  for (let attempt = 1; attempt <= attempts; attempt++) {
     log('Reseteando placa e intentando sincronizar (intento ' + attempt + ')...');
     await resetBoard(invert);
     const deadline = Date.now() + 1200;
@@ -263,18 +263,36 @@ async function run() {
   setProgress(0);
   $('log').innerHTML = '';
   _synced = false;
+  const invert = $('invert').checked;
+  const baudSel = $('baud') ? $('baud').value : 'auto';
+  const bauds = baudSel === 'auto' ? [115200, 57600] : [parseInt(baudSel, 10)];
   try {
     port = await navigator.serial.requestPort();
-    await port.open({ baudRate: window.FIRMWARE_META.baud || 115200 });
-    log('Puerto abierto a ' + (window.FIRMWARE_META.baud || 115200) + ' baudios.');
-    writer = port.writable.getWriter();
-    startReadLoop();
 
-    const invert = $('invert').checked;
-    _synced = await syncWithRetries(invert);
+    // Prueba cada velocidad: 115200 (bootloader nuevo) y 57600 (viejo/clon).
+    for (const baud of bauds) {
+      log('Abriendo puerto a ' + baud + ' baudios...');
+      await port.open({ baudRate: baud });
+      writer = port.writable.getWriter();
+      startReadLoop();
+
+      _synced = await syncWithRetries(invert, bauds.length > 1 ? 2 : 4);
+      if (_synced) { log('Bootloader sincronizado a ' + baud + ' baudios.', 'ok'); break; }
+
+      // sin respuesta: cerrar para reintentar a otra velocidad
+      const last = baud === bauds[bauds.length - 1];
+      log('Sin respuesta a ' + baud + '.' + (last ? '' : ' Probando otra velocidad...'), 'warn');
+      readLoopRunning = false;
+      try { if (reader) await reader.cancel(); } catch (_) {}
+      try { if (writer) writer.releaseLock(); } catch (_) {}
+      try { await port.close(); } catch (_) {}
+      writer = null;
+      await sleep(250);
+    }
+
     if (!_synced) {
-      log('No respondio el bootloader. Probá marcar "Invertir reset (DTR/RTS)" y reintentá. ' +
-          'Verificá que no haya otro programa usando el puerto (IDE, monitor serie).', 'err');
+      log('No respondió el bootloader a ninguna velocidad. Marcá "Invertir reset (DTR/RTS)" ' +
+          'y reintentá. Verificá que no haya otro programa usando el puerto (IDE, monitor serie).', 'err');
       return;
     }
     await flashFirmware();
