@@ -276,7 +276,7 @@ async function run() {
       writer = port.writable.getWriter();
       startReadLoop();
 
-      _synced = await syncWithRetries(invert, bauds.length > 1 ? 2 : 4);
+      _synced = await syncWithRetries(invert, bauds.length > 1 ? 3 : 4);
       if (_synced) { log('Bootloader sincronizado a ' + baud + ' baudios.', 'ok'); break; }
 
       // sin respuesta: cerrar para reintentar a otra velocidad
