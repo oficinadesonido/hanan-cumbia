@@ -6,25 +6,25 @@ ISR(TIMER2_COMPA_vect) {
 
 
     if (playmode==0){ //reverse
-  snare_sample = (pgm_read_byte(&snare_table[(indexr)]))-127;
-  kick_sample = (pgm_read_byte(&kick_table[(index2r)]))-127;
-  hat_sample = (pgm_read_byte(&tick_table[(index3r)]))-127;
-  bass_sample = (((pgm_read_byte(&bass_table[(index4r)]))))-127;
+  snare_sample = (pgm_read_byte(&samplebank[snare_off+(indexr)]))-127;
+  kick_sample = (pgm_read_byte(&samplebank[kick_off+(index2r)]))-127;
+  hat_sample = (pgm_read_byte(&samplebank[hat_off+(index3r)]))-127;
+  bass_sample = (((pgm_read_byte(&samplebank[bass_off+(index4r)]))))-127;
 
-  B1_freq_sample = pgm_read_byte(&tick_table[(index2vr)])-127;
-  B2_freq_sample = (pgm_read_byte(&bass_table[(index4vr)]))-127;
+  B1_freq_sample = pgm_read_byte(&samplebank[hat_off+(index2vr)])-127;
+  B2_freq_sample = (pgm_read_byte(&samplebank[bass_off+(index4vr)]))-127;
     }
     
 if (playmode==1){
-  snare_sample = (pgm_read_byte(&snare_table[(index3)]))-127;
-  kick_sample = (pgm_read_byte(&kick_table[(index4)]))-127;
-  hat_sample = (pgm_read_byte(&tick_table[(index)]))-127;
-  bass_sample = (((pgm_read_byte(&bass_table[(index2)]))))-127;
+  snare_sample = (pgm_read_byte(&samplebank[snare_off+(index3)]))-127;
+  kick_sample = (pgm_read_byte(&samplebank[kick_off+(index4)]))-127;
+  hat_sample = (pgm_read_byte(&samplebank[hat_off+(index)]))-127;
+  bass_sample = (((pgm_read_byte(&samplebank[bass_off+(index2)]))))-127;
   
   noise_sample = (((pgm_read_byte(&noise_table[(index5)]))))-127;
 
-  B1_freq_sample = pgm_read_byte(&tick_table[(index_freq_1)])-127;
-  B2_freq_sample = (pgm_read_byte(&bass_table[(index_freq_2)]))-127;
+  B1_freq_sample = pgm_read_byte(&samplebank[hat_off+(index_freq_1)])-127;
+  B2_freq_sample = (pgm_read_byte(&samplebank[bass_off+(index_freq_2)]))-127;
 }
 sample_sum=snare_sample+kick_sample+hat_sample+bass_sample+B1_freq_sample+B2_freq_sample;
 

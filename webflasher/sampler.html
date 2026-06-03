@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HANAN CUMBIA · Sampler</title>
+<style>
+  :root {
+    --bg:#0a0a0a; --panel:#141414; --pink:#ff1f8e; --yellow:#ffd400; --orange:#ff6a00;
+    --text:#f3f3f3; --muted:#9a9a9a; --ok:#3ddc84; --err:#ff5252; --warn:#ffb300;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:radial-gradient(circle at 50% -10%, #1a1a1a, var(--bg) 60%);
+    color:var(--text); font-family:"Segoe UI",system-ui,Roboto,sans-serif;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; }
+  .wrap { width:100%; max-width:760px; padding:24px 18px 48px; }
+  header img { width:100%; max-width:560px; display:block; margin:8px auto 4px; }
+  h1 { text-align:center; font-size:15px; letter-spacing:3px; color:var(--pink); text-transform:uppercase; margin:0 0 20px; }
+  .card { background:var(--panel); border:1px solid #262626; border-radius:16px; padding:22px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .meta { font-size:12px; color:var(--muted); text-align:center; margin:-4px 0 16px; font-family:ui-monospace,monospace; }
+  .voice { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #222; flex-wrap:wrap; }
+  .voice .vn { width:90px; font-weight:700; color:var(--yellow); }
+  .voice input[type=file] { flex:1; min-width:140px; font-size:12px; color:var(--muted); }
+  .voice input[type=file]::file-selector-button { background:#222; color:var(--text); border:1px solid #333; border-radius:6px; padding:5px 9px; cursor:pointer; }
+  .vlen { font-family:ui-monospace,monospace; font-size:11.5px; color:var(--muted); width:140px; text-align:right; }
+  .vlen.custom { color:var(--ok); }
+  .voice .x { background:none; border:1px solid #333; color:var(--muted); border-radius:6px; cursor:pointer; font-size:11px; padding:3px 7px; }
+  .budget { margin:16px 0 6px; }
+  .budget .track { height:14px; background:#000; border:1px solid #2c2c2c; border-radius:7px; overflow:hidden; }
+  #budgetBar { height:100%; width:0; background:linear-gradient(90deg,var(--pink),var(--yellow)); transition:width .2s; }
+  #budgetTxt { font-family:ui-monospace,monospace; font-size:12px; color:var(--muted); margin-top:5px; text-align:center; }
+  #budgetTxt.err { color:var(--err); }
+  button#flashBtn { display:block; width:100%; padding:18px; font-size:18px; font-weight:800; letter-spacing:1px;
+    text-transform:uppercase; cursor:pointer; border:none; border-radius:12px; color:#111; margin-top:16px;
+    background:linear-gradient(90deg,var(--yellow),var(--orange) 60%,var(--pink)); transition:transform .05s,filter .15s; }
+  button#flashBtn:hover { filter:brightness(1.08); }
+  button#flashBtn:active { transform:translateY(1px); }
+  button#flashBtn:disabled { filter:grayscale(.7) brightness(.6); cursor:not-allowed; }
+  .opts { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin:14px 0 4px; font-size:13px; color:var(--muted); }
+  .opts label { cursor:pointer; user-select:none; }
+  .opts select { background:#000; color:var(--text); border:1px solid #2c2c2c; border-radius:6px; padding:3px 6px; font-size:13px; }
+  .progress { height:22px; background:#000; border-radius:8px; overflow:hidden; margin:18px 0 12px; border:1px solid #2c2c2c; }
+  #bar { height:100%; width:0; background:linear-gradient(90deg,var(--pink),var(--yellow)); color:#111; font-size:12px; font-weight:700; line-height:22px; text-align:center; transition:width .15s; }
+  #log { background:#000; border:1px solid #222; border-radius:8px; padding:12px; height:180px; overflow-y:auto; font-family:ui-monospace,monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap; }
+  #log .ok{color:var(--ok);} #log .err{color:var(--err);} #log .warn{color:var(--warn);}
+  .note { font-size:12px; color:var(--muted); margin-top:18px; line-height:1.6; }
+  .note b{color:var(--text);}
+  a { color:var(--pink); }
+  .beta { display:inline-block; background:var(--orange); color:#111; font-weight:800; font-size:11px; padding:2px 8px; border-radius:5px; letter-spacing:1px; }
+  .foot { text-align:center; font-size:11px; color:#555; margin-top:22px; font-family:ui-monospace,monospace; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="hanan_micro.png" alt="HANAN CUMBIA"></header>
+  <h1>Sampler · cargá tus sonidos <span class="beta">BETA</span></h1>
+
+  <div class="card">
+    <div class="voice"><span class="vn">Kick</span><input type="file" id="file_kick" accept="audio/*,.wav"><span class="vlen" id="len_kick"></span><button class="x" id="clear_kick">fábrica</button></div>
+    <div class="voice"><span class="vn">Snare</span><input type="file" id="file_snare" accept="audio/*,.wav"><span class="vlen" id="len_snare"></span><button class="x" id="clear_snare">fábrica</button></div>
+    <div class="voice"><span class="vn">Hat</span><input type="file" id="file_hat" accept="audio/*,.wav"><span class="vlen" id="len_hat"></span><button class="x" id="clear_hat">fábrica</button></div>
+    <div class="voice"><span class="vn">Bass</span><input type="file" id="file_bass" accept="audio/*,.wav"><span class="vlen" id="len_bass"></span><button class="x" id="clear_bass">fábrica</button></div>
+
+    <div class="budget">
+      <div class="track"><div id="budgetBar"></div></div>
+      <div id="budgetTxt"></div>
+    </div>
+
+    <div class="opts">
+      <label>Bootloader:
+        <select id="baud">
+          <option value="auto">Auto (probar ambos)</option>
+          <option value="115200">Nuevo (115200)</option>
+          <option value="57600">Viejo / clon (57600)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="normalize" checked> Normalizar volumen</label>
+      <label><input type="checkbox" id="verify" checked> Verificar</label>
+      <label><input type="checkbox" id="invert"> Invertir reset</label>
+    </div>
+
+    <button id="flashBtn">⚡ Grabar firmware con mis samples</button>
+    <div class="progress"><div id="bar">0%</div></div>
+    <div id="log"></div>
+    <div class="meta" id="meta"></div>
+  </div>
+
+  <div class="note">
+    <b>Cómo funciona:</b> elegí un WAV (o audio) para cada voz que quieras cambiar; las que dejes en
+    <b>fábrica</b> conservan el sonido original. El navegador lo convierte a <b>9.8&nbsp;kHz · 8-bit · mono</b>
+    (el formato del aparato, lo-fi a propósito) y graba un firmware con tus sonidos. Hay un presupuesto total
+    de ~2&nbsp;s repartido entre las 4 voces (la barra muestra cuánto usás).<br>
+    <b>Beta:</b> primero probá grabar <b>sin cargar nada</b> (todo fábrica) para confirmar que suena igual que siempre.<br>
+    Requiere Chrome/Edge/Opera de escritorio. ¿Solo querés actualizar el firmware? → <a href="index.html">flasher normal</a>.
+  </div>
+
+  <div class="foot">oficinadesonido.org · hanan cumbia</div>
+</div>
+
+<script src="firmware_bank.js?v=1"></script>
+<script src="sampler.js?v=1"></script>
+</body>
+</html>
