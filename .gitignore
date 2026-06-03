@@ -1,5 +1,6 @@
 # Artefactos de compilación de arduino-cli
 build/
+build_bank/
 *.elf
 *.bin
 *.eep
