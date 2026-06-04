@@ -104,6 +104,7 @@ function buildGrid(){
     row.appendChild(lab);
     const pads=document.createElement('div'); pads.className='pads';
     for(let s=0;s<STEPS;s++){ const p=document.createElement('div'); p.className='pad'+(s%4===0?' beat':'')+(s%8===0?' bar':'');
+      p.classList.add('g'+(Math.floor(s/4)%4));   // grupos de 4 = colores TR-808
       p.dataset.ch=ch.key; p.dataset.s=s;
       p.addEventListener('click',()=>{ const a=banks[curBank][ch.key]; a[idx(s)]=a[idx(s)]?0:1; refresh(); });
       pads.appendChild(p); }
@@ -112,18 +113,22 @@ function buildGrid(){
       const prow=document.createElement('div'); prow.className='row pitchrow';
       const pl=document.createElement('div'); pl.className='clabel small'; pl.textContent='↳ pitch'; prow.appendChild(pl);
       const pp=document.createElement('div'); pp.className='pads';
-      for(let s=0;s<STEPS;s++){ const cell=document.createElement('div'); cell.className='pcell'+(s%4===0?' beat':'')+(s%8===0?' bar':'');
+      for(let s=0;s<STEPS;s++){ const cell=document.createElement('div'); cell.className='pcell g'+(Math.floor(s/4)%4)+(s%4===0?' beat':'')+(s%8===0?' bar':'');
         const fill=document.createElement('div'); fill.className='pfill'; cell.appendChild(fill);
         cell.dataset.s=s; cell.dataset.pitch=ch.pitch;
         const setLvl=(ev)=>{ const r=cell.getBoundingClientRect(); let f=1-((ev.clientY-r.top)/r.height); f=Math.max(0,Math.min(1,f));
-          banks[curBank][ch.pitch][idx(s)]=Math.round(f*31); refresh(); };
+          const lvl=Math.round(f*31); banks[curBank][ch.pitch][idx(s)]=lvl; showPitchVal(ev,lvl); refresh(); };
         cell.addEventListener('pointerdown',(e)=>{ cell.setPointerCapture(e.pointerId); setLvl(e); });
         cell.addEventListener('pointermove',(e)=>{ if(e.buttons)setLvl(e); });
+        cell.addEventListener('pointerup',hidePitchVal);
+        cell.addEventListener('pointercancel',hidePitchVal);
         pp.appendChild(cell); }
       prow.appendChild(pp); g.appendChild(prow);
     }
   });
 }
+function showPitchVal(ev,lvl){ const b=$('pitchval'); b.textContent='pitch '+lvl; b.style.left=(ev.clientX+14)+'px'; b.style.top=(ev.clientY-30)+'px'; b.style.display='block'; }
+function hidePitchVal(){ $('pitchval').style.display='none'; }
 function clearChannel(key){ const a=banks[curBank][key]; for(let s=0;s<STEPS;s++)a[idx(s)]=0; refresh(); }
 function clearPreset(){ for(const ch of CHANNELS){ const a=banks[curBank][ch.key]; for(let s=0;s<STEPS;s++)a[idx(s)]=0; } refresh(); }
 function refresh(){

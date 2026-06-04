@@ -38,16 +38,23 @@
     padding:0 12px; font-size:12px; font-weight:700; cursor:pointer; }
   .tool:hover{ border-color:var(--pink); color:var(--pink); }
   .pads{ display:flex; gap:2px; }
-  .pad{ width:18px; height:24px; border-radius:4px; background:#1d1d1d; border:1px solid #2c2c2c; cursor:pointer; transition:all .07s; }
-  .pad:hover{ border-color:var(--pink); }
+  /* colores plano por grupo de 4 pasos (estilo TR-808): magenta/naranja/amarillo/blanco */
+  .pad{ width:18px; height:24px; border-radius:4px; cursor:pointer; transition:filter .07s;
+    --pc:#ff1f8e; background:#161616; border:1px solid #333; }
+  .pad.g0{ --pc:#ff1f8e; } .pad.g1{ --pc:#ff6a00; } .pad.g2{ --pc:#ffd400; } .pad.g3{ --pc:#eaeaea; }
+  .pad{ background:color-mix(in srgb, var(--pc) 15%, #121212); border-color:color-mix(in srgb, var(--pc) 30%, #2a2a2a); }
+  .pad.on{ background:var(--pc); border-color:var(--pc); box-shadow:0 0 8px var(--pc); }
+  .pad:hover{ filter:brightness(1.35); }
   .pad.beat{ margin-left:5px; }
   .pad.bar{ margin-left:11px; }
-  .pad.on{ background:linear-gradient(180deg,var(--yellow),var(--orange)); border-color:var(--yellow); box-shadow:0 0 9px rgba(255,106,0,.8); }
   .pitchrow{ margin:0 0 7px; }
-  .pcell{ width:18px; height:34px; background:#161616; border:1px solid #262626; border-radius:4px;
-    position:relative; cursor:ns-resize; overflow:hidden; }
+  .pcell{ width:18px; height:34px; border-radius:4px; position:relative; cursor:ns-resize; overflow:hidden;
+    --pc:#ff1f8e; background:#141414; border:1px solid #262626; }
+  .pcell.g0{ --pc:#ff1f8e; } .pcell.g1{ --pc:#ff6a00; } .pcell.g2{ --pc:#ffd400; } .pcell.g3{ --pc:#eaeaea; }
   .pcell.beat{ margin-left:5px; } .pcell.bar{ margin-left:11px; }
-  .pfill{ position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(180deg,var(--pink),#7a0f47); }
+  .pfill{ position:absolute; left:0; right:0; bottom:0; height:0%; background:var(--pc); }
+  #pitchval{ position:fixed; display:none; background:#000; border:1px solid var(--pink); color:var(--text);
+    font-family:ui-monospace,monospace; font-size:12px; font-weight:700; padding:3px 8px; border-radius:6px; pointer-events:none; z-index:20; }
 
   .opts{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin:18px 0 4px; font-size:13px; color:var(--muted); }
   .opts label{ cursor:pointer; user-select:none; }
@@ -67,6 +74,7 @@
 </style>
 </head>
 <body>
+<div id="pitchval"></div>
 <div class="wrap">
   <header><img src="hanan_micro.png" alt="HANAN CUMBIA"></header>
   <h1>Editor de secuencias</h1>
@@ -110,6 +118,6 @@
 </div>
 
 <script src="firmware_presets.js?v=1"></script>
-<script src="seq.js?v=2"></script>
+<script src="seq.js?v=3"></script>
 </body>
 </html>
