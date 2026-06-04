@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HANAN CUMBIA · Editor de secuencias</title>
+<style>
+  :root{ --bg:#0a0a0a; --panel:#141414; --pink:#ff1f8e; --yellow:#ffd400; --orange:#ff6a00;
+    --text:#f3f3f3; --muted:#9a9a9a; --ok:#3ddc84; --err:#ff5252; --warn:#ffb300; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:radial-gradient(circle at 50% -10%, #1a1a1a, var(--bg) 60%);
+    color:var(--text); font-family:"Segoe UI",system-ui,Roboto,sans-serif; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; }
+  .wrap{ width:100%; max-width:880px; padding:24px 18px 48px; }
+  header img{ width:100%; max-width:520px; display:block; margin:8px auto 4px; }
+  h1{ text-align:center; font-size:14px; letter-spacing:3px; color:var(--pink); text-transform:uppercase; margin:0 0 18px; }
+  .card{ background:var(--panel); border:1px solid #262626; border-radius:16px; padding:20px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .meta{ font-size:12px; color:var(--muted); text-align:center; margin:-2px 0 16px; font-family:ui-monospace,monospace; }
+
+  .selrow{ display:flex; gap:26px; justify-content:center; flex-wrap:wrap; margin-bottom:18px; }
+  .selgroup{ text-align:center; }
+  .selgroup .t{ font-size:11px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
+  .sels{ display:flex; gap:6px; }
+  .sel{ width:40px; height:40px; border-radius:9px; border:2px solid var(--c); background:transparent;
+    color:var(--c); font-weight:800; font-size:15px; cursor:pointer; transition:all .12s; }
+  .sel:hover{ filter:brightness(1.2); }
+  .sel.active{ background:var(--c); color:#0a0a0a; box-shadow:0 0 14px var(--c); }
+
+  #grid{ overflow-x:auto; padding-bottom:4px; }
+  .row{ display:flex; align-items:center; margin:3px 0; }
+  .clabel{ width:78px; flex:0 0 78px; font-weight:700; font-size:12px; color:var(--yellow); text-align:right; padding-right:10px; }
+  .clabel.small{ color:var(--muted); font-weight:400; font-style:italic; }
+  .pads{ display:flex; gap:2px; }
+  .pad{ width:18px; height:24px; border-radius:4px; background:#1d1d1d; border:1px solid #2c2c2c; cursor:pointer; transition:all .07s; }
+  .pad:hover{ border-color:var(--pink); }
+  .pad.beat{ margin-left:5px; }
+  .pad.bar{ margin-left:11px; }
+  .pad.on{ background:linear-gradient(180deg,var(--yellow),var(--orange)); border-color:var(--yellow); box-shadow:0 0 9px rgba(255,106,0,.8); }
+  .pitchrow{ margin:0 0 7px; }
+  .pcell{ width:18px; height:34px; background:#161616; border:1px solid #262626; border-radius:4px;
+    position:relative; cursor:ns-resize; overflow:hidden; }
+  .pcell.beat{ margin-left:5px; } .pcell.bar{ margin-left:11px; }
+  .pfill{ position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(180deg,var(--pink),#7a0f47); }
+
+  .opts{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin:18px 0 4px; font-size:13px; color:var(--muted); }
+  .opts label{ cursor:pointer; user-select:none; }
+  .opts select{ background:#000; color:var(--text); border:1px solid #2c2c2c; border-radius:6px; padding:3px 6px; font-size:13px; }
+  button#flashBtn{ display:block; width:100%; padding:18px; font-size:18px; font-weight:800; letter-spacing:1px;
+    text-transform:uppercase; cursor:pointer; border:none; border-radius:12px; color:#111; margin-top:14px;
+    background:linear-gradient(90deg,var(--yellow),var(--orange) 60%,var(--pink)); transition:transform .05s,filter .15s; }
+  button#flashBtn:hover{ filter:brightness(1.08); } button#flashBtn:active{ transform:translateY(1px); }
+  button#flashBtn:disabled{ filter:grayscale(.7) brightness(.6); cursor:wait; }
+  .progress{ height:20px; background:#000; border-radius:8px; overflow:hidden; margin:16px 0 12px; border:1px solid #2c2c2c; }
+  #bar{ height:100%; width:0; background:linear-gradient(90deg,var(--pink),var(--yellow)); color:#111; font-size:11px; font-weight:700; line-height:20px; text-align:center; transition:width .15s; }
+  #log{ background:#000; border:1px solid #222; border-radius:8px; padding:12px; height:150px; overflow-y:auto; font-family:ui-monospace,monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap; }
+  #log .ok{color:var(--ok);} #log .err{color:var(--err);} #log .warn{color:var(--warn);}
+  .note{ font-size:12px; color:var(--muted); margin-top:18px; line-height:1.6; } .note b{color:var(--text);}
+  a{ color:var(--pink); }
+  .foot{ text-align:center; font-size:11px; color:#555; margin-top:22px; font-family:ui-monospace,monospace; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="hanan_micro.png" alt="HANAN CUMBIA"></header>
+  <h1>Editor de secuencias</h1>
+
+  <div class="card">
+    <div class="selrow">
+      <div class="selgroup"><div class="t">Banco</div><div class="sels" id="banksel"></div></div>
+      <div class="selgroup"><div class="t">Preset</div><div class="sels" id="presetsel"></div></div>
+    </div>
+
+    <div id="grid"></div>
+
+    <div class="opts">
+      <label>Bootloader:
+        <select id="baud">
+          <option value="auto">Auto</option>
+          <option value="115200">Nuevo (115200)</option>
+          <option value="57600">Viejo / clon (57600)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="verify" checked> Verificar</label>
+      <label><input type="checkbox" id="invert"> Invertir reset</label>
+    </div>
+
+    <button id="flashBtn">⚡ Grabar mis secuencias en la placa</button>
+    <div class="progress"><div id="bar">0%</div></div>
+    <div id="log"></div>
+    <div class="meta" id="meta"></div>
+  </div>
+
+  <div class="note">
+    <b>Cómo funciona:</b> elegí <b>Banco</b> (1–4) y <b>Preset</b> (1–4, = los colores azul/amarillo/rojo/verde del aparato),
+    y prendé/apagá los pasos de cada canal (Conga, Campana, Huiro, Bombo). En <b>Conga</b> y <b>Campana</b>,
+    la fila <i>↳ pitch</i> abajo te deja arrastrar el tono de cada paso (32 niveles). Cuando termines, <b>Grabá</b> los 4 bancos.<br>
+    Arranca con los presets de fábrica como base. Grabar <b>reemplaza</b> los 4 bancos en la placa.<br>
+    Requiere Chrome/Edge/Opera de escritorio. → <a href="index.html">flasher</a> · <a href="sampler.html">sampler</a>
+  </div>
+
+  <div class="foot">oficinadesonido.org · hanan cumbia</div>
+</div>
+
+<script src="firmware_presets.js?v=1"></script>
+<script src="seq.js?v=1"></script>
+</body>
+</html>

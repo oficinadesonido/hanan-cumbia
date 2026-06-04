@@ -1,4 +1,4 @@
-window.FIRMWARE_BANK_HEX = `
+window.FIRMWARE_PRESETS_HEX = `
 :100000000C943A290C9462290C9462290C9462296C
 :100010000C9462290C9462290C9462290C94132D7F
 :100020000C9462290C9462290C9462290C94622924
@@ -1893,4 +1893,4 @@ window.FIRMWARE_BANK_HEX = `
 :02762E0000005A
 :00000001FF
 `;
-window.FIRMWARE_BANK_META = { name: "hanan26Taller-bank", built: "2026-06-03", bank_total: 20005, bank_header: 24, magic: [0x48,0x4E,0x53,0x42,0x31,0xA5,0x5A,0x3C], sr: 9804 };
+window.FIRMWARE_PRESETS_META = { name: "hanan26Taller", built: "2026-06-03", preset_magic: [0x48,0x50,0x52,0x53,0x42,0x31,0xC3,0x5A], preset_header: 10, bank_bytes: 224, nbanks: 4, version_off: 8 };
