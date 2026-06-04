@@ -12,6 +12,23 @@ bouncer3.update ( );
   BUTTONS();
   RECORD();
 
+  // --- Presets: guardar el banco activo en EEPROM al PARAR (play 1->0) ---
+  if (prevPlayState == 1 && play == 0) saveBankToEE(presetbank);
+  prevPlayState = play;
+
+  // --- Cambio de banco de presets: STOP + shift + hold 2s de un color ---
+  if (play == 0 && shift == 0) {
+    byte hb = 255;
+    if      (bouncer2.read() == 0) hb = 0;   // azul
+    else if (bouncer4.read() == 0) hb = 1;   // amarillo
+    else if (bouncer1.read() == 0) hb = 2;   // rojo
+    else if (bouncer3.read() == 0) hb = 3;   // verde
+    if (hb != 255) {
+      if (hb != holdBtn) { holdBtn = hb; holdStart = now; }
+      else if ((uint32_t)(now - holdStart) > 128000000UL) { switchPresetBank(hb); holdBtn = 255; }  // ~2 s
+    } else holdBtn = 255;
+  } else holdBtn = 255;
+
  // dd++;
  // if (dd==0){
 //pot1=(1023-analogRead(1));
@@ -147,6 +164,10 @@ taptempof=taptempo;
     }
 
 
+    // Cambio de preset cuantizado: entra recien al volver al downbeat (paso 0)
+    // para que el patron nuevo arranque limpio y no salte a mitad de compas.
+    if (loopstep==0) banko=pending_banko;
+
     B4_loop_trigger=B4_sequence[loopstep+banko];
     B1_loop_trigger=B1_sequence[loopstep+banko];
     B2_loop_trigger=B2_sequence[loopstep+banko];
@@ -154,6 +175,7 @@ taptempof=taptempo;
   }
 
   if (play==0){
+    banko=pending_banko;   // en stop, el cambio de preset es inmediato
     loopstep=0;
     prev==0;
     B4_loop_trigger=0;

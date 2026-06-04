@@ -12,30 +12,30 @@ prevshift=shift;
   if (shift==0&&recordbutton==1){
     prevpot2=pot2;
     if (bouncer1.read()==0 ){ //red
-      banko=63;
+      pending_banko=64;
 
       bankpr=4;
       bankpg=0;
       bankpb=0;
     }
     if (bouncer4.read()==0){  //yellow
-      banko=31;
+      pending_banko=32;
       bankpr=4;
       bankpg=4;
       bankpb=0;
     }
-    if (bouncer2.read()==0 || banko==0){   //blue
-      banko=0;
+    if (bouncer2.read()==0 || pending_banko==0){   //blue
+      pending_banko=0;
        bankpr=0;
       bankpg=0;
       bankpb=8;
     }
     if (bouncer3.read()==0){//green
-      banko=95;
+      pending_banko=96;
       bankpr=0;
       bankpg=3;
       bankpb=0;
-      
+
     }
 
 

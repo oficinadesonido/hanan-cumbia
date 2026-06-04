@@ -59,10 +59,12 @@ b+=2;
   }
   if (noise_mode==0){
     if (record==0 && play==0 ){
-
-      rout=16;
-      gout=16;
-      bout=16;
+      // En stop, el LED muestra el color del BANCO de presets (presetbank).
+      rout=0; gout=0; bout=0;
+      if      (presetbank==0) bout=40;                  // azul
+      else if (presetbank==1){ rout=34; gout=28; }      // amarillo
+      else if (presetbank==2) rout=44;                  // rojo
+      else                    gout=38;                  // verde
     }
 
   }
