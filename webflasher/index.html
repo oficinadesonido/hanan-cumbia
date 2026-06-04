@@ -3,94 +3,146 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HANAN CUMBIA · Web Flasher</title>
+<title>HANAN CUMBIA · Studio</title>
 <style>
-  :root {
-    --bg: #0a0a0a; --panel: #141414; --pink: #ff1f8e; --yellow: #ffd400;
-    --orange: #ff6a00; --text: #f3f3f3; --muted: #9a9a9a;
-    --ok: #3ddc84; --err: #ff5252; --warn: #ffb300;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: radial-gradient(circle at 50% -10%, #1a1a1a, var(--bg) 60%);
-    color: var(--text); font-family: "Segoe UI", system-ui, Roboto, sans-serif;
-    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-  }
-  .wrap { width: 100%; max-width: 760px; padding: 24px 18px 48px; }
-  header img { width: 100%; max-width: 560px; display: block; margin: 8px auto 4px; }
-  h1 { text-align: center; font-size: 15px; letter-spacing: 3px; color: var(--pink);
-       text-transform: uppercase; margin: 0 0 24px; }
-  .card { background: var(--panel); border: 1px solid #262626; border-radius: 16px;
-          padding: 22px; box-shadow: 0 10px 40px rgba(0,0,0,.5); }
-  .meta { font-size: 12px; color: var(--muted); text-align: center; margin: -6px 0 18px;
-          font-family: ui-monospace, "Cascadia Code", monospace; }
-  button#flashBtn {
-    display: block; width: 100%; padding: 18px; font-size: 18px; font-weight: 800;
-    letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border: none;
-    border-radius: 12px; color: #111;
-    background: linear-gradient(90deg, var(--yellow), var(--orange) 60%, var(--pink));
-    transition: transform .05s ease, filter .15s ease;
-  }
-  button#flashBtn:hover { filter: brightness(1.08); }
-  button#flashBtn:active { transform: translateY(1px); }
-  button#flashBtn:disabled { filter: grayscale(.7) brightness(.6); cursor: wait; }
-  .opts { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;
-          margin: 16px 0 4px; font-size: 13px; color: var(--muted); }
-  .opts label { cursor: pointer; user-select: none; }
-  .opts select { background: #000; color: var(--text); border: 1px solid #2c2c2c;
-                 border-radius: 6px; padding: 3px 6px; font-size: 13px; }
-  .progress { height: 22px; background: #000; border-radius: 8px; overflow: hidden;
-              margin: 18px 0 12px; border: 1px solid #2c2c2c; }
-  #bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--yellow));
-         color: #111; font-size: 12px; font-weight: 700; line-height: 22px; text-align: center;
-         transition: width .15s ease; }
-  #log { background: #000; border: 1px solid #222; border-radius: 8px; padding: 12px;
-         height: 220px; overflow-y: auto; font-family: ui-monospace, monospace; font-size: 12.5px;
-         line-height: 1.5; white-space: pre-wrap; }
-  #log .ok { color: var(--ok); } #log .err { color: var(--err); } #log .warn { color: var(--warn); }
-  .note { font-size: 12px; color: var(--muted); margin-top: 18px; line-height: 1.6; }
-  .note b { color: var(--text); }
-  a { color: var(--pink); }
-  .foot { text-align: center; font-size: 11px; color: #555; margin-top: 22px;
-          font-family: ui-monospace, monospace; letter-spacing: 1px; }
+  :root{ --bg:#0a0a0a; --panel:#141414; --pink:#ff1f8e; --yellow:#ffd400; --orange:#ff6a00;
+    --text:#f3f3f3; --muted:#9a9a9a; --ok:#3ddc84; --err:#ff5252; --warn:#ffb300; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:radial-gradient(circle at 50% -10%, #1a1a1a, var(--bg) 60%);
+    color:var(--text); font-family:"Segoe UI",system-ui,Roboto,sans-serif; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; }
+  .wrap{ width:100%; max-width:900px; padding:22px 16px 48px; }
+  header img{ width:100%; max-width:500px; display:block; margin:6px auto 2px; }
+  h1{ text-align:center; font-size:13px; letter-spacing:3px; color:var(--pink); text-transform:uppercase; margin:0 0 14px; }
+  .card{ background:var(--panel); border:1px solid #262626; border-radius:16px; padding:18px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .meta{ font-size:11.5px; color:var(--muted); text-align:center; margin:10px 0 0; font-family:ui-monospace,monospace; }
+  .pbar{ display:flex; gap:8px; justify-content:center; margin-bottom:12px; }
+  .pbar button,.pbar label{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--muted); border-radius:8px;
+    font-size:11.5px; padding:6px 12px; cursor:pointer; } .pbar button:hover,.pbar label:hover{ border-color:var(--pink); color:var(--text); }
+
+  .tabs{ display:flex; gap:6px; justify-content:center; margin-bottom:16px; }
+  .tb{ background:transparent; border:1px solid #2c2c2c; color:var(--muted); border-radius:10px;
+    padding:9px 18px; font-size:13px; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:1px; }
+  .tb:hover{ color:var(--text); }
+  .tb.active{ background:linear-gradient(90deg,var(--yellow),var(--orange) 70%,var(--pink)); color:#111; border-color:transparent; }
+
+  /* samples */
+  .voice{ display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid #222; flex-wrap:wrap; }
+  .voice .vn{ width:88px; font-weight:700; color:var(--yellow); }
+  .voice input[type=file]{ flex:1; min-width:140px; font-size:12px; color:var(--muted); }
+  .voice input[type=file]::file-selector-button{ background:#222; color:var(--text); border:1px solid #333; border-radius:6px; padding:5px 9px; cursor:pointer; }
+  .vlen{ font-family:ui-monospace,monospace; font-size:11.5px; color:var(--muted); width:150px; text-align:right; } .vlen.custom{ color:var(--ok); }
+  .voice .x{ background:none; border:1px solid #333; color:var(--muted); border-radius:6px; cursor:pointer; font-size:11px; padding:3px 7px; }
+  .budget{ margin:14px 0 4px; } .budget .track{ height:13px; background:#000; border:1px solid #2c2c2c; border-radius:7px; overflow:hidden; }
+  #sbudgetBar{ height:100%; width:0; background:linear-gradient(90deg,var(--pink),var(--yellow)); transition:width .2s; }
+  #sbudgetTxt{ font-family:ui-monospace,monospace; font-size:12px; color:var(--muted); margin-top:5px; text-align:center; }
+  .opts{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin:14px 0 4px; font-size:13px; color:var(--muted); }
+  .opts label{ cursor:pointer; user-select:none; } .opts select{ background:#000; color:var(--text); border:1px solid #2c2c2c; border-radius:6px; padding:3px 6px; font-size:13px; }
+
+  /* secuencias */
+  .selrow{ display:flex; gap:22px; justify-content:center; align-items:flex-end; flex-wrap:wrap; margin-bottom:16px; }
+  .selgroup{ text-align:center; } .selgroup .t{ font-size:11px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
+  .sels{ display:flex; gap:6px; }
+  .sel{ width:38px; height:38px; border-radius:9px; border:2px solid var(--c); background:transparent; color:var(--c); font-weight:800; font-size:15px; cursor:pointer; transition:all .12s; }
+  .sel:hover{ filter:brightness(1.2); } .sel.active{ background:var(--c); color:#0a0a0a; box-shadow:0 0 14px var(--c); }
+  .tool{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:9px; height:38px; padding:0 12px; font-size:12px; font-weight:700; cursor:pointer; }
+  .tool:hover{ border-color:var(--pink); color:var(--pink); }
+  #playBtn{ height:38px; padding:0 20px; border:none; border-radius:9px; font-size:14px; font-weight:800; cursor:pointer; color:#111;
+    background:linear-gradient(90deg,var(--ok),#1f9e5a); } #playBtn.on{ background:linear-gradient(90deg,var(--err),#b3232f); color:#fff; }
+  #grid{ overflow-x:auto; padding-bottom:4px; }
+  .row{ display:flex; align-items:center; margin:3px 0; }
+  .clabel{ width:74px; flex:0 0 74px; font-weight:700; font-size:12px; color:var(--yellow); text-align:right; padding-right:8px; }
+  .clabel.small{ color:var(--muted); font-weight:400; font-style:italic; } .clabel span{ vertical-align:middle; }
+  .cclear{ margin-left:5px; background:none; border:1px solid #3a3a3a; color:var(--muted); border-radius:4px; font-size:9px; line-height:1; padding:2px 3px; cursor:pointer; vertical-align:middle; }
+  .cclear:hover{ color:var(--err); border-color:var(--err); }
+  .pads{ display:flex; gap:2px; }
+  .pad{ width:18px; height:24px; border-radius:4px; cursor:pointer; transition:filter .07s; --pc:#ff1f8e; background:#161616; border:1px solid #333; }
+  .pad.g0{ --pc:#ff1f8e; } .pad.g1{ --pc:#ff6a00; } .pad.g2{ --pc:#ffd400; } .pad.g3{ --pc:#eaeaea; }
+  .pad{ background:color-mix(in srgb,var(--pc) 15%,#121212); border-color:color-mix(in srgb,var(--pc) 30%,#2a2a2a); }
+  .pad.on{ background:var(--pc); border-color:var(--pc); box-shadow:0 0 8px var(--pc); } .pad:hover{ filter:brightness(1.35); }
+  .pad.beat{ margin-left:5px; } .pad.bar{ margin-left:11px; }
+  .pitchrow{ margin:0 0 7px; }
+  .pcell{ width:18px; height:32px; border-radius:4px; position:relative; cursor:ns-resize; overflow:hidden; --pc:#ff1f8e; background:#141414; border:1px solid #262626; }
+  .pcell.g0{ --pc:#ff1f8e; } .pcell.g1{ --pc:#ff6a00; } .pcell.g2{ --pc:#ffd400; } .pcell.g3{ --pc:#eaeaea; }
+  .pcell.beat{ margin-left:5px; } .pcell.bar{ margin-left:11px; }
+  .pfill{ position:absolute; left:0; right:0; bottom:0; height:0%; background:var(--pc); }
+  #pitchval{ position:fixed; display:none; background:#000; border:1px solid var(--pink); color:var(--text); font-family:ui-monospace,monospace; font-size:12px; font-weight:700; padding:3px 8px; border-radius:6px; pointer-events:none; z-index:20; }
+
+  /* grabar + comun */
+  button#flashBtn{ display:block; width:100%; padding:17px; font-size:18px; font-weight:800; letter-spacing:1px; text-transform:uppercase; cursor:pointer;
+    border:none; border-radius:12px; color:#111; margin-top:16px; background:linear-gradient(90deg,var(--yellow),var(--orange) 60%,var(--pink)); transition:transform .05s,filter .15s; }
+  button#flashBtn:hover{ filter:brightness(1.08); } button#flashBtn:active{ transform:translateY(1px); } button#flashBtn:disabled{ filter:grayscale(.7) brightness(.6); cursor:wait; }
+  .progress{ height:20px; background:#000; border-radius:8px; overflow:hidden; margin:14px 0 12px; border:1px solid #2c2c2c; }
+  #bar{ height:100%; width:0; background:linear-gradient(90deg,var(--pink),var(--yellow)); color:#111; font-size:11px; font-weight:700; line-height:20px; text-align:center; transition:width .15s; }
+  #log{ background:#000; border:1px solid #222; border-radius:8px; padding:11px; height:130px; overflow-y:auto; font-family:ui-monospace,monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap; }
+  #log .ok{color:var(--ok);} #log .err{color:var(--err);} #log .warn{color:var(--warn);}
+  .note{ font-size:12px; color:var(--muted); margin-top:14px; line-height:1.6; } .note b{ color:var(--text); }
+  a{ color:var(--pink); } .foot{ text-align:center; font-size:11px; color:#555; margin-top:20px; font-family:ui-monospace,monospace; letter-spacing:1px; }
 </style>
 </head>
 <body>
+<div id="pitchval"></div>
 <div class="wrap">
   <header><img src="hanan_micro.png" alt="HANAN CUMBIA"></header>
-  <h1>Web Flasher · Taller 2026</h1>
+  <h1>Studio</h1>
+
+  <div class="pbar">
+    <button id="exportBtn">⬇ Exportar proyecto</button>
+    <label>⬆ Importar proyecto<input type="file" id="importFile" accept=".json" hidden></label>
+  </div>
+
+  <div class="tabs">
+    <button class="tb" data-tab="samples" id="tb-samples">Samples</button>
+    <button class="tb" data-tab="seq" id="tb-seq">Secuencias</button>
+    <button class="tb" data-tab="grabar" id="tb-grabar">Grabar</button>
+  </div>
 
   <div class="card">
-    <button id="flashBtn">⚡ Conectar y grabar firmware</button>
-    <div class="opts">
-      <label>Bootloader:
-        <select id="baud">
-          <option value="auto">Auto (probar ambos)</option>
-          <option value="115200">Nuevo (115200)</option>
-          <option value="57600">Viejo / clon (57600)</option>
-        </select>
-      </label>
-      <label><input type="checkbox" id="verify" checked> Verificar al grabar</label>
-      <label><input type="checkbox" id="invert"> Invertir reset (DTR/RTS)</label>
+    <!-- SAMPLES -->
+    <div id="tab-samples" style="display:none">
+      <div class="voice"><span class="vn">Kick</span><input type="file" id="file_kick" accept="audio/*,.wav"><span class="vlen" id="len_kick"></span><button class="x" id="clear_kick">fábrica</button></div>
+      <div class="voice"><span class="vn">Snare</span><input type="file" id="file_snare" accept="audio/*,.wav"><span class="vlen" id="len_snare"></span><button class="x" id="clear_snare">fábrica</button></div>
+      <div class="voice"><span class="vn">Hat</span><input type="file" id="file_hat" accept="audio/*,.wav"><span class="vlen" id="len_hat"></span><button class="x" id="clear_hat">fábrica</button></div>
+      <div class="voice"><span class="vn">Bass</span><input type="file" id="file_bass" accept="audio/*,.wav"><span class="vlen" id="len_bass"></span><button class="x" id="clear_bass">fábrica</button></div>
+      <div class="budget"><div class="track"><div id="sbudgetBar"></div></div><div id="sbudgetTxt"></div></div>
+      <div class="opts"><label><input type="checkbox" id="normalize" checked> Normalizar volumen</label></div>
+      <div class="note">Cargá WAV (o audio) por voz; lo dejado en <b>fábrica</b> mantiene el original. Se convierte a 9.8&nbsp;kHz · 8-bit · mono. En la grilla, <b>Bombo</b>=Kick, <b>Huiro</b>=Snare, <b>Conga</b>=Hat, <b>Campana</b>=Bass.</div>
     </div>
+
+    <!-- SECUENCIAS -->
+    <div id="tab-seq" style="display:none">
+      <div class="selrow">
+        <div class="selgroup"><div class="t">Banco</div><div class="sels" id="banksel"></div></div>
+        <div class="selgroup"><div class="t">Preset</div><div class="sels" id="presetsel"></div></div>
+        <div class="selgroup"><div class="t">&nbsp;</div><button id="playBtn">▶ Play</button></div>
+        <div class="selgroup"><div class="t">&nbsp;</div><button id="clearPreset" class="tool">Limpiar preset</button></div>
+      </div>
+      <div id="grid"></div>
+      <div class="note">Prendé/apagá los pasos (colores en grupos de 4, estilo 808). En <b>Conga</b>/<b>Campana</b>, arrastrá la fila <i>↳ pitch</i>. <b>▶ Play</b> escucha el preset (aprox. al sonido del aparato).</div>
+    </div>
+
+    <!-- GRABAR -->
+    <div id="tab-grabar" style="display:none">
+      <div class="opts">
+        <label>Bootloader:
+          <select id="baud"><option value="auto">Auto</option><option value="115200">Nuevo (115200)</option><option value="57600">Viejo / clon (57600)</option></select>
+        </label>
+        <label><input type="checkbox" id="verify" checked> Verificar</label>
+        <label><input type="checkbox" id="invert"> Invertir reset</label>
+      </div>
+      <div class="note">Conectá el Nano por USB. <b>Grabar</b> escribe <b>tus samples + tus 4 bancos de secuencias en un solo flasheo</b> (conviven). No abras el IDE/monitor serie. Requiere Chrome/Edge/Opera de escritorio.</div>
+    </div>
+
+    <button id="flashBtn">⚡ Grabar en la placa</button>
     <div class="progress"><div id="bar">0%</div></div>
     <div id="log"></div>
     <div class="meta" id="meta"></div>
   </div>
 
-  <div class="note">
-    <b>Cómo usar:</b> conectá el Arduino Nano por USB, hacé clic en
-    <b>Conectar y grabar</b> y elegí el puerto (suele aparecer como <i>CH340</i> o
-    <i>USB-Serial</i>). No abras el Monitor Serie ni el IDE al mismo tiempo.<br>
-    Si dice que el bootloader no responde, marcá <b>Invertir reset</b> y reintentá.<br>
-    Requiere <b>Chrome, Edge u Opera</b> de escritorio (la Web Serial API no existe en Firefox/Safari ni móvil).<br>
-    🎙️ ¿Tus propios <b>sonidos</b>? → <a href="sampler.html">Sampler</a> &nbsp;·&nbsp; 🥁 ¿Tus propias <b>secuencias</b>? → <a href="seq.html">Editor de secuencias</a>
-  </div>
-
   <div class="foot">oficinadesonido.org · hanan cumbia</div>
 </div>
 
-<script src="firmware.js?v=4"></script>
-<script src="app.js?v=2"></script>
+<script src="firmware_studio.js?v=1"></script>
+<script src="studio.js?v=1"></script>
 </body>
 </html>
