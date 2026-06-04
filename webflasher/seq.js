@@ -97,7 +97,11 @@ function buildGrid(){
   const g=$('grid'); g.innerHTML='';
   CHANNELS.forEach((ch)=>{
     const row=document.createElement('div'); row.className='row';
-    const lab=document.createElement('div'); lab.className='clabel'; lab.textContent=ch.name; row.appendChild(lab);
+    const lab=document.createElement('div'); lab.className='clabel';
+    lab.innerHTML='<span>'+ch.name+'</span>';
+    const xb=document.createElement('button'); xb.className='cclear'; xb.textContent='✕'; xb.title='limpiar canal';
+    xb.addEventListener('click',()=>clearChannel(ch.key)); lab.appendChild(xb);
+    row.appendChild(lab);
     const pads=document.createElement('div'); pads.className='pads';
     for(let s=0;s<STEPS;s++){ const p=document.createElement('div'); p.className='pad'+(s%4===0?' beat':'')+(s%8===0?' bar':'');
       p.dataset.ch=ch.key; p.dataset.s=s;
@@ -120,6 +124,8 @@ function buildGrid(){
     }
   });
 }
+function clearChannel(key){ const a=banks[curBank][key]; for(let s=0;s<STEPS;s++)a[idx(s)]=0; refresh(); }
+function clearPreset(){ for(const ch of CHANNELS){ const a=banks[curBank][ch.key]; for(let s=0;s<STEPS;s++)a[idx(s)]=0; } refresh(); }
 function refresh(){
   // pads on/off
   document.querySelectorAll('.pad').forEach(p=>{ const on=banks[curBank][p.dataset.ch][idx(+p.dataset.s)];
@@ -177,6 +183,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   try{ const img=parseIntelHex(window.FIRMWARE_PRESETS_HEX); loadBanksFromImage(img); }
   catch(e){ log('Error leyendo presets del firmware: '+e.message,'err'); }
   buildSelectors(); buildGrid(); refresh();
+  $('clearPreset').addEventListener('click',clearPreset);
   $('flashBtn').addEventListener('click',run);
   $('meta').textContent='4 bancos x 4 presets · 32 pasos · build '+PM.built;
 });

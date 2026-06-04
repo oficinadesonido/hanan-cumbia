@@ -30,6 +30,13 @@
   .row{ display:flex; align-items:center; margin:3px 0; }
   .clabel{ width:78px; flex:0 0 78px; font-weight:700; font-size:12px; color:var(--yellow); text-align:right; padding-right:10px; }
   .clabel.small{ color:var(--muted); font-weight:400; font-style:italic; }
+  .clabel span{ vertical-align:middle; }
+  .cclear{ margin-left:5px; background:none; border:1px solid #3a3a3a; color:var(--muted); border-radius:4px;
+    font-size:9px; line-height:1; padding:2px 3px; cursor:pointer; vertical-align:middle; }
+  .cclear:hover{ color:var(--err); border-color:var(--err); }
+  .tool{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:9px; height:40px;
+    padding:0 12px; font-size:12px; font-weight:700; cursor:pointer; }
+  .tool:hover{ border-color:var(--pink); color:var(--pink); }
   .pads{ display:flex; gap:2px; }
   .pad{ width:18px; height:24px; border-radius:4px; background:#1d1d1d; border:1px solid #2c2c2c; cursor:pointer; transition:all .07s; }
   .pad:hover{ border-color:var(--pink); }
@@ -68,6 +75,7 @@
     <div class="selrow">
       <div class="selgroup"><div class="t">Banco</div><div class="sels" id="banksel"></div></div>
       <div class="selgroup"><div class="t">Preset</div><div class="sels" id="presetsel"></div></div>
+      <div class="selgroup"><div class="t">&nbsp;</div><button id="clearPreset" class="tool">Limpiar preset</button></div>
     </div>
 
     <div id="grid"></div>
@@ -102,6 +110,6 @@
 </div>
 
 <script src="firmware_presets.js?v=1"></script>
-<script src="seq.js?v=1"></script>
+<script src="seq.js?v=2"></script>
 </body>
 </html>
