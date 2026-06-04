@@ -223,7 +223,7 @@ async function run(){
     for(const baud of bauds){ log('Abriendo a '+baud+'...'); await port.open({baudRate:baud}); writer=port.writable.getWriter(); startReadLoop();
       synced=await syncRetries(invert,bauds.length>1?3:4); if(synced){ log('Bootloader OK a '+baud+'.','ok'); break; }
       log('Sin respuesta a '+baud+'.','warn'); readLoopRunning=false; try{if(reader)await reader.cancel();}catch(_){ } try{if(writer)writer.releaseLock();}catch(_){ } try{await port.close();}catch(_){ } writer=null; await sleep(250); }
-    if(!synced){ log('No respondió el bootloader. Probá "Invertir reset".','err'); return; }
+    if(!synced){ log('No respondió el bootloader. Prueba marcar "Invertir reset".','err'); return; }
     try{ const sig=await cmd([STK.READ_SIGN],3); const ok=EXPECTED_SIG.every((x,i)=>x===sig[i]);
       log('Firma: '+sig.map(b=>'0x'+b.toString(16).padStart(2,'0')).join(' ')+(ok?' (OK)':' (NO)'),ok?'ok':'warn');
       if(!ok&&!confirm('Firma no coincide. ¿Continuar?'))throw new Error('cancelado'); }catch(e){ log('Firma: '+e.message,'warn'); }

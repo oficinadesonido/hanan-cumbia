@@ -10,10 +10,10 @@ un DAC externo **MCP4901** por SPI. Basado en el firmware original `HTRCMB_10`.
 
 👉 **https://oficinadesonido.github.io/hanan-cumbia/webflasher/**
 
-Conectá el Nano por USB y grabá el firmware directamente desde Chrome / Edge / Opera
+Conecta el Nano por USB y graba el firmware directamente desde Chrome / Edge / Opera
 de escritorio (Web Serial API, sobre HTTPS). No requiere instalar nada.
 
-> Si el bootloader no responde, marcá **"Invertir reset (DTR/RTS)"** y reintentá.
+> Si el bootloader no responde, marca **"Invertir reset (DTR/RTS)"** y reintenta.
 > No funciona en Firefox/Safari ni en móvil (no soportan Web Serial).
 
 ## Estructura
