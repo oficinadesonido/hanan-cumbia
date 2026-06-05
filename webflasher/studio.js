@@ -31,7 +31,7 @@ let audioCtx=null, previewSrc=null, playingBank=-1, playingPreset=-1;
 
 function log(m,c){ const e=$('log'),d=document.createElement('div'); if(c)d.className=c; d.textContent=m; e.appendChild(d); e.scrollTop=e.scrollHeight; }
 function setProgress(p){ $('bar').style.width=Math.round(p*100)+'%'; $('bar').textContent=Math.round(p*100)+'%'; }
-function setBusy(b){ $('flashBtn').disabled=b; }
+function setBusy(b){ $('flashBtn').disabled=b; $('flashFactoryBtn').disabled=b; }
 
 /* ---------- Web Serial + STK500 ---------- */
 async function startReadLoop(){ readLoopRunning=true; try{ while(port&&port.readable&&readLoopRunning){ reader=port.readable.getReader();
@@ -209,14 +209,17 @@ function buildSelectors(){ const mk=(host,onPick)=>{ host.innerHTML=''; COLORS.f
   mk($('banksel'),i=>{curBank=i;}); mk($('presetsel'),i=>{curPreset=i;}); }
 
 /* ---------- Grabar (samples + presets juntos) ---------- */
-async function run(){
+async function run(factory=false){
   if(!('serial' in navigator)){ log('Tu navegador no soporta Web Serial (Chrome/Edge/Opera desktop).','err'); return; }
+  if(factory && !confirm('Esto graba en la placa los sonidos y presets ORIGINALES de fábrica, descartando lo que tengas editado en Samples/Secuencias. ¿Continuar?')) return;
   stopPreview(); setBusy(true); setProgress(0); $('log').innerHTML='';
   const verify=$('verify').checked, invert=$('invert').checked;
   const baudSel=$('baud').value, bauds=baudSel==='auto'?[115200,57600]:[parseInt(baudSel,10)];
   let image;
-  try{ image=parseIntelHex(window.FIRMWARE_STUDIO_HEX); patchSamples(image); const ver=patchPresets(image);
-    const cs=SAMPLE_ORDER.filter(v=>voiceData[v]); log('Imagen lista: samples propios ['+(cs.length?cs.join(','):'ninguno')+'], 4 bancos, version '+ver+'.'); }
+  try{ image=parseIntelHex(window.FIRMWARE_STUDIO_HEX);
+    if(factory){ log('Imagen de fábrica: sonidos y presets originales tal cual (sin tus ediciones).'); }
+    else { patchSamples(image); const ver=patchPresets(image);
+      const cs=SAMPLE_ORDER.filter(v=>voiceData[v]); log('Imagen lista: samples propios ['+(cs.length?cs.join(','):'ninguno')+'], 4 bancos, version '+ver+'.'); } }
   catch(e){ log('Error preparando imagen: '+e.message,'err'); setBusy(false); return; }
   try{
     port=await navigator.serial.requestPort(); let synced=false;
@@ -227,12 +230,12 @@ async function run(){
     try{ const sig=await cmd([STK.READ_SIGN],3); const ok=EXPECTED_SIG.every((x,i)=>x===sig[i]);
       log('Firma: '+sig.map(b=>'0x'+b.toString(16).padStart(2,'0')).join(' ')+(ok?' (OK)':' (NO)'),ok?'ok':'warn');
       if(!ok&&!confirm('Firma no coincide. ¿Continuar?'))throw new Error('cancelado'); }catch(e){ log('Firma: '+e.message,'warn'); }
-    await cmd([STK.ENTER_PROGMODE]); log('Grabando samples + secuencias...'); const t0=Date.now();
+    await cmd([STK.ENTER_PROGMODE]); log(factory?'Grabando firmware de fábrica...':'Grabando samples + secuencias...'); const t0=Date.now();
     for(let addr=0;addr<image.length;addr+=PAGE){ const pg=image.subarray(addr,addr+PAGE); await loadAddr(addr>>1); await progPage(pg);
       if(verify){ await loadAddr(addr>>1); const bk=await readPg(PAGE); for(let i=0;i<PAGE;i++)if(bk[i]!==pg[i])throw new Error('verif falló en 0x'+(addr+i).toString(16)); }
       setProgress((addr+PAGE)/image.length); }
     await cmd([STK.LEAVE_PROGMODE]); setProgress(1);
-    log('¡Grabado en '+((Date.now()-t0)/1000).toFixed(1)+' s! 🎶 La placa reinicia (~3 s) con tus samples y secuencias.','ok');
+    log('¡Grabado en '+((Date.now()-t0)/1000).toFixed(1)+' s! 🎶 La placa reinicia (~3 s) '+(factory?'con los sonidos y presets de fábrica.':'con tus samples y secuencias.'),'ok');
   }catch(e){ log('Error: '+e.message,'err'); }
   finally{ readLoopRunning=false; try{if(reader)await reader.cancel();}catch(_){ } try{if(writer)writer.releaseLock();}catch(_){ } try{if(port)await port.close();}catch(_){ } port=null; writer=null; setBusy(false); }
 }
@@ -246,7 +249,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   for(const v of SAMPLE_ORDER){ $('file_'+v).addEventListener('change',e=>onPickSample(v,e.target.files[0])); $('clear_'+v).addEventListener('click',()=>clearSample(v)); }
   $('clearPreset').addEventListener('click',clearPreset);
   $('playBtn').addEventListener('click',togglePreview);
-  $('flashBtn').addEventListener('click',run);
+  $('flashBtn').addEventListener('click',()=>run(false));
+  $('flashFactoryBtn').addEventListener('click',()=>run(true));
   $('exportBtn').addEventListener('click',exportProject);
   $('importFile').addEventListener('change',e=>{ if(e.target.files[0]) importProject(e.target.files[0]); });
   document.querySelectorAll('.tb').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));

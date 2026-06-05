@@ -72,6 +72,10 @@
   button#flashBtn{ display:block; width:100%; padding:17px; font-size:18px; font-weight:800; letter-spacing:1px; text-transform:uppercase; cursor:pointer;
     border:none; border-radius:12px; color:#111; margin-top:16px; background:linear-gradient(90deg,var(--yellow),var(--orange) 60%,var(--pink)); transition:transform .05s,filter .15s; }
   button#flashBtn:hover{ filter:brightness(1.08); } button#flashBtn:active{ transform:translateY(1px); } button#flashBtn:disabled{ filter:grayscale(.7) brightness(.6); cursor:wait; }
+  button#flashFactoryBtn{ display:block; width:100%; padding:12px; font-size:13px; font-weight:700; letter-spacing:.5px; cursor:pointer;
+    border:1px solid #3a3a3a; border-radius:10px; color:var(--text); margin-top:14px; background:#1d1d1d; transition:filter .15s,border-color .15s; }
+  button#flashFactoryBtn:hover{ border-color:var(--yellow); color:var(--yellow); } button#flashFactoryBtn:active{ transform:translateY(1px); }
+  button#flashFactoryBtn:disabled{ filter:grayscale(.7) brightness(.6); cursor:wait; }
   .progress{ height:20px; background:#000; border-radius:8px; overflow:hidden; margin:14px 0 12px; border:1px solid #2c2c2c; }
   #bar{ height:100%; width:0; background:linear-gradient(90deg,var(--pink),var(--yellow)); color:#111; font-size:11px; font-weight:700; line-height:20px; text-align:center; transition:width .15s; }
   #log{ background:#000; border:1px solid #222; border-radius:8px; padding:11px; height:130px; overflow-y:auto; font-family:ui-monospace,monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap; }
@@ -131,6 +135,8 @@
         <label><input type="checkbox" id="invert"> Invertir reset</label>
       </div>
       <div class="note">Conecta el Nano por USB. <b>Grabar</b> escribe <b>tus samples + tus 4 bancos de secuencias en un solo flasheo</b> (conviven). No abras el IDE/monitor serie al mismo tiempo. Requiere Chrome/Edge/Opera de escritorio.</div>
+      <button id="flashFactoryBtn">⬇ Grabar firmware de fábrica (sonidos + presets originales)</button>
+      <div class="note">Sube a la placa conectada el firmware <b>original de fábrica tal cual</b> (los sonidos y presets con los que sale armada la máquina), <b>ignorando</b> lo que tengas editado en Samples/Secuencias. Útil para dejar una placa nueva en estado de fábrica.</div>
     </div>
 
     <button id="flashBtn">⚡ Grabar en la placa</button>
