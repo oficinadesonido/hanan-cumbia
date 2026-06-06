@@ -12,14 +12,14 @@ prevshift=shift;
   if (shift==0&&recordbutton==1){
     prevpot2=pot2;
     if (bouncer1.read()==0 ){ //red
-      banko=63;
+      banko=64;   // preset 3: 4*32 (era 63, corrido 1 paso -> salto al cambiar de preset)
 
       bankpr=4;
       bankpg=0;
       bankpb=0;
     }
     if (bouncer4.read()==0){  //yellow
-      banko=31;
+      banko=32;   // preset 2: 2*32 (era 31, corrido 1 paso)
       bankpr=4;
       bankpg=4;
       bankpb=0;
@@ -31,7 +31,7 @@ prevshift=shift;
       bankpb=8;
     }
     if (bouncer3.read()==0){//green
-      banko=95;
+      banko=96;   // preset 4: 3*32 (era 95, corrido 1 paso)
       bankpr=0;
       bankpg=3;
       bankpb=0;
