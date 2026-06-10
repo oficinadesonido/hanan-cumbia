@@ -8,3 +8,13 @@ build_bank/
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Backups autogenerados de KiCad
+*-backups/
+*-bak
+*.kicad_prl
+
+# Editor local history y locks de KiCad
+.history/
+*.lck
+~*.lck

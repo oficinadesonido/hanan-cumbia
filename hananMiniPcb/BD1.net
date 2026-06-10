@@ -1,0 +1,1152 @@
+(export 
+  (version D) 
+  (design 
+    (source "/media/Intercambio/Documentos/Proyectos Electrónica/Hanan Cumbia/Placa_2021/BD1.sch") 
+    (date "lun 07 jun 2021 18:09:51") 
+    (tool "Eeschema 5.1.10-88a1d61d58~88~ubuntu20.04.1") 
+    (sheet 
+      (number 1) 
+      (name /) 
+      (tstamps /) 
+      (title_block 
+        (title) 
+        (company) 
+        (rev) 
+        (date) 
+        (source BD1.sch) 
+        (comment 
+          (number 1) 
+          (value "")) 
+        (comment 
+          (number 2) 
+          (value "")) 
+        (comment 
+          (number 3) 
+          (value "")) 
+        (comment 
+          (number 4) 
+          (value ""))))) 
+  (components 
+    (comp 
+      (ref XA1) 
+      (value Arduino_Nano_Socket) 
+      (footprint Arduino:Arduino_Nano_Socket) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part Arduino_Nano_Socket) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB47EC6)) 
+    (comp 
+      (ref U1) 
+      (value MCP4901) 
+      (footprint Package_DIP:DIP-8_W7.62mm_Socket_LongPads) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part MCP4901) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB47F63)) 
+    (comp 
+      (ref D1) 
+      (value LED_CRGB) 
+      (footprint OdeS:LED_RGB_CATCOM_sep) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part LED_CRGB) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB4811C)) 
+    (comp 
+      (ref R1) 
+      (value 220) 
+      (footprint Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part R) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB48212)) 
+    (comp 
+      (ref R5) 
+      (value 220) 
+      (footprint Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part R) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB48351)) 
+    (comp 
+      (ref REC1) 
+      (value SW_DIP_x01) 
+      (footprint SWITCH:SW_PUSH_6mm) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part SW_DIP_x01) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB599B8)) 
+    (comp 
+      (ref PEW1) 
+      (value SW_DIP_x01) 
+      (footprint SWITCH:SW_PUSH-12mm) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part SW_DIP_x01) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB59CE2)) 
+    (comp 
+      (ref PLAY1) 
+      (value SW_DIP_x01) 
+      (footprint SWITCH:SW_PUSH_6mm) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part SW_DIP_x01) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB59DC2)) 
+    (comp 
+      (ref TAP1) 
+      (value SW_DIP_x01) 
+      (footprint SWITCH:SW_PUSH_6mm) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part SW_DIP_x01) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB59DCF)) 
+    (comp 
+      (ref TOM1) 
+      (value SW_DIP_x01) 
+      (footprint SWITCH:SW_PUSH-12mm) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part SW_DIP_x01) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB5A06A)) 
+    (comp 
+      (ref SHIFT1) 
+      (value SHFT) 
+      (footprint SWITCH:SW_PUSH_6mm) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part SW_DIP_x01) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB5A077)) 
+    (comp 
+      (ref RV1) 
+      (value POT) 
+      (footprint Potentiometer_THT:Potentiometer_Alps_RK09K_Single_Vertical) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part POT) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB5B769)) 
+    (comp 
+      (ref RV2) 
+      (value POT) 
+      (footprint Potentiometer_THT:Potentiometer_Alps_RK09K_Single_Vertical) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part POT) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB5B886)) 
+    (comp 
+      (ref Out1) 
+      (value Audio-Jack-3) 
+      (footprint def-footprints:CONN_Jack_Female_3.5mm_THD) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part Audio-Jack-3) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB5C288)) 
+    (comp 
+      (ref R3) 
+      (value 1k) 
+      (footprint Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part R) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB5C480)) 
+    (comp 
+      (ref R2) 
+      (value 1k) 
+      (footprint Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part R) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB5C533)) 
+    (comp 
+      (ref C1) 
+      (value 10uF) 
+      (footprint Capacitor_THT:CP_Radial_D4.0mm_P2.00mm) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part CP1) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB5C57D)) 
+    (comp 
+      (ref J1) 
+      (value Jack-DC) 
+      (footprint conn-pwr_dc-FC68148:conn_FC68148) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part Jack-DC) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB5D901)) 
+    (comp 
+      (ref ClckOut1) 
+      (value Audio-Jack-3) 
+      (footprint def-footprints:CONN_Jack_Female_3.5mm_THD) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part Audio-Jack-3) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BBA9EAB)) 
+    (comp 
+      (ref Clckin1) 
+      (value Audio-Jack-3) 
+      (footprint def-footprints:CONN_Jack_Female_3.5mm_THD) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part Audio-Jack-3) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BBAA412)) 
+    (comp 
+      (ref D2) 
+      (value DIODE) 
+      (footprint Diode_THT:D_A-405_P7.62mm_Horizontal) 
+      (libsource 
+        (lib Device) 
+        (part D) 
+        (description Diode)) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5E52481A)) 
+    (comp 
+      (ref J2) 
+      (value Conn_02x04_Top_Bottom) 
+      (footprint Connector_PinHeader_2.00mm:PinHeader_1x08_P2.00mm_Vertical) 
+      (datasheet ~) 
+      (libsource 
+        (lib Connector_Generic) 
+        (part Conn_02x04_Top_Bottom) 
+        (description "Generic connector, double row, 02x04, top/bottom pin numbering scheme (row 1: 1...pins_per_row, row2: pins_per_row+1 ... num_pins), script generated (kicad-library-utils/schlib/autogen/connector/)")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5EF1AF76)) 
+    (comp 
+      (ref kck1) 
+      (value SW_DIP_x01) 
+      (footprint SWITCH:SW_PUSH-12mm) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part SW_DIP_x01) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB59C8F)) 
+    (comp 
+      (ref CLAP1) 
+      (value SW_DIP_x01) 
+      (footprint SWITCH:SW_PUSH-12mm) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part SW_DIP_x01) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB59DB5)) 
+    (comp 
+      (ref R4) 
+      (value 220) 
+      (footprint Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal) 
+      (libsource 
+        (lib BD1-rescue-2020-02-22-22-49-19) 
+        (part R) 
+        (description "")) 
+      (sheetpath 
+        (names /) 
+        (tstamps /)) 
+      (tstamp 5BB4832A))) 
+  (libparts 
+    (libpart 
+      (lib BD1-rescue-2020-02-22-22-49-19) 
+      (part Arduino_Nano_Socket) 
+      (footprints 
+        (fp Arduino_Nano_Socket)) 
+      (fields 
+        (field 
+          (name Reference) XA) 
+        (field 
+          (name Value) Arduino_Nano_Socket)) 
+      (pins 
+        (pin 
+          (num 5V) 
+          (name 5V) 
+          (type power_in)) 
+        (pin 
+          (num 3V3) 
+          (name 3.3V) 
+          (type power_in)) 
+        (pin 
+          (num A0) 
+          (name A0) 
+          (type BiDi)) 
+        (pin 
+          (num A1) 
+          (name A1) 
+          (type BiDi)) 
+        (pin 
+          (num A2) 
+          (name A2) 
+          (type BiDi)) 
+        (pin 
+          (num A3) 
+          (name A3) 
+          (type BiDi)) 
+        (pin 
+          (num A4) 
+          (name A4_SDA) 
+          (type BiDi)) 
+        (pin 
+          (num A5) 
+          (name A5_SCL) 
+          (type BiDi)) 
+        (pin 
+          (num A6) 
+          (name A6) 
+          (type input)) 
+        (pin 
+          (num A7) 
+          (name A7) 
+          (type input)) 
+        (pin 
+          (num AREF) 
+          (name AREF) 
+          (type input)) 
+        (pin 
+          (num D0) 
+          (name D0_RX0) 
+          (type BiDi)) 
+        (pin 
+          (num D1) 
+          (name D1_TX0) 
+          (type BiDi)) 
+        (pin 
+          (num D2) 
+          (name D2_INT0) 
+          (type BiDi)) 
+        (pin 
+          (num D3) 
+          (name D3_INT1) 
+          (type BiDi)) 
+        (pin 
+          (num D4) 
+          (name D4) 
+          (type BiDi)) 
+        (pin 
+          (num D5) 
+          (name D5) 
+          (type BiDi)) 
+        (pin 
+          (num D6) 
+          (name D6) 
+          (type BiDi)) 
+        (pin 
+          (num D7) 
+          (name D7) 
+          (type BiDi)) 
+        (pin 
+          (num D8) 
+          (name D8) 
+          (type BiDi)) 
+        (pin 
+          (num D9) 
+          (name D9) 
+          (type BiDi)) 
+        (pin 
+          (num D10) 
+          (name D10_CS) 
+          (type BiDi)) 
+        (pin 
+          (num D11) 
+          (name D11_MOSI) 
+          (type BiDi)) 
+        (pin 
+          (num D12) 
+          (name D12_MISO) 
+          (type BiDi)) 
+        (pin 
+          (num D13) 
+          (name D13_SCK) 
+          (type BiDi)) 
+        (pin 
+          (num GND1) 
+          (name GND) 
+          (type power_in)) 
+        (pin 
+          (num GND2) 
+          (name GND) 
+          (type power_in)) 
+        (pin 
+          (num RST1) 
+          (name RESET) 
+          (type openCol)) 
+        (pin 
+          (num RST2) 
+          (name RESET) 
+          (type openCol)) 
+        (pin 
+          (num VIN) 
+          (name VIN) 
+          (type power_in)))) 
+    (libpart 
+      (lib BD1-rescue-2020-02-22-22-49-19) 
+      (part Audio-Jack-3) 
+      (fields 
+        (field 
+          (name Reference) J) 
+        (field 
+          (name Value) Audio-Jack-3)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name ~) 
+          (type passive)) 
+        (pin 
+          (num 2) 
+          (name ~) 
+          (type passive)) 
+        (pin 
+          (num 3) 
+          (name ~) 
+          (type passive)))) 
+    (libpart 
+      (lib BD1-rescue-2020-02-22-22-49-19) 
+      (part CP1) 
+      (footprints 
+        (fp CP_*)) 
+      (fields 
+        (field 
+          (name Reference) C) 
+        (field 
+          (name Value) CP1)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name ~) 
+          (type passive)) 
+        (pin 
+          (num 2) 
+          (name ~) 
+          (type passive)))) 
+    (libpart 
+      (lib BD1-rescue-2020-02-22-22-49-19) 
+      (part Jack-DC) 
+      (fields 
+        (field 
+          (name Reference) J) 
+        (field 
+          (name Value) Jack-DC)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name ~) 
+          (type passive)) 
+        (pin 
+          (num 2) 
+          (name ~) 
+          (type passive)) 
+        (pin 
+          (num 3) 
+          (name ~) 
+          (type passive)))) 
+    (libpart 
+      (lib BD1-rescue-2020-02-22-22-49-19) 
+      (part LED_CRGB) 
+      (fields 
+        (field 
+          (name Reference) D) 
+        (field 
+          (name Value) LED_CRGB)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name K) 
+          (type passive)) 
+        (pin 
+          (num 2) 
+          (name RA) 
+          (type passive)) 
+        (pin 
+          (num 3) 
+          (name GA) 
+          (type passive)) 
+        (pin 
+          (num 4) 
+          (name BA) 
+          (type passive)))) 
+    (libpart 
+      (lib BD1-rescue-2020-02-22-22-49-19) 
+      (part MCP4901) 
+      (footprints 
+        (fp DIP*W7.62mm*) 
+        (fp MSOP*3x3mm*Pitch0.65mm*) 
+        (fp SOIC*3.9x4.9mm*Pitch1.27mm*)) 
+      (fields 
+        (field 
+          (name Reference) U) 
+        (field 
+          (name Value) MCP4901)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name Vdd) 
+          (type power_in)) 
+        (pin 
+          (num 2) 
+          (name ~CS) 
+          (type input)) 
+        (pin 
+          (num 3) 
+          (name SCK) 
+          (type input)) 
+        (pin 
+          (num 4) 
+          (name SDI) 
+          (type input)) 
+        (pin 
+          (num 5) 
+          (name ~LDAC) 
+          (type input)) 
+        (pin 
+          (num 6) 
+          (name Vref) 
+          (type power_in)) 
+        (pin 
+          (num 7) 
+          (name Vss) 
+          (type power_in)) 
+        (pin 
+          (num 8) 
+          (name Vout) 
+          (type output)))) 
+    (libpart 
+      (lib BD1-rescue-2020-02-22-22-49-19) 
+      (part POT) 
+      (footprints 
+        (fp Potentiometer*)) 
+      (fields 
+        (field 
+          (name Reference) RV) 
+        (field 
+          (name Value) POT)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name 1) 
+          (type passive)) 
+        (pin 
+          (num 2) 
+          (name 2) 
+          (type passive)) 
+        (pin 
+          (num 3) 
+          (name 3) 
+          (type passive)))) 
+    (libpart 
+      (lib BD1-rescue-2020-02-22-22-49-19) 
+      (part R) 
+      (footprints 
+        (fp R_*) 
+        (fp R_*)) 
+      (fields 
+        (field 
+          (name Reference) R) 
+        (field 
+          (name Value) R)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name ~) 
+          (type passive)) 
+        (pin 
+          (num 2) 
+          (name ~) 
+          (type passive)))) 
+    (libpart 
+      (lib BD1-rescue-2020-02-22-22-49-19) 
+      (part SW_DIP_x01) 
+      (footprints 
+        (fp SW?DIP?x1*)) 
+      (fields 
+        (field 
+          (name Reference) SW) 
+        (field 
+          (name Value) SW_DIP_x01)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name ~) 
+          (type passive)) 
+        (pin 
+          (num 2) 
+          (name ~) 
+          (type passive)))) 
+    (libpart 
+      (lib Connector_Generic) 
+      (part Conn_02x04_Top_Bottom) 
+      (description "Generic connector, double row, 02x04, top/bottom pin numbering scheme (row 1: 1...pins_per_row, row2: pins_per_row+1 ... num_pins), script generated (kicad-library-utils/schlib/autogen/connector/)") 
+      (docs ~) 
+      (footprints 
+        (fp Connector*:*_2x??_*)) 
+      (fields 
+        (field 
+          (name Reference) J) 
+        (field 
+          (name Value) Conn_02x04_Top_Bottom)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name Pin_1) 
+          (type passive)) 
+        (pin 
+          (num 2) 
+          (name Pin_2) 
+          (type passive)) 
+        (pin 
+          (num 3) 
+          (name Pin_3) 
+          (type passive)) 
+        (pin 
+          (num 4) 
+          (name Pin_4) 
+          (type passive)) 
+        (pin 
+          (num 5) 
+          (name Pin_5) 
+          (type passive)) 
+        (pin 
+          (num 6) 
+          (name Pin_6) 
+          (type passive)) 
+        (pin 
+          (num 7) 
+          (name Pin_7) 
+          (type passive)) 
+        (pin 
+          (num 8) 
+          (name Pin_8) 
+          (type passive)))) 
+    (libpart 
+      (lib Device) 
+      (part D) 
+      (description Diode) 
+      (docs ~) 
+      (footprints 
+        (fp TO-???*) 
+        (fp *_Diode_*) 
+        (fp *SingleDiode*) 
+        (fp D_*)) 
+      (fields 
+        (field 
+          (name Reference) D) 
+        (field 
+          (name Value) D)) 
+      (pins 
+        (pin 
+          (num 1) 
+          (name K) 
+          (type passive)) 
+        (pin 
+          (num 2) 
+          (name A) 
+          (type passive))))) 
+  (libraries 
+    (library 
+      (logical BD1-rescue-2020-02-22-22-49-19) 
+      (uri "/media/Intercambio/Documentos/Proyectos Electrónica/Hanan Cumbia/rescue-backup/BD1-rescue-2020-02-22-22-49-19.lib")) 
+    (library 
+      (logical Connector_Generic) 
+      (uri /usr/share/kicad/library/Connector_Generic.lib)) 
+    (library 
+      (logical Device) 
+      (uri /usr/share/kicad/library/Device.lib))) 
+  (nets 
+    (net 
+      (code 1) 
+      (name "Net-(J2-Pad8)") 
+      (node 
+        (ref J2) 
+        (pin 8)) 
+      (node 
+        (ref SHIFT1) 
+        (pin 1)) 
+      (node 
+        (ref XA1) 
+        (pin D7))) 
+    (net 
+      (code 2) 
+      (name "Net-(CLAP1-Pad1)") 
+      (node 
+        (ref XA1) 
+        (pin A3)) 
+      (node 
+        (ref CLAP1) 
+        (pin 1))) 
+    (net 
+      (code 3) 
+      (name "Net-(ClckOut1-Pad1)") 
+      (node 
+        (ref XA1) 
+        (pin D12)) 
+      (node 
+        (ref ClckOut1) 
+        (pin 1))) 
+    (net 
+      (code 4) 
+      (name "Net-(ClckOut1-Pad2)") 
+      (node 
+        (ref ClckOut1) 
+        (pin 2))) 
+    (net 
+      (code 5) 
+      (name "Net-(J1-Pad3)") 
+      (node 
+        (ref J1) 
+        (pin 3))) 
+    (net 
+      (code 6) 
+      (name "Net-(D2-Pad2)") 
+      (node 
+        (ref D2) 
+        (pin 2)) 
+      (node 
+        (ref J1) 
+        (pin 1))) 
+    (net 
+      (code 7) 
+      (name "Net-(C1-Pad2)") 
+      (node 
+        (ref C1) 
+        (pin 2)) 
+      (node 
+        (ref Out1) 
+        (pin 1))) 
+    (net 
+      (code 8) 
+      (name "Net-(C1-Pad1)") 
+      (node 
+        (ref C1) 
+        (pin 1)) 
+      (node 
+        (ref R3) 
+        (pin 1))) 
+    (net 
+      (code 9) 
+      (name GND) 
+      (node 
+        (ref J2) 
+        (pin 7)) 
+      (node 
+        (ref PLAY1) 
+        (pin 2)) 
+      (node 
+        (ref PEW1) 
+        (pin 2)) 
+      (node 
+        (ref REC1) 
+        (pin 2)) 
+      (node 
+        (ref Clckin1) 
+        (pin 3)) 
+      (node 
+        (ref J2) 
+        (pin 6)) 
+      (node 
+        (ref J2) 
+        (pin 2)) 
+      (node 
+        (ref J2) 
+        (pin 3)) 
+      (node 
+        (ref kck1) 
+        (pin 2)) 
+      (node 
+        (ref CLAP1) 
+        (pin 2)) 
+      (node 
+        (ref Out1) 
+        (pin 3)) 
+      (node 
+        (ref RV2) 
+        (pin 1)) 
+      (node 
+        (ref RV1) 
+        (pin 1)) 
+      (node 
+        (ref R2) 
+        (pin 2)) 
+      (node 
+        (ref U1) 
+        (pin 5)) 
+      (node 
+        (ref D1) 
+        (pin 1)) 
+      (node 
+        (ref U1) 
+        (pin 7)) 
+      (node 
+        (ref SHIFT1) 
+        (pin 2)) 
+      (node 
+        (ref TOM1) 
+        (pin 1)) 
+      (node 
+        (ref TAP1) 
+        (pin 2)) 
+      (node 
+        (ref XA1) 
+        (pin GND1)) 
+      (node 
+        (ref J1) 
+        (pin 2)) 
+      (node 
+        (ref ClckOut1) 
+        (pin 3))) 
+    (net 
+      (code 10) 
+      (name "Net-(J2-Pad4)") 
+      (node 
+        (ref TAP1) 
+        (pin 1)) 
+      (node 
+        (ref XA1) 
+        (pin D8)) 
+      (node 
+        (ref J2) 
+        (pin 4))) 
+    (net 
+      (code 11) 
+      (name +9V) 
+      (node 
+        (ref XA1) 
+        (pin VIN)) 
+      (node 
+        (ref D2) 
+        (pin 1))) 
+    (net 
+      (code 12) 
+      (name "Net-(XA1-PadA4)") 
+      (node 
+        (ref XA1) 
+        (pin A4)) 
+      (node 
+        (ref kck1) 
+        (pin 1))) 
+    (net 
+      (code 13) 
+      (name "Net-(Clckin1-Pad1)") 
+      (node 
+        (ref Clckin1) 
+        (pin 1)) 
+      (node 
+        (ref XA1) 
+        (pin A2))) 
+    (net 
+      (code 14) 
+      (name "Net-(Clckin1-Pad2)") 
+      (node 
+        (ref Clckin1) 
+        (pin 2))) 
+    (net 
+      (code 15) 
+      (name "Net-(J2-Pad5)") 
+      (node 
+        (ref J2) 
+        (pin 5)) 
+      (node 
+        (ref XA1) 
+        (pin D4)) 
+      (node 
+        (ref REC1) 
+        (pin 1))) 
+    (net 
+      (code 16) 
+      (name "Net-(D1-Pad4)") 
+      (node 
+        (ref R5) 
+        (pin 2)) 
+      (node 
+        (ref D1) 
+        (pin 4))) 
+    (net 
+      (code 17) 
+      (name "Net-(D1-Pad3)") 
+      (node 
+        (ref R4) 
+        (pin 2)) 
+      (node 
+        (ref D1) 
+        (pin 3))) 
+    (net 
+      (code 18) 
+      (name "Net-(D1-Pad2)") 
+      (node 
+        (ref R1) 
+        (pin 2)) 
+      (node 
+        (ref D1) 
+        (pin 2))) 
+    (net 
+      (code 19) 
+      (name "Net-(R2-Pad1)") 
+      (node 
+        (ref R2) 
+        (pin 1)) 
+      (node 
+        (ref R3) 
+        (pin 2)) 
+      (node 
+        (ref U1) 
+        (pin 8))) 
+    (net 
+      (code 20) 
+      (name "Net-(R4-Pad1)") 
+      (node 
+        (ref XA1) 
+        (pin D5)) 
+      (node 
+        (ref R4) 
+        (pin 1))) 
+    (net 
+      (code 21) 
+      (name "Net-(R5-Pad1)") 
+      (node 
+        (ref XA1) 
+        (pin D9)) 
+      (node 
+        (ref R5) 
+        (pin 1))) 
+    (net 
+      (code 22) 
+      (name "Net-(XA1-PadA7)") 
+      (node 
+        (ref XA1) 
+        (pin A7))) 
+    (net 
+      (code 23) 
+      (name "Net-(PEW1-Pad1)") 
+      (node 
+        (ref XA1) 
+        (pin D2)) 
+      (node 
+        (ref PEW1) 
+        (pin 1))) 
+    (net 
+      (code 24) 
+      (name "Net-(U1-Pad3)") 
+      (node 
+        (ref XA1) 
+        (pin D13)) 
+      (node 
+        (ref U1) 
+        (pin 3))) 
+    (net 
+      (code 25) 
+      (name "Net-(U1-Pad4)") 
+      (node 
+        (ref U1) 
+        (pin 4)) 
+      (node 
+        (ref XA1) 
+        (pin D11))) 
+    (net 
+      (code 26) 
+      (name "Net-(XA1-PadD1)") 
+      (node 
+        (ref XA1) 
+        (pin D1))) 
+    (net 
+      (code 27) 
+      (name "Net-(XA1-PadD0)") 
+      (node 
+        (ref XA1) 
+        (pin D0))) 
+    (net 
+      (code 28) 
+      (name "Net-(XA1-PadAREF)") 
+      (node 
+        (ref XA1) 
+        (pin AREF))) 
+    (net 
+      (code 29) 
+      (name "Net-(J2-Pad1)") 
+      (node 
+        (ref PLAY1) 
+        (pin 1)) 
+      (node 
+        (ref XA1) 
+        (pin D3)) 
+      (node 
+        (ref J2) 
+        (pin 1))) 
+    (net 
+      (code 30) 
+      (name "Net-(XA1-PadA6)") 
+      (node 
+        (ref XA1) 
+        (pin A6))) 
+    (net 
+      (code 31) 
+      (name "Net-(TOM1-Pad2)") 
+      (node 
+        (ref XA1) 
+        (pin A5)) 
+      (node 
+        (ref TOM1) 
+        (pin 2))) 
+    (net 
+      (code 32) 
+      (name "Net-(RV2-Pad2)") 
+      (node 
+        (ref XA1) 
+        (pin A0)) 
+      (node 
+        (ref RV2) 
+        (pin 2))) 
+    (net 
+      (code 33) 
+      (name "Net-(XA1-PadRST1)") 
+      (node 
+        (ref XA1) 
+        (pin RST1))) 
+    (net 
+      (code 34) 
+      (name "Net-(U1-Pad2)") 
+      (node 
+        (ref XA1) 
+        (pin D10)) 
+      (node 
+        (ref U1) 
+        (pin 2))) 
+    (net 
+      (code 35) 
+      (name "Net-(XA1-PadRST2)") 
+      (node 
+        (ref XA1) 
+        (pin RST2))) 
+    (net 
+      (code 36) 
+      (name "Net-(XA1-PadGND2)") 
+      (node 
+        (ref XA1) 
+        (pin GND2))) 
+    (net 
+      (code 37) 
+      (name "Net-(R1-Pad1)") 
+      (node 
+        (ref R1) 
+        (pin 1)) 
+      (node 
+        (ref XA1) 
+        (pin D6))) 
+    (net 
+      (code 38) 
+      (name "Net-(Out1-Pad2)") 
+      (node 
+        (ref Out1) 
+        (pin 2))) 
+    (net 
+      (code 39) 
+      (name +5C) 
+      (node 
+        (ref XA1) 
+        (pin 5V)) 
+      (node 
+        (ref U1) 
+        (pin 6)) 
+      (node 
+        (ref RV1) 
+        (pin 3)) 
+      (node 
+        (ref RV2) 
+        (pin 3)) 
+      (node 
+        (ref U1) 
+        (pin 1))) 
+    (net 
+      (code 40) 
+      (name "Net-(RV1-Pad2)") 
+      (node 
+        (ref XA1) 
+        (pin A1)) 
+      (node 
+        (ref RV1) 
+        (pin 2))) 
+    (net 
+      (code 41) 
+      (name "Net-(XA1-Pad3V3)") 
+      (node 
+        (ref XA1) 
+        (pin 3V3)))))
