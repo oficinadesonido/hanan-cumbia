@@ -731,12 +731,19 @@ void setup() {
   hat_off   = pgm_read_word(samplebank + 16);  tick_length  = pgm_read_word(samplebank + 18);
   bass_off  = pgm_read_word(samplebank + 20);  bass_length  = pgm_read_word(samplebank + 22);
 
+#ifdef FABRICA
+  // Version de FABRICA: SIN persistencia. Cada arranque restaura los 4 bancos de
+  // fabrica en EEPROM, asi al reiniciar SIEMPRE suenan los ritmos originales.
+  // (eeprom_update_block solo reescribe lo que cambio, asi no desgasta la EEPROM.)
+  initEEfromFlash();
+#else
   // Presets: si la version de fabrica cambio (o EEPROM virgen), reinicia EEPROM
   // desde flash; luego carga el banco 0 en RAM. (El reinit puede tardar ~3 s la 1ra vez.)
   if (eeprom_read_word((const uint16_t*)EE_VERSION) != pgm_read_word(presets_default + 8)) {
     initEEfromFlash();
     eeprom_update_word((uint16_t*)EE_VERSION, pgm_read_word(presets_default + 8));
   }
+#endif
   loadBankFromEE(0);
   presetbank = 0;
 
