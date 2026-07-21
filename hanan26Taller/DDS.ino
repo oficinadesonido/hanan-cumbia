@@ -54,19 +54,24 @@ if (noise_mode==0){
   ///////////////////////////////////////////////////////////////////////////////
 
   if (playmode==0){
-    indexr=(index3-snare_length)*-1;
-    index2r=(index4-kick_length)*-1;   
-    index3r=(index-tick_length)*-1;
-    index4r=(index2-bass_length)*-1;
-    index2vr=(index_freq_1-tick_length)*-1;
-    index4vr=(index_freq_2-bass_length)*-1;
+    // length-1: con indice forward en 0 (idle), length a secas leeria [length],
+    // fuera del sample (en el bass = fuera del banco -> DC de -127 en reverse).
+    indexr=(index3-(snare_length-1))*-1;
+    index2r=(index4-(kick_length-1))*-1;
+    index3r=(index-(tick_length-1))*-1;
+    index4r=(index2-(bass_length-1))*-1;
+    index2vr=(index_freq_1-(tick_length-1))*-1;
+    index4vr=(index_freq_2-(bass_length-1))*-1;
 
   }
   
   if (B1_latch==1){
     accumulator += pot1;
     index=(accumulator >> (6));  
-    if (index>tick_length){
+    // >= : el indice length ya esta FUERA del sample. En el banco unico, leer
+    // [length] del ultimo sample (bass) cae fuera del array -> byte basura (0)
+    // -> pico de -127 = clic al final del sonido.
+    if (index>=tick_length){
 
       index=0;
       accumulator=0;
@@ -77,7 +82,7 @@ if (noise_mode==0){
   if (B2_latch==1){
     accumulator2 += (pot2);
     index2=(accumulator2 >> (6));  
-    if (index2>bass_length){
+    if (index2>=bass_length){
 
       index2=0;
       accumulator2=0;
@@ -88,7 +93,7 @@ if (noise_mode==0){
   if (B3_latch==1){
     accumulator3 += (128);
     index3=(accumulator3 >> 6);  
-    if (index3>snare_length){
+    if (index3>=snare_length){
 
       index3=0;
       accumulator3=0;
@@ -100,7 +105,7 @@ if (noise_mode==0){
     accumulator4 += (157);
    // index4b=(accumulator4 >> (6));  
     index4=(accumulator4 >> (6));
-    if (index4>kick_length){
+    if (index4>=kick_length){
 
       index4=0;
       accumulator4=0;
@@ -115,7 +120,7 @@ if (noise_mode==0){
     kfe=kf;
   }
 
-  if (index_freq_1>tick_length){
+  if (index_freq_1>=tick_length){
     kf=0;
     index_freq_1=0;
     accu_freq_1=0;
@@ -129,7 +134,7 @@ if (noise_mode==0){
   if (B2_seq_trigger==1){
     pf=B2_freq_sequence[loopstepf+banko];
   }
-  if (index_freq_2>bass_length){
+  if (index_freq_2>=bass_length){
     pf=0;
     index_freq_2=0;
     accu_freq_2=0;
