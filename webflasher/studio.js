@@ -33,7 +33,7 @@ let port=null,reader=null,writer=null,rxQueue=[],rxWaiters=[],readLoopRunning=fa
 let baseImage=null, sampleDesc={}, factorySamples={};
 let voiceData={kick:null,snare:null,hat:null,bass:null};   // null = fabrica
 let banks=[]; let curBank=0,curPreset=0;
-let audioCtx=null, previewSrc=null, playingBank=-1, playingPreset=-1, previewT0=0;
+let audioCtx=null, previewSrc=null, playingBank=-1, playingPreset=-1, previewT0=0, previewDur=0, previewNext=null;
 
 function log(m,c){ const e=$('log'),d=document.createElement('div'); if(c)d.className=c; d.textContent=m; e.appendChild(d); e.scrollTop=e.scrollHeight; }
 function setProgress(p){ $('bar').style.width=Math.round(p*100)+'%'; $('bar').textContent=Math.round(p*100)+'%'; }
@@ -126,21 +126,41 @@ function renderLoop(bank,preset){
   }
   return {eng,total};
 }
-function playPreview(keepPos=false){
-  if(!audioCtx){ const AC=window.AudioContext||window.webkitAudioContext; audioCtx=new AC(); }
-  const pos=(keepPos&&previewSrc)?audioCtx.currentTime-previewT0:0;   // sigue el loop donde iba
-  stopPreview();
+function makePreviewBuffer(){
   const {eng,total}=renderLoop(banks[curBank],curPreset);
   const ratio=audioCtx.sampleRate/SR, outLen=Math.floor(total*ratio);
   const buf=audioCtx.createBuffer(1,outLen,audioCtx.sampleRate), ch=buf.getChannelData(0);
   for(let i=0;i<outLen;i++) ch[i]=eng[Math.floor(i/ratio)];   // zero-order-hold = crunch fiel
+  return buf;
+}
+function playPreview(keepPos=false){
+  if(!audioCtx){ const AC=window.AudioContext||window.webkitAudioContext; audioCtx=new AC(); }
+  const pos=(keepPos&&previewSrc)?audioCtx.currentTime-previewT0:0;   // sigue el loop donde iba
+  stopPreview();
+  const buf=makePreviewBuffer();
   const off=((pos%buf.duration)+buf.duration)%buf.duration;
   const src=audioCtx.createBufferSource(); src.buffer=buf; src.loop=true; src.connect(audioCtx.destination); src.start(0,off);
-  previewT0=audioCtx.currentTime-off;
+  previewT0=audioCtx.currentTime-off; previewDur=buf.duration;
   previewSrc=src; playingBank=curBank; playingPreset=curPreset;
   $('playBtn').textContent='■ Stop'; $('playBtn').classList.add('on');
 }
-function stopPreview(){ if(previewSrc){ try{previewSrc.stop();}catch(e){} previewSrc=null; } playingBank=-1; playingPreset=-1;
+// Cambio de banco/preset cuantizado como el firmware: entra recien al volver al paso 0
+function queuePreviewSwitch(){
+  if(!previewSrc){ playPreview(); return; }
+  if(previewNext){ try{previewNext.stop(0);}catch(e){} try{previewNext.disconnect();}catch(e){} previewNext=null; }
+  const buf=makePreviewBuffer(), now=audioCtx.currentTime;
+  let wrap=previewT0+Math.ceil(Math.max(0,now-previewT0)/previewDur)*previewDur;
+  if(wrap<=now+0.03) wrap+=previewDur;   // margen de scheduling
+  const src=audioCtx.createBufferSource(); src.buffer=buf; src.loop=true; src.connect(audioCtx.destination); src.start(wrap,0);
+  const old=previewSrc, nb=curBank, np=curPreset; previewNext=src;
+  old.stop(wrap);
+  old.onended=()=>{ if(previewNext===src){ previewSrc=src; previewT0=wrap; previewDur=buf.duration;
+    playingBank=nb; playingPreset=np; previewNext=null; } };
+}
+function stopPreview(){
+  if(previewNext){ try{previewNext.stop(0);}catch(e){} previewNext=null; }
+  if(previewSrc){ previewSrc.onended=null; try{previewSrc.stop();}catch(e){} previewSrc=null; }
+  playingBank=-1; playingPreset=-1;
   $('playBtn').textContent='▶ Play'; $('playBtn').classList.remove('on'); }
 function togglePreview(){ if(previewSrc) stopPreview(); else playPreview(); }
 
@@ -211,10 +231,11 @@ function refresh(){
     c.firstChild.style.bottom=(2+Math.round(f*40))+'px'; });   // thumb del fader (celda 51px: recorrido 40px)
   document.querySelectorAll('#banksel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curBank));
   document.querySelectorAll('#presetsel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curPreset));
-  if(previewSrc) schedulePreviewUpdate();   // en vivo: re-render con cada edicion/cambio, sin cortar el loop
+  if(previewSrc) schedulePreviewUpdate();   // en vivo: edicion re-renderiza al toque; banco/preset entra al paso 0
 }
 let previewUpd=0;
-function schedulePreviewUpdate(){ clearTimeout(previewUpd); previewUpd=setTimeout(()=>{ if(previewSrc) playPreview(true); },120); }
+function schedulePreviewUpdate(){ clearTimeout(previewUpd); previewUpd=setTimeout(()=>{ if(!previewSrc) return;
+  if(playingBank!==curBank||playingPreset!==curPreset) queuePreviewSwitch(); else playPreview(true); },120); }
 function buildSelectors(){ const mk=(host,onPick)=>{ host.innerHTML=''; SELBTNS.forEach((s,pos)=>{ const b=document.createElement('button');
     b.className='sel'; b.style.setProperty('--c',s.hex); b.textContent=pos+1; b.title=s.color; b.dataset.idx=s.idx;
     b.addEventListener('click',()=>{onPick(s.idx);refresh();}); host.appendChild(b); }); };
