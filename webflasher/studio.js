@@ -208,7 +208,7 @@ function clearPreset(){ for(const ch of CH){ const a=banks[curBank][ch.key]; for
 function refresh(){
   document.querySelectorAll('.pad').forEach(p=>p.classList.toggle('on',!!banks[curBank][p.dataset.ch][idx(+p.dataset.s)]));
   document.querySelectorAll('.pcell').forEach(c=>{ const f=banks[curBank][c.dataset.pitch][idx(+c.dataset.s)]/31;
-    c.firstChild.style.bottom=(2+Math.round(f*23))+'px'; });   // thumb del fader (celda 34px: recorrido 23px)
+    c.firstChild.style.bottom=(2+Math.round(f*40))+'px'; });   // thumb del fader (celda 51px: recorrido 40px)
   document.querySelectorAll('#banksel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curBank));
   document.querySelectorAll('#presetsel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curPreset));
   if(previewSrc) schedulePreviewUpdate();   // en vivo: re-render con cada edicion/cambio, sin cortar el loop
