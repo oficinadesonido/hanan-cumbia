@@ -13,14 +13,14 @@ const SAMPLE_ORDER=['kick','snare','hat','bass'];
 // canal de secuencia -> voz/sample y como suena en el firmware.
 // color = boton fisico de la maquina (el boton blanco enciende LED azul; en la web se usa blanco)
 const CH=[
-  { key:'B1', name:'Conga',   pitch:'F1', sample:'hat',   inc:null, color:'#ff2e63' },  // rojo · hat sample, pitch por paso
+  { key:'B1', name:'Conga',   pitch:'F1', sample:'hat',   inc:null, color:'#ff1f8e' },  // rojo (rosa ODS) · hat sample, pitch por paso
   { key:'B2', name:'Campana', pitch:'F2', sample:'bass',  inc:null, color:'#eaeaea' },  // blanco · bass sample, pitch por paso
   { key:'B3', name:'Huiro',   pitch:null, sample:'snare', inc:128,  color:'#3ddc84' },  // verde
   { key:'B4', name:'Bombo',   pitch:null, sample:'kick',  inc:157,  color:'#ffd400' },  // amarillo
 ];
 // selectores de banco/preset en el orden fisico de los botones; idx = indice en el firmware
 const SELBTNS=[
-  { idx:2, color:'rojo',     hex:'#ff2e63' },
+  { idx:2, color:'rojo',     hex:'#ff1f8e' },
   { idx:0, color:'blanco',   hex:'#eaeaea' },
   { idx:3, color:'verde',    hex:'#3ddc84' },
   { idx:1, color:'amarillo', hex:'#ffd400' },
@@ -33,7 +33,7 @@ let port=null,reader=null,writer=null,rxQueue=[],rxWaiters=[],readLoopRunning=fa
 let baseImage=null, sampleDesc={}, factorySamples={};
 let voiceData={kick:null,snare:null,hat:null,bass:null};   // null = fabrica
 let banks=[]; let curBank=0,curPreset=0;
-let audioCtx=null, previewSrc=null, playingBank=-1, playingPreset=-1;
+let audioCtx=null, previewSrc=null, playingBank=-1, playingPreset=-1, previewT0=0;
 
 function log(m,c){ const e=$('log'),d=document.createElement('div'); if(c)d.className=c; d.textContent=m; e.appendChild(d); e.scrollTop=e.scrollHeight; }
 function setProgress(p){ $('bar').style.width=Math.round(p*100)+'%'; $('bar').textContent=Math.round(p*100)+'%'; }
@@ -126,14 +126,17 @@ function renderLoop(bank,preset){
   }
   return {eng,total};
 }
-function playPreview(){
-  stopPreview();
+function playPreview(keepPos=false){
   if(!audioCtx){ const AC=window.AudioContext||window.webkitAudioContext; audioCtx=new AC(); }
+  const pos=(keepPos&&previewSrc)?audioCtx.currentTime-previewT0:0;   // sigue el loop donde iba
+  stopPreview();
   const {eng,total}=renderLoop(banks[curBank],curPreset);
   const ratio=audioCtx.sampleRate/SR, outLen=Math.floor(total*ratio);
   const buf=audioCtx.createBuffer(1,outLen,audioCtx.sampleRate), ch=buf.getChannelData(0);
   for(let i=0;i<outLen;i++) ch[i]=eng[Math.floor(i/ratio)];   // zero-order-hold = crunch fiel
-  const src=audioCtx.createBufferSource(); src.buffer=buf; src.loop=true; src.connect(audioCtx.destination); src.start();
+  const off=((pos%buf.duration)+buf.duration)%buf.duration;
+  const src=audioCtx.createBufferSource(); src.buffer=buf; src.loop=true; src.connect(audioCtx.destination); src.start(0,off);
+  previewT0=audioCtx.currentTime-off;
   previewSrc=src; playingBank=curBank; playingPreset=curPreset;
   $('playBtn').textContent='■ Stop'; $('playBtn').classList.add('on');
 }
@@ -204,11 +207,14 @@ function clearChannel(k){ const a=banks[curBank][k]; for(let s=0;s<STEPS;s++)a[i
 function clearPreset(){ for(const ch of CH){ const a=banks[curBank][ch.key]; for(let s=0;s<STEPS;s++)a[idx(s)]=0; } saveLocal(); refresh(); }
 function refresh(){
   document.querySelectorAll('.pad').forEach(p=>p.classList.toggle('on',!!banks[curBank][p.dataset.ch][idx(+p.dataset.s)]));
-  document.querySelectorAll('.pcell').forEach(c=>c.firstChild.style.height=Math.round((banks[curBank][c.dataset.pitch][idx(+c.dataset.s)]/31)*100)+'%');
+  document.querySelectorAll('.pcell').forEach(c=>{ const f=banks[curBank][c.dataset.pitch][idx(+c.dataset.s)]/31;
+    c.firstChild.style.bottom=(2+Math.round(f*23))+'px'; });   // thumb del fader (celda 34px: recorrido 23px)
   document.querySelectorAll('#banksel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curBank));
   document.querySelectorAll('#presetsel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curPreset));
-  if(previewSrc&&(playingBank!==curBank||playingPreset!==curPreset)) playPreview();  // re-render si cambió
+  if(previewSrc) schedulePreviewUpdate();   // en vivo: re-render con cada edicion/cambio, sin cortar el loop
 }
+let previewUpd=0;
+function schedulePreviewUpdate(){ clearTimeout(previewUpd); previewUpd=setTimeout(()=>{ if(previewSrc) playPreview(true); },120); }
 function buildSelectors(){ const mk=(host,onPick)=>{ host.innerHTML=''; SELBTNS.forEach((s,pos)=>{ const b=document.createElement('button');
     b.className='sel'; b.style.setProperty('--c',s.hex); b.textContent=pos+1; b.title=s.color; b.dataset.idx=s.idx;
     b.addEventListener('click',()=>{onPick(s.idx);refresh();}); host.appendChild(b); }); };

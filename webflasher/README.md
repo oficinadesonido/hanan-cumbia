@@ -8,7 +8,7 @@ Para experimentar tranquilo: trabajar en una rama y pedir merge.
 
 | Archivo | Qué es |
 |---|---|
-| `index.html` | Studio principal. **Todo el CSS está inline en el `<style>` del `<head>`**. Paleta en `:root`: `--pink #ff1f8e`, `--yellow #ffd400`, `--orange #ff6a00`, fondo `--bg #0a0a0a`, y los colores de los botones de la máquina `--rojo #ff2e63`, `--blanco #eaeaea`, `--verde #3ddc84`, `--amarillo #ffd400`. Ahí están tabs, tarjeta, grilla, botones. |
+| `index.html` | Studio principal. **Todo el CSS está inline en el `<style>` del `<head>`**. Paleta en `:root`: `--pink #ff1f8e`, `--yellow #ffd400`, `--orange #ff6a00`, fondo `--bg #0a0a0a`, y los colores de los botones de la máquina `--rojo #ff1f8e`, `--blanco #eaeaea`, `--verde #3ddc84`, `--amarillo #ffd400`. Ahí están tabs, tarjeta, grilla, botones. |
 | `studio.js` | Lógica de UI + flasheo. Genera la grilla de secuencias dinámicamente; cada pista lleva el color de su botón físico (definido en la tabla `CH`: rojo=Conga, blanco=Campana, verde=Huiro, amarillo=Bombo). Los selectores de banco/preset siguen el mismo orden físico (tabla `SELBTNS`; el índice de firmware es rojo=2, blanco=0, verde=3, amarillo=1). Sin glows ni degradados: colores planos. |
 | `hanan_micro.png` | Logo del header. |
 | `../hananFabrica/index.html` | Segundo flasher autónomo (solo firmware de fábrica), con su propio CSS inline. Si se cambia la estética, actualizar también acá para que queden parejos. |

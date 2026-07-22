@@ -7,7 +7,7 @@
 <style>
   :root{ --bg:#0a0a0a; --panel:#141414; --pink:#ff1f8e; --yellow:#ffd400; --orange:#ff6a00;
     --text:#f3f3f3; --muted:#9a9a9a; --ok:#3ddc84; --err:#ff5252; --warn:#ffb300;
-    --rojo:#ff2e63; --blanco:#eaeaea; --verde:#3ddc84; --amarillo:#ffd400; }
+    --rojo:#ff1f8e; --blanco:#eaeaea; --verde:#3ddc84; --amarillo:#ffd400; }
   *{ box-sizing:border-box; }
   body{ margin:0; background:var(--bg);
     color:var(--text); font-family:"Segoe UI",system-ui,Roboto,sans-serif; min-height:100vh;
@@ -63,9 +63,11 @@
   .pad.on{ background:var(--pc); border-color:var(--pc); } .pad:hover{ filter:brightness(1.35); }
   .pad.beat{ margin-left:5px; } .pad.bar{ margin-left:11px; }
   .pitchrow{ margin:0 0 7px; }
-  .pcell{ width:18px; height:32px; border-radius:4px; position:relative; cursor:ns-resize; overflow:hidden; background:#141414; border:1px solid color-mix(in srgb,var(--pc) 45%,#262626); }
+  .pcell{ width:18px; height:34px; border-radius:4px; position:relative; cursor:ns-resize; overflow:hidden; background:#141414; border:1px solid #262626; }
+  .pcell::before{ content:''; position:absolute; left:50%; top:3px; bottom:3px; width:2px; margin-left:-1px;
+    background:color-mix(in srgb,var(--pc) 40%,#262626); }
   .pcell.beat{ margin-left:5px; } .pcell.bar{ margin-left:11px; }
-  .pfill{ position:absolute; left:0; right:0; bottom:0; height:0%; background:var(--pc); }
+  .pfill{ position:absolute; left:2px; right:2px; bottom:2px; height:5px; border-radius:2px; background:var(--pc); }
   #pitchval{ position:fixed; display:none; background:#000; border:1px solid var(--pink); color:var(--text); font-family:ui-monospace,monospace; font-size:12px; font-weight:700; padding:3px 8px; border-radius:6px; pointer-events:none; z-index:20; }
 
   /* grabar + comun */
@@ -148,7 +150,7 @@
   <div class="foot">oficinadesonido.org · hanan cumbia</div>
 </div>
 
-<script src="firmware_studio.js?v=5"></script>
-<script src="studio.js?v=5"></script>
+<script src="firmware_studio.js?v=6"></script>
+<script src="studio.js?v=6"></script>
 </body>
 </html>
