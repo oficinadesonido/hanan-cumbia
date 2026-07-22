@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HANAN CUMBIA · Estudio</title>
+<title>HANAN CUMBIA · Lab</title>
 <style>
   :root{ --bg:#0a0a0a; --panel:#141414; --pink:#ff1f8e; --yellow:#ffd400; --orange:#ff6a00;
     --text:#f3f3f3; --muted:#9a9a9a; --ok:#3ddc84; --err:#ff5252; --warn:#ffb300;
@@ -90,7 +90,7 @@
 <div id="pitchval"></div>
 <div class="wrap">
   <header><img src="hanan_micro.png" alt="HANAN CUMBIA"></header>
-  <h1>Estudio</h1>
+  <h1>Lab</h1>
 
   <div class="pbar">
     <button id="exportBtn">⬇ Exportar proyecto</button>
@@ -98,11 +98,23 @@
   </div>
 
   <div class="tabs">
+    <button class="tb" data-tab="samples" id="tb-samples">Samples</button>
     <button class="tb" data-tab="seq" id="tb-seq">Secuencias</button>
     <button class="tb" data-tab="grabar" id="tb-grabar">Firmware</button>
   </div>
 
   <div class="card">
+    <!-- SAMPLES -->
+    <div id="tab-samples" style="display:none">
+      <div class="voice"><span class="vn"><i class="dot" style="background:var(--rojo)"></i>Conga</span><input type="file" id="file_hat" accept="audio/*,.wav"><span class="vlen" id="len_hat"></span><button class="x" id="clear_hat">fábrica</button></div>
+      <div class="voice"><span class="vn"><i class="dot" style="background:var(--blanco)"></i>Campana</span><input type="file" id="file_bass" accept="audio/*,.wav"><span class="vlen" id="len_bass"></span><button class="x" id="clear_bass">fábrica</button></div>
+      <div class="voice"><span class="vn"><i class="dot" style="background:var(--verde)"></i>Huiro</span><input type="file" id="file_snare" accept="audio/*,.wav"><span class="vlen" id="len_snare"></span><button class="x" id="clear_snare">fábrica</button></div>
+      <div class="voice"><span class="vn"><i class="dot" style="background:var(--amarillo)"></i>Bombo</span><input type="file" id="file_kick" accept="audio/*,.wav"><span class="vlen" id="len_kick"></span><button class="x" id="clear_kick">fábrica</button></div>
+      <div class="budget"><div class="track"><div id="sbudgetBar"></div></div><div id="sbudgetTxt"></div></div>
+      <div class="opts"><label><input type="checkbox" id="normalize" checked> Normalizar volumen</label></div>
+      <div class="note">Carga un WAV (o audio) por voz; lo dejado en <b>fábrica</b> mantiene el original. Se convierte a 9.8&nbsp;kHz · 8-bit · mono. Cada voz lleva el color de su botón en la máquina.</div>
+    </div>
+
     <!-- SECUENCIAS -->
     <div id="tab-seq" style="display:none">
       <div class="selrow">
@@ -124,7 +136,7 @@
         <label><input type="checkbox" id="verify" checked> Verificar</label>
         <label><input type="checkbox" id="invert"> Invertir reset</label>
       </div>
-      <div class="note">Conecta el Nano por USB. <b>Grabar</b> escribe <b>los sonidos + tus 4 bancos de secuencias en un solo flasheo</b>. No abras el IDE/monitor serie al mismo tiempo. Requiere Chrome/Edge/Opera de escritorio.</div>
+      <div class="note">Conecta el Nano por USB. <b>Grabar</b> escribe <b>tus samples + tus 4 bancos de secuencias en un solo flasheo</b> (conviven). No abras el IDE/monitor serie al mismo tiempo. Requiere Chrome/Edge/Opera de escritorio.</div>
       <button id="flashFactoryBtn">⬇ Grabar firmware de fábrica (sonidos + presets originales)</button>
       <div class="note">Sube a la placa conectada el firmware <b>original de fábrica tal cual</b> (los sonidos y presets con los que sale armada la máquina), <b>ignorando</b> lo que tengas editado en Samples/Secuencias. Útil para dejar una placa nueva en estado de fábrica.</div>
     </div>
@@ -135,9 +147,10 @@
     <div class="meta" id="meta"></div>
   </div>
 
-  <div class="foot">oficinadesonido.org · hanan cumbia · <a href="lab.html">lab</a></div>
+  <div class="foot">oficinadesonido.org · hanan cumbia · <a href="index.html">estudio</a></div>
 </div>
 
+<script>window.HANAN_LAB=true;</script>
 <script src="firmware_studio.js?v=9"></script>
 <script src="studio.js?v=9"></script>
 </body>

@@ -180,11 +180,14 @@ function exportProject(){ const o={ v:1, voices:{}, banks:banks.map(b=>({B1:[...
 function importProject(file){ const fr=new FileReader(); fr.onload=()=>{ try{ applyProject(JSON.parse(fr.result)); saveLocal(); buildGrid(); refresh(); refreshSamples(); log('Proyecto importado.','ok'); }catch(e){ log('Proyecto inválido: '+e.message,'err'); } }; fr.readAsText(file); }
 
 /* ---------- UI: tabs ---------- */
-function showTab(t){ for(const s of ['samples','seq','grabar']){ $('tab-'+s).style.display=s===t?'block':'none'; $('tb-'+s).classList.toggle('active',s===t); } if(t!=='seq') stopPreview(); }
+// La misma app sirve dos paginas: lab.html (completa) y index.html/Estudio (sin la seccion Samples)
+function showTab(t){ for(const s of ['samples','seq','grabar']){ const el=$('tab-'+s); if(!el) continue;
+  el.style.display=s===t?'block':'none'; $('tb-'+s).classList.toggle('active',s===t); } if(t!=='seq') stopPreview(); }
 
 /* ---------- UI: samples ---------- */
 function fmtS(b){ return b+' B · '+(b/SR).toFixed(2)+' s'; }
-function refreshSamples(){ for(const v of SAMPLE_ORDER){ const lbl=$('len_'+v),cu=!!voiceData[v];
+function refreshSamples(){ if(!$('sbudgetBar')){ $('flashBtn').disabled=sampleUsed()>sampleCap(); return; }
+  for(const v of SAMPLE_ORDER){ const lbl=$('len_'+v),cu=!!voiceData[v];
   lbl.textContent=(cu?'★ ':'(fábrica) ')+fmtS(effSample(v).length); lbl.className='vlen'+(cu?' custom':''); }
   const used=sampleUsed(),cap=sampleCap();
   $('sbudgetBar').style.width=Math.min(100,Math.round(used/cap*100))+'%';
@@ -279,7 +282,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   catch(e){ log('Error leyendo firmware base: '+e.message,'err'); }
   loadLocal();   // restaura proyecto si hay
   buildSelectors(); buildGrid(); refresh(); refreshSamples();
-  for(const v of SAMPLE_ORDER){ $('file_'+v).addEventListener('change',e=>onPickSample(v,e.target.files[0])); $('clear_'+v).addEventListener('click',()=>clearSample(v)); }
+  for(const v of SAMPLE_ORDER){ const fi=$('file_'+v); if(!fi) continue;
+    fi.addEventListener('change',e=>onPickSample(v,e.target.files[0])); $('clear_'+v).addEventListener('click',()=>clearSample(v)); }
   $('clearPreset').addEventListener('click',clearPreset);
   $('playBtn').addEventListener('click',togglePreview);
   $('flashBtn').addEventListener('click',()=>run(false));
@@ -288,5 +292,5 @@ window.addEventListener('DOMContentLoaded',()=>{
   $('importFile').addEventListener('change',e=>{ if(e.target.files[0]) importProject(e.target.files[0]); });
   document.querySelectorAll('.tb').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
   showTab('seq');
-  $('meta').textContent='studio · banco '+M.sample_total+' B · 4×4 presets · '+SR+' Hz · build '+M.built;
+  $('meta').textContent=(window.HANAN_LAB?'lab':'estudio')+' · banco '+M.sample_total+' B · 4×4 presets · '+SR+' Hz · build '+M.built;
 });
