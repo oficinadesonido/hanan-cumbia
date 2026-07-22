@@ -51,19 +51,19 @@
   .tool:hover{ border-color:var(--pink); color:var(--pink); }
   #playBtn{ height:38px; padding:0 20px; border:none; border-radius:9px; font-size:14px; font-weight:800; cursor:pointer; color:#111;
     background:var(--ok); } #playBtn.on{ background:var(--err); color:#fff; }
-  #grid{ overflow-x:auto; padding-bottom:4px; }
+  #grid{ overflow-x:auto; padding-bottom:4px; --pc:#ff1f8e; }
   .row{ display:flex; align-items:center; margin:3px 0; }
   .clabel{ width:74px; flex:0 0 74px; font-weight:700; font-size:12px; color:var(--pc,var(--yellow)); text-align:right; padding-right:8px; }
   .clabel.small{ color:var(--muted); font-weight:400; font-style:italic; } .clabel span{ vertical-align:middle; }
   .cclear{ margin-left:5px; background:none; border:1px solid #3a3a3a; color:var(--muted); border-radius:4px; font-size:9px; line-height:1; padding:2px 3px; cursor:pointer; vertical-align:middle; }
   .cclear:hover{ color:var(--err); border-color:var(--err); }
   .pads{ display:flex; gap:2px; }
-  .pad{ width:18px; height:24px; border-radius:4px; cursor:pointer; transition:filter .07s; --pc:#ff1f8e;
+  .pad{ width:18px; height:24px; border-radius:4px; cursor:pointer; transition:filter .07s;
     background:#121212; border:1px solid var(--pc); }
   .pad.on{ background:var(--pc); border-color:var(--pc); } .pad:hover{ filter:brightness(1.35); }
   .pad.beat{ margin-left:5px; } .pad.bar{ margin-left:11px; }
   .pitchrow{ margin:0 0 7px; }
-  .pcell{ width:18px; height:32px; border-radius:4px; position:relative; cursor:ns-resize; overflow:hidden; --pc:#ff1f8e; background:#141414; border:1px solid color-mix(in srgb,var(--pc) 45%,#262626); }
+  .pcell{ width:18px; height:32px; border-radius:4px; position:relative; cursor:ns-resize; overflow:hidden; background:#141414; border:1px solid color-mix(in srgb,var(--pc) 45%,#262626); }
   .pcell.beat{ margin-left:5px; } .pcell.bar{ margin-left:11px; }
   .pfill{ position:absolute; left:0; right:0; bottom:0; height:0%; background:var(--pc); }
   #pitchval{ position:fixed; display:none; background:#000; border:1px solid var(--pink); color:var(--text); font-family:ui-monospace,monospace; font-size:12px; font-weight:700; padding:3px 8px; border-radius:6px; pointer-events:none; z-index:20; }
