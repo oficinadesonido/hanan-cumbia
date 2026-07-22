@@ -10,15 +10,21 @@ const STK = { OK:0x10, INSYNC:0x14, CRC_EOP:0x20, GET_SYNC:0x30, ENTER_PROGMODE:
 const PAGE=128, EXPECTED_SIG=[0x1e,0x95,0x0f];
 const STEPS=32, NBANKS=4, NPRESETS=4, BANKSTEPS=128, SR=M.sr;
 const SAMPLE_ORDER=['kick','snare','hat','bass'];
-// canal de secuencia -> voz/sample y como suena en el firmware
+// canal de secuencia -> voz/sample y como suena en el firmware.
+// color = boton fisico de la maquina (el boton blanco enciende LED azul; en la web se usa blanco)
 const CH=[
-  { key:'B1', name:'Conga',   pitch:'F1', sample:'hat',   inc:null },  // hat sample, pitch por paso
-  { key:'B2', name:'Campana', pitch:'F2', sample:'bass',  inc:null },  // bass sample, pitch por paso
-  { key:'B3', name:'Huiro',   pitch:null, sample:'snare', inc:128 },
-  { key:'B4', name:'Bombo',   pitch:null, sample:'kick',  inc:157 },
+  { key:'B1', name:'Conga',   pitch:'F1', sample:'hat',   inc:null, color:'#ff2e63' },  // rojo · hat sample, pitch por paso
+  { key:'B2', name:'Campana', pitch:'F2', sample:'bass',  inc:null, color:'#eaeaea' },  // blanco · bass sample, pitch por paso
+  { key:'B3', name:'Huiro',   pitch:null, sample:'snare', inc:128,  color:'#3ddc84' },  // verde
+  { key:'B4', name:'Bombo',   pitch:null, sample:'kick',  inc:157,  color:'#ffd400' },  // amarillo
 ];
-const COLORS=['azul','amarillo','rojo','verde'];
-const COLORHEX={azul:'#2f7bff',amarillo:'#ffd400',rojo:'#ff2e63',verde:'#3ddc84'};
+// selectores de banco/preset en el orden fisico de los botones; idx = indice en el firmware
+const SELBTNS=[
+  { idx:2, color:'rojo',     hex:'#ff2e63' },
+  { idx:0, color:'blanco',   hex:'#eaeaea' },
+  { idx:3, color:'verde',    hex:'#3ddc84' },
+  { idx:1, color:'amarillo', hex:'#ffd400' },
+];
 
 const $=id=>document.getElementById(id);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -159,7 +165,7 @@ function refreshSamples(){ for(const v of SAMPLE_ORDER){ const lbl=$('len_'+v),c
   lbl.textContent=(cu?'★ ':'(fábrica) ')+fmtS(effSample(v).length); lbl.className='vlen'+(cu?' custom':''); }
   const used=sampleUsed(),cap=sampleCap();
   $('sbudgetBar').style.width=Math.min(100,Math.round(used/cap*100))+'%';
-  $('sbudgetBar').style.background=used>cap?'var(--err)':'linear-gradient(90deg,var(--pink),var(--yellow))';
+  $('sbudgetBar').style.background=used>cap?'var(--err)':'var(--pink)';
   $('sbudgetTxt').textContent=used+' / '+cap+' bytes ('+(used/SR).toFixed(2)+' / '+(cap/SR).toFixed(2)+' s)';
   $('flashBtn').disabled=used>cap; }
 async function onPickSample(v,file){ if(!file)return; try{ log('Procesando '+v+': '+file.name+'...');
@@ -170,21 +176,21 @@ async function onPickSample(v,file){ if(!file)return; try{ log('Procesando '+v+'
   catch(e){ log('Error '+v+': '+e.message,'err'); } }
 function clearSample(v){ voiceData[v]=null; $('file_'+v).value=''; saveLocal(); refreshSamples(); }
 
-/* ---------- UI: grilla de secuencias (TR-808) ---------- */
+/* ---------- UI: grilla de secuencias (cada pista con el color de su boton) ---------- */
 function idx(s){ return curPreset*STEPS+s; }
 function buildGrid(){ const g=$('grid'); g.innerHTML='';
-  CH.forEach(ch=>{ const row=document.createElement('div'); row.className='row';
+  CH.forEach(ch=>{ const row=document.createElement('div'); row.className='row'; row.style.setProperty('--pc',ch.color);
     const lab=document.createElement('div'); lab.className='clabel'; lab.innerHTML='<span>'+ch.name+'</span>';
     const xb=document.createElement('button'); xb.className='cclear'; xb.textContent='✕'; xb.title='limpiar canal';
     xb.addEventListener('click',()=>clearChannel(ch.key)); lab.appendChild(xb); row.appendChild(lab);
     const pads=document.createElement('div'); pads.className='pads';
-    for(let s=0;s<STEPS;s++){ const p=document.createElement('div'); p.className='pad g'+(Math.floor(s/4)%4)+(s%4===0?' beat':'')+(s%8===0?' bar':'');
+    for(let s=0;s<STEPS;s++){ const p=document.createElement('div'); p.className='pad'+(s%4===0?' beat':'')+(s%8===0?' bar':'');
       p.dataset.ch=ch.key; p.dataset.s=s; p.addEventListener('click',()=>{ const a=banks[curBank][ch.key]; a[idx(s)]=a[idx(s)]?0:1; saveLocal(); refresh(); }); pads.appendChild(p); }
     row.appendChild(pads); g.appendChild(row);
-    if(ch.pitch){ const prow=document.createElement('div'); prow.className='row pitchrow';
+    if(ch.pitch){ const prow=document.createElement('div'); prow.className='row pitchrow'; prow.style.setProperty('--pc',ch.color);
       const pl=document.createElement('div'); pl.className='clabel small'; pl.textContent='↳ pitch'; prow.appendChild(pl);
       const pp=document.createElement('div'); pp.className='pads';
-      for(let s=0;s<STEPS;s++){ const cell=document.createElement('div'); cell.className='pcell g'+(Math.floor(s/4)%4)+(s%4===0?' beat':'')+(s%8===0?' bar':'');
+      for(let s=0;s<STEPS;s++){ const cell=document.createElement('div'); cell.className='pcell'+(s%4===0?' beat':'')+(s%8===0?' bar':'');
         const fill=document.createElement('div'); fill.className='pfill'; cell.appendChild(fill); cell.dataset.s=s; cell.dataset.pitch=ch.pitch;
         const set=ev=>{ const r=cell.getBoundingClientRect(); let f=1-((ev.clientY-r.top)/r.height); f=Math.max(0,Math.min(1,f));
           const lvl=Math.round(f*31); banks[curBank][ch.pitch][idx(s)]=lvl; showPitchVal(ev,lvl); saveLocal(); refresh(); };
@@ -199,13 +205,13 @@ function clearPreset(){ for(const ch of CH){ const a=banks[curBank][ch.key]; for
 function refresh(){
   document.querySelectorAll('.pad').forEach(p=>p.classList.toggle('on',!!banks[curBank][p.dataset.ch][idx(+p.dataset.s)]));
   document.querySelectorAll('.pcell').forEach(c=>c.firstChild.style.height=Math.round((banks[curBank][c.dataset.pitch][idx(+c.dataset.s)]/31)*100)+'%');
-  document.querySelectorAll('#banksel .sel').forEach((b,i)=>b.classList.toggle('active',i===curBank));
-  document.querySelectorAll('#presetsel .sel').forEach((b,i)=>b.classList.toggle('active',i===curPreset));
+  document.querySelectorAll('#banksel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curBank));
+  document.querySelectorAll('#presetsel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curPreset));
   if(previewSrc&&(playingBank!==curBank||playingPreset!==curPreset)) playPreview();  // re-render si cambió
 }
-function buildSelectors(){ const mk=(host,onPick)=>{ host.innerHTML=''; COLORS.forEach((c,i)=>{ const b=document.createElement('button');
-    b.className='sel'; b.style.setProperty('--c',COLORHEX[c]); b.textContent=i+1; b.title=c;
-    b.addEventListener('click',()=>{onPick(i);refresh();}); host.appendChild(b); }); };
+function buildSelectors(){ const mk=(host,onPick)=>{ host.innerHTML=''; SELBTNS.forEach((s,pos)=>{ const b=document.createElement('button');
+    b.className='sel'; b.style.setProperty('--c',s.hex); b.textContent=pos+1; b.title=s.color; b.dataset.idx=s.idx;
+    b.addEventListener('click',()=>{onPick(s.idx);refresh();}); host.appendChild(b); }); };
   mk($('banksel'),i=>{curBank=i;}); mk($('presetsel'),i=>{curPreset=i;}); }
 
 /* ---------- Grabar (samples + presets juntos) ---------- */
