@@ -198,6 +198,7 @@ function makePreviewBuffer(){
 }
 function playPreview(keepPos=false){
   if(!audioCtx){ const AC=window.AudioContext||window.webkitAudioContext; audioCtx=new AC(); }
+  if(audioCtx.state!=='running'){ audioCtx.resume(); }   // iOS/Safari arranca suspendido: reanudar dentro del gesto
   const pos=(keepPos&&previewSrc)?audioCtx.currentTime-previewT0:0;   // sigue el loop donde iba
   stopPreview();
   const buf=makePreviewBuffer();
