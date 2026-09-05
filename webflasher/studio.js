@@ -206,7 +206,21 @@ function playPreview(keepPos=false){
   previewT0=audioCtx.currentTime-off; previewDur=buf.duration;
   previewSrc=src; playingBank=curBank; playingPreset=curPreset;
   $('playBtn').textContent='■ Stop'; $('playBtn').classList.add('on');
+  startCursor();
 }
+/* ---------- Cursor de pasos (playhead) ---------- */
+let cursorRAF=null, cursorStep=-1;
+function startCursor(){ cancelCursor();
+  const tick=()=>{ if(!previewSrc||!previewDur){ return; }
+    const el=(((audioCtx.currentTime-previewT0)%previewDur)+previewDur)%previewDur;
+    const st=Math.floor(el/(previewDur/STEPS))%STEPS;
+    if(st!==cursorStep){ cursorStep=st;
+      document.querySelectorAll('#grid .cursor').forEach(e=>e.classList.remove('cursor'));
+      document.querySelectorAll('#grid [data-s="'+st+'"]').forEach(e=>e.classList.add('cursor')); }
+    cursorRAF=requestAnimationFrame(tick); };
+  cursorRAF=requestAnimationFrame(tick); }
+function cancelCursor(){ if(cursorRAF) cancelAnimationFrame(cursorRAF); cursorRAF=null; cursorStep=-1;
+  document.querySelectorAll('#grid .cursor').forEach(e=>e.classList.remove('cursor')); }
 // Cambio de banco/preset cuantizado como el firmware: entra recien al volver al paso 0
 function queuePreviewSwitch(){
   if(!previewSrc){ playPreview(); return; }
@@ -221,6 +235,7 @@ function queuePreviewSwitch(){
     playingBank=nb; playingPreset=np; previewNext=null; } };
 }
 function stopPreview(){
+  cancelCursor();
   if(previewNext){ try{previewNext.stop(0);}catch(e){} previewNext=null; }
   if(previewSrc){ previewSrc.onended=null; try{previewSrc.stop();}catch(e){} previewSrc=null; }
   playingBank=-1; playingPreset=-1;
