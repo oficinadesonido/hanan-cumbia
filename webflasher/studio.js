@@ -33,6 +33,7 @@ let port=null,reader=null,writer=null,rxQueue=[],rxWaiters=[],readLoopRunning=fa
 let baseImage=null, sampleDesc={}, factorySamples={};
 let voiceData={kick:null,snare:null,hat:null,bass:null};   // null = fabrica
 let banks=[]; let curBank=0,curPreset=0;
+let bankBPM=[90,90,90,90];   // BPM por banco (web); Daniel lo lleva al firmware aparte
 let audioCtx=null, previewSrc=null, playingBank=-1, playingPreset=-1, previewT0=0, previewDur=0, previewNext=null;
 
 /* ---------- i18n (auto por navegador, recuerda la elección) ---------- */
@@ -174,7 +175,7 @@ function patchPresets(img){ const m=findMagic(img,M.preset_magic);
 /* ---------- Preview fiel (motor de audio del firmware en JS) ---------- */
 function pitchInc(level){ return 16+((level&31)<<4); }
 function renderLoop(bank,preset){
-  const stepN=Math.round((60/M.bpm/8)*SR), total=stepN*STEPS;   // 8 pasos por beat
+  const bpm=bankBPM[curBank]||M.bpm, stepN=Math.round((60/bpm/8)*SR), total=stepN*STEPS;   // 8 pasos por beat
   const voices=CH.map(c=>({ buf:effSample(c.sample), len:sampleDesc[c.sample].len,
     seq:bank[c.key], freq:c.pitch?bank[c.pitch]:null, fixedInc:c.inc, phase:0, on:false, inc:0 }));
   const eng=new Float32Array(total); let step=-1;
@@ -245,14 +246,15 @@ function togglePreview(){ if(previewSrc) stopPreview(); else playPreview(); }
 
 /* ---------- Proyecto (localStorage + export/import) ---------- */
 const LS='hanan_studio_v1';
-function saveLocal(){ try{ const o={ v:1, voices:{}, banks:banks.map(b=>({B1:[...b.B1],B2:[...b.B2],B3:[...b.B3],B4:[...b.B4],F1:[...b.F1],F2:[...b.F2]})) };
+function saveLocal(){ try{ const o={ v:1, voices:{}, banks:banks.map(b=>({B1:[...b.B1],B2:[...b.B2],B3:[...b.B3],B4:[...b.B4],F1:[...b.F1],F2:[...b.F2]})), bankBPM:[...bankBPM] };
   for(const v of SAMPLE_ORDER) o.voices[v]=voiceData[v]?[...voiceData[v]]:null;
   localStorage.setItem(LS,JSON.stringify(o)); }catch(e){} }
 function applyProject(o){
   if(o.voices) for(const v of SAMPLE_ORDER) voiceData[v]=o.voices[v]?Uint8Array.from(o.voices[v]):null;
-  if(o.banks) banks=o.banks.map(b=>({B1:Uint8Array.from(b.B1),B2:Uint8Array.from(b.B2),B3:Uint8Array.from(b.B3),B4:Uint8Array.from(b.B4),F1:Uint8Array.from(b.F1),F2:Uint8Array.from(b.F2)})); }
+  if(o.banks) banks=o.banks.map(b=>({B1:Uint8Array.from(b.B1),B2:Uint8Array.from(b.B2),B3:Uint8Array.from(b.B3),B4:Uint8Array.from(b.B4),F1:Uint8Array.from(b.F1),F2:Uint8Array.from(b.F2)}));
+  if(Array.isArray(o.bankBPM)) bankBPM=[0,1,2,3].map(i=>{ const v=parseInt(o.bankBPM[i],10); return (v>=40&&v<=300)?v:90; }); }
 function loadLocal(){ try{ const s=localStorage.getItem(LS); if(s){ applyProject(JSON.parse(s)); return true; } }catch(e){} return false; }
-function exportProject(){ const o={ v:1, voices:{}, banks:banks.map(b=>({B1:[...b.B1],B2:[...b.B2],B3:[...b.B3],B4:[...b.B4],F1:[...b.F1],F2:[...b.F2]})) };
+function exportProject(){ const o={ v:1, voices:{}, banks:banks.map(b=>({B1:[...b.B1],B2:[...b.B2],B3:[...b.B3],B4:[...b.B4],F1:[...b.F1],F2:[...b.F2]})), bankBPM:[...bankBPM] };
   for(const v of SAMPLE_ORDER) o.voices[v]=voiceData[v]?[...voiceData[v]]:null;
   const blob=new Blob([JSON.stringify(o)],{type:'application/json'}), a=document.createElement('a');
   a.href=URL.createObjectURL(blob); a.download='hanan-proyecto.json'; a.click(); URL.revokeObjectURL(a.href); log('Proyecto exportado.','ok'); }
@@ -315,6 +317,7 @@ function refresh(){
     c.firstChild.style.bottom=(2+Math.round(f*40))+'px'; });   // thumb del fader (celda 51px: recorrido 40px)
   document.querySelectorAll('#banksel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curBank));
   document.querySelectorAll('#presetsel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curPreset));
+  { const bx=$('bpm'); if(bx) bx.value=bankBPM[curBank]; }
   if(previewSrc) schedulePreviewUpdate();   // en vivo: edicion re-renderiza al toque; banco/preset entra al paso 0
 }
 let previewUpd=0;
@@ -367,6 +370,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     fi.addEventListener('change',e=>onPickSample(v,e.target.files[0])); $('clear_'+v).addEventListener('click',()=>clearSample(v)); }
   $('clearPreset').addEventListener('click',clearPreset);
   $('playBtn').addEventListener('click',togglePreview);
+  { const bx=$('bpm'); if(bx) bx.addEventListener('change',e=>{ let v=parseInt(e.target.value,10)||90; v=Math.max(40,Math.min(300,v)); bankBPM[curBank]=v; e.target.value=v; saveLocal(); if(previewSrc) schedulePreviewUpdate(); }); }
   $('flashBtn').addEventListener('click',()=>run(false));
   $('flashFactoryBtn').addEventListener('click',()=>run(true));
   $('exportBtn').addEventListener('click',exportProject);
