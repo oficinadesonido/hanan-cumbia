@@ -33,7 +33,71 @@ let port=null,reader=null,writer=null,rxQueue=[],rxWaiters=[],readLoopRunning=fa
 let baseImage=null, sampleDesc={}, factorySamples={};
 let voiceData={kick:null,snare:null,hat:null,bass:null};   // null = fabrica
 let banks=[]; let curBank=0,curPreset=0;
+let bankBPM=[90,90,90,90];   // BPM por banco (web); Daniel lo lleva al firmware aparte
 let audioCtx=null, previewSrc=null, playingBank=-1, playingPreset=-1, previewT0=0, previewDur=0, previewNext=null;
+
+/* ---------- i18n (auto por navegador, recuerda la elección) ---------- */
+const I18N={
+  'pagetag.studio':{es:'Estudio',en:'Studio'},
+  'pagetag.lab':{es:'Lab',en:'Lab'},
+  'tab.samples':{es:'Samples',en:'Samples'},
+  'tab.seq':{es:'Secuencias',en:'Sequences'},
+  'tab.firmware':{es:'Firmware',en:'Firmware'},
+  'tab.manual':{es:'Manual',en:'Manual'},
+  'lbl.banco':{es:'Banco',en:'Bank'},
+  'lbl.preset':{es:'Preset',en:'Preset'},
+  'btn.clearPreset':{es:'Limpiar preset',en:'Clear preset'},
+  'voice.factory':{es:'fábrica',en:'factory'},
+  'opt.normalize':{es:'Normalizar volumen',en:'Normalize volume'},
+  'fw.title':{es:'Firmware de fábrica ·',en:'Factory firmware ·'},
+  'opt.bootloader':{es:'Bootloader:',en:'Bootloader:'},
+  'opt.baud.auto':{es:'Auto',en:'Auto'},
+  'opt.baud.new':{es:'Nuevo (115200)',en:'New (115200)'},
+  'opt.baud.old':{es:'Viejo / clon (57600)',en:'Old / clone (57600)'},
+  'opt.verify':{es:'Verificar',en:'Verify'},
+  'opt.invert':{es:'Invertir reset',en:'Invert reset'},
+  'btn.factory':{es:'⬇ Grabar firmware de fábrica',en:'⬇ Flash factory firmware'},
+  'btn.flash':{es:'⚡ Grabar en tu máquina de ritmos',en:'⚡ Flash to your drum machine'},
+  'btn.export':{es:'⬇ Exportar proyecto',en:'⬇ Export project'},
+  'btn.import':{es:'⬆ Importar proyecto',en:'⬆ Import project'},
+  'note.seq':{
+    es:'Activa/desactiva los pasos; cada pista lleva el color de su botón en la máquina. En <b>Conga</b> y <b>Campana</b>, la fila <i>↳ pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono. <b>▶ Play</b> reproduce el preset (aprox. al sonido del aparato). Hay <b>4 bancos</b> (un color por pad), cada uno con <b>4 secuencias</b>; en la máquina cambias de secuencia con <b>Shift + pad</b> y de banco con <b>Shift + pad (2 s)</b>.',
+    en:'Toggle the steps on and off; each track carries the color of its button on the machine. On <b>Conga</b> and <b>Campana</b>, the <i>↳ pitch</i> row is a set of faders: drag up or down on each step to change its pitch. <b>▶ Play</b> previews the preset (roughly how the unit sounds). There are <b>4 banks</b> (one per pad color), each with <b>4 sequences</b>; on the machine switch sequence with <b>Shift + pad</b> and bank with <b>Shift + pad (hold 2 s)</b>.'},
+  'note.samples':{
+    es:'Carga un WAV (o audio) por voz; lo dejado en <b>fábrica</b> mantiene el original. Se convierte a 9.8&nbsp;kHz · 8-bit · mono. Cada voz lleva el color de su botón en la máquina.',
+    en:'Load a WAV (or audio file) per voice; anything left on <b>factory</b> keeps the original. It’s downsampled to 9.8&nbsp;kHz · 8-bit · mono. Each voice carries the color of its button on the machine.'},
+  'note.firmware':{
+    es:'Sube a tu máquina el firmware <b>original de fábrica tal cual</b> —los sonidos y presets con los que sale armada—, <b>ignorando</b> lo que tengas editado en Samples/Secuencias. Útil para dejar una placa nueva en estado de fábrica. Conecta el Nano por USB y no abras el IDE/monitor serie al mismo tiempo; requiere Chrome/Edge/Opera de escritorio.',
+    en:'Flashes the <b>original factory firmware as-is</b> —the sounds and presets the machine ships with—, <b>ignoring</b> anything you’ve edited in Samples/Sequences. Handy for resetting a fresh board to factory state. Connect the Nano over USB and don’t open the IDE/serial monitor at the same time; requires desktop Chrome/Edge/Opera.'},
+  'note.project':{
+    es:'<b>Exportar proyecto</b> descarga tus 4 bancos de secuencias como un archivo <b>.json</b> (<i>hanan-proyecto.json</i>) en tu computador: un respaldo de lo que tienes cargado, que puedes volver a abrir con <b>Importar proyecto</b> o llevar a otra máquina. No graba nada en la placa.',
+    en:'<b>Export project</b> downloads your 4 sequence banks as a <b>.json</b> file (<i>hanan-proyecto.json</i>) to your computer: a backup of what you have loaded, which you can reopen with <b>Import project</b> or move to another machine. It doesn’t flash anything to the board.'},
+  'note.projectLab':{
+    es:'<b>Exportar proyecto</b> descarga tus samples y tus 4 bancos de secuencias como un archivo <b>.json</b> (<i>hanan-proyecto.json</i>) en tu computador: un respaldo de lo que tienes cargado, que puedes volver a abrir con <b>Importar proyecto</b> o llevar a otra máquina. No graba nada en la placa.',
+    en:'<b>Export project</b> downloads your samples and your 4 sequence banks as a <b>.json</b> file (<i>hanan-proyecto.json</i>) to your computer: a backup of what you have loaded, which you can reopen with <b>Import project</b> or move to another machine. It doesn’t flash anything to the board.'},
+  'man.desc':{
+    es:'Caja de ritmos con sonidos de cumbia y botones arcade. <b>4 sonidos</b> (pads): <b>Kick</b> (bombo), <b>Güiro</b>, <b>Cow Bell</b> (campana) y <b>Conga</b>. Dos perillas de <b>pitch</b> afinan Conga y Cow Bell. Cuatro botones negros: <b>Play</b>, <b>Rec</b>, <b>Shift</b> y <b>Tap</b>. Se alimenta por USB (5V).',
+    en:'Drum machine with cumbia sounds and arcade buttons. <b>4 sounds</b> (pads): <b>Kick</b>, <b>Güiro</b>, <b>Cow Bell</b> and <b>Conga</b>. Two <b>pitch</b> knobs tune Conga and Cow Bell. Four black buttons: <b>Play</b>, <b>Rec</b>, <b>Shift</b> and <b>Tap</b>. Powered over USB (5V).'},
+  'man.h.seqbanks':{es:'Secuencias y bancos',en:'Sequences & banks'},
+  'man.seqbanks':{
+    es:'La máquina tiene <b>4 bancos</b> (uno por color de pad: rosa, blanco, verde, amarillo) y cada banco guarda <b>4 secuencias</b> de <b>32 pasos</b>. Para grabar la tuya, pulsa <b>Rec</b> y toca los pads en tiempo real; pulsa <b>Rec</b> otra vez para volver a reproducir.<ul class="manul"><li><b>Play</b>: reproduce / detiene.</li><li><b>Rec</b>: graba en tiempo real.</li><li><b>Shift + pad</b>: cambia de secuencia (las 4 del banco).</li><li><b>Shift + pad (2 s)</b>: cambia de banco — cada color de pad es un banco.</li><li><b>Shift + Play</b>: reproduce en reversa.</li><li><b>Play + Rec</b>: borra la secuencia.</li><li><b>Shift + Rec + pad</b>: borra solo ese sonido.</li><li><b>Tap ×2</b>: tap tempo (fija el tempo interno).</li><li><b>Shift + Tap</b>: modo sync (clock externo por el conector sync).</li></ul>',
+    en:'The machine has <b>4 banks</b> (one per pad color: pink, white, green, yellow) and each bank holds <b>4 sequences</b> of <b>32 steps</b>. To record your own, press <b>Rec</b> and play the pads in real time; press <b>Rec</b> again to go back to playing.<ul class="manul"><li><b>Play</b>: play / stop.</li><li><b>Rec</b>: record in real time.</li><li><b>Shift + pad</b>: switch sequence (the 4 in the bank).</li><li><b>Shift + pad (hold 2 s)</b>: switch bank — each pad color is a bank.</li><li><b>Shift + Play</b>: play in reverse.</li><li><b>Play + Rec</b>: erase the sequence.</li><li><b>Shift + Rec + pad</b>: erase just that sound.</li><li><b>Tap ×2</b>: tap tempo (sets the internal tempo).</li><li><b>Shift + Tap</b>: sync mode (external clock via the sync connector).</li></ul>'},
+  'man.h.ports':{es:'Conexiones',en:'Connections'},
+  'man.credits':{
+    es:'Hanan Graphic Art: <b>Yefferson Huaman</b> (Ruta Mare), inspired by cumbia chicha.<br>Design, Circuit &amp; code: <b>Daniel Llermaly</b>.<br>Graphic Design: <b>Joaquín Contreras</b>.',
+    en:'Hanan Graphic Art: <b>Yefferson Huaman</b> (Ruta Mare), inspired by cumbia chicha.<br>Design, Circuit &amp; code: <b>Daniel Llermaly</b>.<br>Graphic Design: <b>Joaquín Contreras</b>.'},
+};
+let LANG=localStorage.getItem('hanan_lang');
+if(LANG!=='es'&&LANG!=='en'){ LANG=(navigator.language||'en').toLowerCase().startsWith('es')?'es':'en'; }
+function setMeta(){ const m=$('meta'); if(!m||!window.FIRMWARE_STUDIO_META) return;
+  const page=window.HANAN_LAB?'lab':(LANG==='es'?'estudio':'studio'), bank=LANG==='es'?'banco':'bank';
+  m.textContent=page+' · '+bank+' '+M.sample_total+' B · 4×4 presets · '+SR+' Hz · build '+M.built; }
+function applyLang(){ document.documentElement.lang=LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=I18N[el.dataset.i18n]; if(v) el.textContent=v[LANG]||v.es; });
+  document.querySelectorAll('[data-i18nh]').forEach(el=>{ const v=I18N[el.dataset.i18nh]; if(v) el.innerHTML=v[LANG]||v.es; });
+  document.querySelectorAll('#lang button').forEach(b=>b.classList.toggle('active',b.dataset.lang===LANG));
+  setMeta(); }
+function setLang(l){ LANG=l; try{ localStorage.setItem('hanan_lang',l); }catch(e){} applyLang(); }
 
 function log(m,c){ const e=$('log'),d=document.createElement('div'); if(c)d.className=c; d.textContent=m; e.appendChild(d); e.scrollTop=e.scrollHeight; }
 function setProgress(p){ $('bar').style.width=Math.round(p*100)+'%'; $('bar').textContent=Math.round(p*100)+'%'; }
@@ -111,7 +175,7 @@ function patchPresets(img){ const m=findMagic(img,M.preset_magic);
 /* ---------- Preview fiel (motor de audio del firmware en JS) ---------- */
 function pitchInc(level){ return 16+((level&31)<<4); }
 function renderLoop(bank,preset){
-  const stepN=Math.round((60/M.bpm/8)*SR), total=stepN*STEPS;   // 8 pasos por beat
+  const bpm=bankBPM[curBank]||M.bpm, stepN=Math.round((60/bpm/8)*SR), total=stepN*STEPS;   // 8 pasos por beat
   const voices=CH.map(c=>({ buf:effSample(c.sample), len:sampleDesc[c.sample].len,
     seq:bank[c.key], freq:c.pitch?bank[c.pitch]:null, fixedInc:c.inc, phase:0, on:false, inc:0 }));
   const eng=new Float32Array(total); let step=-1;
@@ -135,6 +199,7 @@ function makePreviewBuffer(){
 }
 function playPreview(keepPos=false){
   if(!audioCtx){ const AC=window.AudioContext||window.webkitAudioContext; audioCtx=new AC(); }
+  if(audioCtx.state!=='running'){ audioCtx.resume(); }   // iOS/Safari arranca suspendido: reanudar dentro del gesto
   const pos=(keepPos&&previewSrc)?audioCtx.currentTime-previewT0:0;   // sigue el loop donde iba
   stopPreview();
   const buf=makePreviewBuffer();
@@ -143,7 +208,21 @@ function playPreview(keepPos=false){
   previewT0=audioCtx.currentTime-off; previewDur=buf.duration;
   previewSrc=src; playingBank=curBank; playingPreset=curPreset;
   $('playBtn').textContent='■ Stop'; $('playBtn').classList.add('on');
+  startCursor();
 }
+/* ---------- Cursor de pasos (playhead) ---------- */
+let cursorRAF=null, cursorStep=-1;
+function startCursor(){ cancelCursor();
+  const tick=()=>{ if(!previewSrc||!previewDur){ return; }
+    const el=(((audioCtx.currentTime-previewT0)%previewDur)+previewDur)%previewDur;
+    const st=Math.floor(el/(previewDur/STEPS))%STEPS;
+    if(st!==cursorStep){ cursorStep=st;
+      document.querySelectorAll('#grid .cursor').forEach(e=>e.classList.remove('cursor'));
+      document.querySelectorAll('#grid [data-s="'+st+'"]').forEach(e=>e.classList.add('cursor')); }
+    cursorRAF=requestAnimationFrame(tick); };
+  cursorRAF=requestAnimationFrame(tick); }
+function cancelCursor(){ if(cursorRAF) cancelAnimationFrame(cursorRAF); cursorRAF=null; cursorStep=-1;
+  document.querySelectorAll('#grid .cursor').forEach(e=>e.classList.remove('cursor')); }
 // Cambio de banco/preset cuantizado como el firmware: entra recien al volver al paso 0
 function queuePreviewSwitch(){
   if(!previewSrc){ playPreview(); return; }
@@ -158,6 +237,7 @@ function queuePreviewSwitch(){
     playingBank=nb; playingPreset=np; previewNext=null; } };
 }
 function stopPreview(){
+  cancelCursor();
   if(previewNext){ try{previewNext.stop(0);}catch(e){} previewNext=null; }
   if(previewSrc){ previewSrc.onended=null; try{previewSrc.stop();}catch(e){} previewSrc=null; }
   playingBank=-1; playingPreset=-1;
@@ -166,14 +246,15 @@ function togglePreview(){ if(previewSrc) stopPreview(); else playPreview(); }
 
 /* ---------- Proyecto (localStorage + export/import) ---------- */
 const LS='hanan_studio_v1';
-function saveLocal(){ try{ const o={ v:1, voices:{}, banks:banks.map(b=>({B1:[...b.B1],B2:[...b.B2],B3:[...b.B3],B4:[...b.B4],F1:[...b.F1],F2:[...b.F2]})) };
+function saveLocal(){ try{ const o={ v:1, voices:{}, banks:banks.map(b=>({B1:[...b.B1],B2:[...b.B2],B3:[...b.B3],B4:[...b.B4],F1:[...b.F1],F2:[...b.F2]})), bankBPM:[...bankBPM] };
   for(const v of SAMPLE_ORDER) o.voices[v]=voiceData[v]?[...voiceData[v]]:null;
   localStorage.setItem(LS,JSON.stringify(o)); }catch(e){} }
 function applyProject(o){
   if(o.voices) for(const v of SAMPLE_ORDER) voiceData[v]=o.voices[v]?Uint8Array.from(o.voices[v]):null;
-  if(o.banks) banks=o.banks.map(b=>({B1:Uint8Array.from(b.B1),B2:Uint8Array.from(b.B2),B3:Uint8Array.from(b.B3),B4:Uint8Array.from(b.B4),F1:Uint8Array.from(b.F1),F2:Uint8Array.from(b.F2)})); }
+  if(o.banks) banks=o.banks.map(b=>({B1:Uint8Array.from(b.B1),B2:Uint8Array.from(b.B2),B3:Uint8Array.from(b.B3),B4:Uint8Array.from(b.B4),F1:Uint8Array.from(b.F1),F2:Uint8Array.from(b.F2)}));
+  if(Array.isArray(o.bankBPM)) bankBPM=[0,1,2,3].map(i=>{ const v=parseInt(o.bankBPM[i],10); return (v>=40&&v<=300)?v:90; }); }
 function loadLocal(){ try{ const s=localStorage.getItem(LS); if(s){ applyProject(JSON.parse(s)); return true; } }catch(e){} return false; }
-function exportProject(){ const o={ v:1, voices:{}, banks:banks.map(b=>({B1:[...b.B1],B2:[...b.B2],B3:[...b.B3],B4:[...b.B4],F1:[...b.F1],F2:[...b.F2]})) };
+function exportProject(){ const o={ v:1, voices:{}, banks:banks.map(b=>({B1:[...b.B1],B2:[...b.B2],B3:[...b.B3],B4:[...b.B4],F1:[...b.F1],F2:[...b.F2]})), bankBPM:[...bankBPM] };
   for(const v of SAMPLE_ORDER) o.voices[v]=voiceData[v]?[...voiceData[v]]:null;
   const blob=new Blob([JSON.stringify(o)],{type:'application/json'}), a=document.createElement('a');
   a.href=URL.createObjectURL(blob); a.download='hanan-proyecto.json'; a.click(); URL.revokeObjectURL(a.href); log('Proyecto exportado.','ok'); }
@@ -181,7 +262,7 @@ function importProject(file){ const fr=new FileReader(); fr.onload=()=>{ try{ ap
 
 /* ---------- UI: tabs ---------- */
 // La misma app sirve dos paginas: lab.html (completa) y index.html/Estudio (sin la seccion Samples)
-function showTab(t){ for(const s of ['samples','seq','grabar']){ const el=$('tab-'+s); if(!el) continue;
+function showTab(t){ document.body.dataset.tab=t; for(const s of ['samples','seq','grabar','manual']){ const el=$('tab-'+s); if(!el) continue;
   el.style.display=s===t?'block':'none'; $('tb-'+s).classList.toggle('active',s===t); } if(t!=='seq') stopPreview(); }
 
 /* ---------- UI: samples ---------- */
@@ -205,14 +286,15 @@ function clearSample(v){ voiceData[v]=null; $('file_'+v).value=''; saveLocal(); 
 /* ---------- UI: grilla de secuencias (cada pista con el color de su boton) ---------- */
 function idx(s){ return curPreset*STEPS+s; }
 function buildGrid(){ const g=$('grid'); g.innerHTML='';
-  CH.forEach(ch=>{ const row=document.createElement('div'); row.className='row'; row.style.setProperty('--pc',ch.color);
+  CH.forEach(ch=>{ const group=document.createElement('div'); group.className='instr';
+    const row=document.createElement('div'); row.className='row'; row.style.setProperty('--pc',ch.color);
     const lab=document.createElement('div'); lab.className='clabel'; lab.innerHTML='<span>'+ch.name+'</span>';
     const xb=document.createElement('button'); xb.className='cclear'; xb.textContent='✕'; xb.title='limpiar canal';
     xb.addEventListener('click',()=>clearChannel(ch.key)); lab.appendChild(xb); row.appendChild(lab);
     const pads=document.createElement('div'); pads.className='pads';
     for(let s=0;s<STEPS;s++){ const p=document.createElement('div'); p.className='pad'+(s%4===0?' beat':'')+(s%8===0?' bar':'');
       p.dataset.ch=ch.key; p.dataset.s=s; p.addEventListener('click',()=>{ const a=banks[curBank][ch.key]; a[idx(s)]=a[idx(s)]?0:1; saveLocal(); refresh(); }); pads.appendChild(p); }
-    row.appendChild(pads); g.appendChild(row);
+    row.appendChild(pads); group.appendChild(row);
     if(ch.pitch){ const prow=document.createElement('div'); prow.className='row pitchrow'; prow.style.setProperty('--pc',ch.color);
       const pl=document.createElement('div'); pl.className='clabel small'; pl.textContent='↳ pitch'; prow.appendChild(pl);
       const pp=document.createElement('div'); pp.className='pads';
@@ -223,7 +305,8 @@ function buildGrid(){ const g=$('grid'); g.innerHTML='';
         cell.addEventListener('pointerdown',e=>{cell.setPointerCapture(e.pointerId);set(e);});
         cell.addEventListener('pointermove',e=>{if(e.buttons)set(e);});
         cell.addEventListener('pointerup',hidePitchVal); cell.addEventListener('pointercancel',hidePitchVal); pp.appendChild(cell); }
-      prow.appendChild(pp); g.appendChild(prow); } }); }
+      prow.appendChild(pp); group.appendChild(prow); }
+    g.appendChild(group); }); }
 function showPitchVal(ev,l){ const b=$('pitchval'); b.textContent='pitch '+l; b.style.left=(ev.clientX+14)+'px'; b.style.top=(ev.clientY-30)+'px'; b.style.display='block'; }
 function hidePitchVal(){ $('pitchval').style.display='none'; }
 function clearChannel(k){ const a=banks[curBank][k]; for(let s=0;s<STEPS;s++)a[idx(s)]=0; saveLocal(); refresh(); }
@@ -234,6 +317,7 @@ function refresh(){
     c.firstChild.style.bottom=(2+Math.round(f*40))+'px'; });   // thumb del fader (celda 51px: recorrido 40px)
   document.querySelectorAll('#banksel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curBank));
   document.querySelectorAll('#presetsel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curPreset));
+  { const bx=$('bpm'); if(bx) bx.value=bankBPM[curBank]; }
   if(previewSrc) schedulePreviewUpdate();   // en vivo: edicion re-renderiza al toque; banco/preset entra al paso 0
 }
 let previewUpd=0;
@@ -286,11 +370,14 @@ window.addEventListener('DOMContentLoaded',()=>{
     fi.addEventListener('change',e=>onPickSample(v,e.target.files[0])); $('clear_'+v).addEventListener('click',()=>clearSample(v)); }
   $('clearPreset').addEventListener('click',clearPreset);
   $('playBtn').addEventListener('click',togglePreview);
+  { const bx=$('bpm'); if(bx) bx.addEventListener('change',e=>{ let v=parseInt(e.target.value,10)||90; v=Math.max(40,Math.min(300,v)); bankBPM[curBank]=v; e.target.value=v; saveLocal(); if(previewSrc) schedulePreviewUpdate(); }); }
   $('flashBtn').addEventListener('click',()=>run(false));
   $('flashFactoryBtn').addEventListener('click',()=>run(true));
   $('exportBtn').addEventListener('click',exportProject);
   $('importFile').addEventListener('change',e=>{ if(e.target.files[0]) importProject(e.target.files[0]); });
   document.querySelectorAll('.tb').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
   showTab('seq');
-  $('meta').textContent=(window.HANAN_LAB?'lab':'estudio')+' · banco '+M.sample_total+' B · 4×4 presets · '+SR+' Hz · build '+M.built;
+  { const fw=$('fwver'); if(fw) fw.textContent='build '+M.built; }
+  document.querySelectorAll('#lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+  applyLang();
 });

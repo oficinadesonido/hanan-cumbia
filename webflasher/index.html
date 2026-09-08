@@ -5,131 +5,207 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HANAN CUMBIA · Estudio</title>
 <style>
+  @font-face{ font-family:'Arche'; src:url('../fonts/CFArcheGrotesk-Medium.woff2') format('woff2'); font-weight:400 500; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Arche'; src:url('../fonts/CFArcheGrotesk-Bold.woff2') format('woff2'); font-weight:600 700; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Arche'; src:url('../fonts/CFArcheGrotesk-Black.woff2') format('woff2'); font-weight:800 900; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Cronica'; src:url('../fonts/CFCronica-Mono.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
   :root{ --bg:#0a0a0a; --panel:#141414; --pink:#ff1f8e; --yellow:#ffd400; --orange:#ff6a00;
     --text:#f3f3f3; --muted:#9a9a9a; --ok:#3ddc84; --err:#ff5252; --warn:#ffb300;
     --rojo:#ff1f8e; --blanco:#eaeaea; --verde:#3ddc84; --amarillo:#ffd400; }
   *{ box-sizing:border-box; }
   body{ margin:0; background:var(--bg);
-    color:var(--text); font-family:"Segoe UI",system-ui,Roboto,sans-serif; min-height:100vh;
+    color:var(--text); font-family:'Arche',"Segoe UI",system-ui,Roboto,sans-serif; min-height:100vh;
     display:flex; flex-direction:column; align-items:center; }
   .wrap{ width:100%; max-width:900px; padding:22px 16px 48px; }
   header img{ width:100%; max-width:500px; display:block; margin:6px auto 2px; }
-  h1{ text-align:center; font-size:13px; letter-spacing:3px; color:var(--pink); text-transform:uppercase; margin:0 0 14px; }
-  .card{ background:var(--panel); border:1px solid #262626; border-radius:16px; padding:18px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
-  .meta{ font-size:11.5px; color:var(--muted); text-align:center; margin:10px 0 0; font-family:ui-monospace,monospace; }
-  .pbar{ display:flex; gap:8px; justify-content:center; margin-bottom:12px; }
-  .pbar button,.pbar label{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--muted); border-radius:8px;
+  h1{ text-align:center; font-size:13px; letter-spacing:3px; color:var(--pink); text-transform:uppercase; margin:0 0 20px; }
+  .card{ background:var(--panel); border:1px solid #262626; border-radius:4px; padding:26px 24px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .meta{ font-size:11.5px; color:var(--muted); text-align:center; margin:10px 0 0; font-family:'Cronica',ui-monospace,monospace; }
+  .pbar{ display:flex; gap:8px; justify-content:center; margin:14px 0 0; }
+  .pbar button,.pbar label{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--muted); border-radius:3px;
     font-size:11.5px; padding:6px 12px; cursor:pointer; } .pbar button:hover,.pbar label:hover{ border-color:var(--pink); color:var(--text); }
 
-  .tabs{ display:flex; gap:6px; justify-content:center; margin-bottom:16px; }
-  .tb{ background:transparent; border:1px solid #2c2c2c; color:var(--muted); border-radius:10px;
+  .tabs{ display:flex; gap:6px; justify-content:center; margin-bottom:24px; }
+  .tb{ background:transparent; border:1px solid #2c2c2c; color:var(--muted); border-radius:3px;
     padding:9px 18px; font-size:13px; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:1px; }
   .tb:hover{ color:var(--text); }
   .tb.active{ background:var(--yellow); color:#111; border-color:transparent; }
+
+  .topbar{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:48px 0 24px; }
+  .topbar .pagetag{ margin:0; }
+  .topbar .tabs{ margin:0; }
+  .lang{ margin-left:auto; display:flex; gap:4px; }
+  .lang button{ background:transparent; border:1px solid #2c2c2c; color:var(--muted); border-radius:3px; padding:6px 11px; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer; }
+  .lang button:hover{ color:var(--text); }
+  .lang button.active{ background:var(--pink); color:#111; border-color:transparent; }
 
   /* samples */
   .voice{ display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid #222; flex-wrap:wrap; }
   .voice .vn{ width:98px; font-weight:700; color:var(--text); }
   .voice .vn .dot{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:7px; }
   .voice input[type=file]{ flex:1; min-width:140px; font-size:12px; color:var(--muted); }
-  .voice input[type=file]::file-selector-button{ background:#222; color:var(--text); border:1px solid #333; border-radius:6px; padding:5px 9px; cursor:pointer; }
-  .vlen{ font-family:ui-monospace,monospace; font-size:11.5px; color:var(--muted); width:150px; text-align:right; } .vlen.custom{ color:var(--ok); }
-  .voice .x{ background:none; border:1px solid #333; color:var(--muted); border-radius:6px; cursor:pointer; font-size:11px; padding:3px 7px; }
-  .budget{ margin:14px 0 4px; } .budget .track{ height:13px; background:#000; border:1px solid #2c2c2c; border-radius:7px; overflow:hidden; }
+  .voice input[type=file]::file-selector-button{ background:#222; color:var(--text); border:1px solid #333; border-radius:3px; padding:5px 9px; cursor:pointer; }
+  .vlen{ font-family:'Cronica',ui-monospace,monospace; font-size:11.5px; color:var(--muted); width:150px; text-align:right; } .vlen.custom{ color:var(--ok); }
+  .voice .x{ background:none; border:1px solid #333; color:var(--muted); border-radius:3px; cursor:pointer; font-size:11px; padding:3px 7px; }
+  .budget{ margin:14px 0 4px; } .budget .track{ height:13px; background:#000; border:1px solid #2c2c2c; border-radius:3px; overflow:hidden; }
   #sbudgetBar{ height:100%; width:0; background:var(--pink); transition:width .2s; }
-  #sbudgetTxt{ font-family:ui-monospace,monospace; font-size:12px; color:var(--muted); margin-top:5px; text-align:center; }
-  .opts{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin:14px 0 4px; font-size:13px; color:var(--muted); }
-  .opts label{ cursor:pointer; user-select:none; } .opts select{ background:#000; color:var(--text); border:1px solid #2c2c2c; border-radius:6px; padding:3px 6px; font-size:13px; }
+  #sbudgetTxt{ font-family:'Cronica',ui-monospace,monospace; font-size:12px; color:var(--muted); margin-top:5px; text-align:center; }
+  .opts{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin:20px 0 6px; font-size:13px; color:var(--muted); }
+  .opts label{ cursor:pointer; user-select:none; } .opts select{ background:#000; color:var(--text); border:1px solid #2c2c2c; border-radius:3px; padding:3px 6px; font-size:13px; }
 
   /* secuencias */
-  .selrow{ display:flex; gap:22px; justify-content:center; align-items:flex-end; flex-wrap:wrap; margin-bottom:16px; }
+  .selrow{ display:flex; gap:22px; justify-content:center; align-items:flex-end; flex-wrap:wrap; margin-bottom:26px; }
   .selgroup{ text-align:center; } .selgroup .t{ font-size:11px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
   .sels{ display:flex; gap:6px; }
-  .sel{ width:38px; height:38px; border-radius:9px; border:2px solid var(--c); background:transparent; color:var(--c); font-weight:800; font-size:15px; cursor:pointer; transition:all .12s; }
+  .sel{ width:38px; height:38px; border-radius:3px; border:2px solid var(--c); background:transparent; color:var(--c); font-weight:800; font-size:15px; cursor:pointer; transition:all .12s; }
   .sel:hover{ filter:brightness(1.2); } .sel.active{ background:var(--c); color:#0a0a0a; }
-  .tool{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:9px; height:38px; padding:0 12px; font-size:12px; font-weight:700; cursor:pointer; }
+  #banksel .sel{ border-radius:0; } /* Banco: cuadrados */
+  #presetsel .sel{ border-radius:50%; } /* Preset: redondos */
+  .bpmbox{ width:64px; height:38px; background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:3px; text-align:center; font-family:'Cronica',ui-monospace,monospace; font-size:15px; font-weight:700; }
+  .bpmbox:focus{ outline:none; border-color:var(--pink); }
+  .bpmbox::-webkit-outer-spin-button,.bpmbox::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  .tool{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:3px; height:38px; padding:0 12px; font-size:12px; font-weight:700; cursor:pointer; }
   .tool:hover{ border-color:var(--pink); color:var(--pink); }
-  #playBtn{ height:38px; padding:0 20px; border:none; border-radius:9px; font-size:14px; font-weight:800; cursor:pointer; color:#111;
+  #playBtn{ height:38px; padding:0 20px; border:none; border-radius:3px; font-size:14px; font-weight:800; cursor:pointer; color:#111;
     background:var(--ok); } #playBtn.on{ background:var(--err); color:#fff; }
   #grid{ overflow-x:auto; padding-bottom:4px; --pc:#ff1f8e; }
+  .instr{ width:fit-content; min-width:100%; padding:13px 0; border-bottom:1px solid #2c2c2c; }
+  .instr:first-child{ padding-top:0; } .instr:last-child{ padding-bottom:0; border-bottom:none; }
   .row{ display:flex; align-items:center; margin:3px 0; }
   .clabel{ width:74px; flex:0 0 74px; font-weight:700; font-size:12px; color:var(--pc,var(--yellow)); text-align:right; padding-right:8px; }
   .clabel.small{ color:var(--muted); font-weight:400; font-style:italic; } .clabel span{ vertical-align:middle; }
-  .cclear{ margin-left:5px; background:none; border:1px solid #3a3a3a; color:var(--muted); border-radius:4px; font-size:9px; line-height:1; padding:2px 3px; cursor:pointer; vertical-align:middle; }
+  .cclear{ margin-left:5px; background:none; border:1px solid #3a3a3a; color:var(--muted); border-radius:2px; font-size:9px; line-height:1; padding:2px 3px; cursor:pointer; vertical-align:middle; }
   .cclear:hover{ color:var(--err); border-color:var(--err); }
   .pads{ display:flex; gap:2px; }
-  .pad{ width:18px; height:24px; border-radius:4px; cursor:pointer; transition:filter .07s;
+  .pad{ width:18px; height:24px; border-radius:2px; cursor:pointer; transition:filter .07s;
     background:#121212; border:1px solid var(--pc); }
   .pad.on{ background:var(--pc); border-color:var(--pc); } .pad:hover{ filter:brightness(1.35); }
   .pad.beat{ margin-left:5px; } .pad.bar{ margin-left:11px; }
+  #grid .pad.cursor{ outline:2px solid var(--text); outline-offset:-1px; }
   .pitchrow{ margin:0 0 7px; }
-  .pcell{ width:18px; height:51px; border-radius:4px; position:relative; cursor:ns-resize; overflow:hidden; background:#141414; border:1px solid #262626; }
+  .pcell{ width:18px; height:51px; border-radius:2px; position:relative; cursor:ns-resize; overflow:hidden; background:#141414; border:1px solid #262626; }
   .pcell::before{ content:''; position:absolute; left:50%; top:3px; bottom:3px; width:2px; margin-left:-1px;
     background:color-mix(in srgb,var(--pc) 40%,#262626); }
   .pcell.beat{ margin-left:5px; } .pcell.bar{ margin-left:11px; }
   .pfill{ position:absolute; left:2px; right:2px; bottom:2px; height:5px; border-radius:2px; background:var(--pc); }
-  #pitchval{ position:fixed; display:none; background:#000; border:1px solid var(--pink); color:var(--text); font-family:ui-monospace,monospace; font-size:12px; font-weight:700; padding:3px 8px; border-radius:6px; pointer-events:none; z-index:20; }
+  #pitchval{ position:fixed; display:none; background:#000; border:1px solid var(--pink); color:var(--text); font-family:'Cronica',ui-monospace,monospace; font-size:12px; font-weight:700; padding:3px 8px; border-radius:3px; pointer-events:none; z-index:20; }
 
   /* grabar + comun */
-  button#flashBtn{ display:block; width:100%; padding:17px; font-size:18px; font-weight:800; letter-spacing:1px; text-transform:uppercase; cursor:pointer;
-    border:none; border-radius:12px; color:#111; margin-top:16px; background:var(--orange); transition:transform .05s,filter .15s; }
+  button#flashBtn{ display:block; width:100%; padding:13px; font-size:15px; font-weight:800; letter-spacing:1px; text-transform:uppercase; cursor:pointer;
+    border:none; border-radius:4px; color:#111; margin-top:16px; background:var(--orange); transition:transform .05s,filter .15s; }
   button#flashBtn:hover{ filter:brightness(1.08); } button#flashBtn:active{ transform:translateY(1px); } button#flashBtn:disabled{ filter:grayscale(.7) brightness(.6); cursor:wait; }
-  button#flashFactoryBtn{ display:block; width:100%; padding:12px; font-size:13px; font-weight:700; letter-spacing:.5px; cursor:pointer;
-    border:1px solid #3a3a3a; border-radius:10px; color:var(--text); margin-top:14px; background:#1d1d1d; transition:filter .15s,border-color .15s; }
-  button#flashFactoryBtn:hover{ border-color:var(--yellow); color:var(--yellow); } button#flashFactoryBtn:active{ transform:translateY(1px); }
+  .actionrow{ display:flex; gap:12px; align-items:stretch; margin-top:26px; }
+  .actionrow #flashBtn{ flex:1; width:auto; margin-top:0; }
+  .actionrow .pbar{ flex:1; flex-direction:column; gap:8px; margin:0; }
+  .actionrow .pbar>button, .actionrow .pbar>label{ flex:1; display:flex; align-items:center; justify-content:center; }
+  button#flashFactoryBtn{ display:block; width:100%; padding:13px; font-size:14px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; cursor:pointer;
+    border:none; border-radius:4px; color:#111; margin-top:24px; background:var(--yellow); transition:transform .05s,filter .15s; }
+  button#flashFactoryBtn:hover{ filter:brightness(1.08); } button#flashFactoryBtn:active{ transform:translateY(1px); }
   button#flashFactoryBtn:disabled{ filter:grayscale(.7) brightness(.6); cursor:wait; }
-  .progress{ height:20px; background:#000; border-radius:8px; overflow:hidden; margin:14px 0 12px; border:1px solid #2c2c2c; }
+  body[data-tab="grabar"] .projectactions, body[data-tab="manual"] .projectactions{ display:none; }
+  body[data-tab="manual"] .progress, body[data-tab="manual"] #log, body[data-tab="manual"] .meta{ display:none; }
+  .manh{ font-family:'Arche',sans-serif; font-size:15px; letter-spacing:1px; text-transform:uppercase; color:var(--yellow); margin:28px 0 8px; }
+  #tab-manual > .manh:first-child{ margin-top:0; }
+  #tab-manual .note{ margin-left:0; margin-right:0; max-width:54ch; font-size:16px; }
+  #tab-manual .credits{ font-size:14px; }
+  .manmodel{ display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; margin:0 0 6px; }
+  .manmodel .wordmark{ height:46px; width:auto; display:block; }
+  .manmodel .modeltag{ font-family:'Arche',sans-serif; font-size:19px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--pink); }
+  .manmodel.second{ margin-top:64px; padding-top:48px; border-top:1px solid #2c2c2c; }
+  .panelfig{ margin:26px 0 34px; }
+  .panelfig img{ display:block; width:100%; max-width:660px; height:auto; }
+  .portsfig{ margin:14px 0 4px; text-align:left; }
+  .portsfig img{ width:100%; max-width:520px; height:auto; }
+  .credits{ margin-top:34px; font-size:12px; }
+  .manul{ margin:0; padding-left:18px; } .manul li{ margin:5px 0; } .manul b{ color:var(--text); }
+  .figs{ display:flex; gap:20px; flex-wrap:wrap; justify-content:center; margin:16px 0 4px; }
+  .figs figure{ margin:0; flex:1 1 240px; max-width:420px; text-align:center; }
+  .figs img{ width:100%; height:auto; }
+  .figs figcaption{ font-family:'Cronica',ui-monospace,monospace; font-size:12px; color:var(--muted); margin-top:8px; letter-spacing:1px; }
+  .fwver{ text-align:center; font-family:'Cronica',ui-monospace,monospace; font-size:13px; color:var(--muted); margin:0 0 18px; }
+  .fwver b{ color:var(--yellow); font-weight:400; }
+  .progress{ height:20px; background:#000; border-radius:3px; overflow:hidden; margin:20px 0 12px; border:1px solid #2c2c2c; }
   #bar{ height:100%; width:0; background:var(--pink); color:#111; font-size:11px; font-weight:700; line-height:20px; text-align:center; transition:width .15s; }
-  #log{ background:#000; border:1px solid #222; border-radius:8px; padding:11px; height:130px; overflow-y:auto; font-family:ui-monospace,monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap; }
+  #log{ background:#000; border:1px solid #222; border-radius:3px; padding:11px; height:130px; overflow-y:auto; font-family:'Cronica',ui-monospace,monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap; }
   #log .ok{color:var(--ok);} #log .err{color:var(--err);} #log .warn{color:var(--warn);}
-  .note{ font-size:12px; color:var(--muted); margin-top:14px; line-height:1.6; } .note b{ color:var(--text); }
-  a{ color:var(--pink); } .foot{ text-align:center; font-size:11px; color:#555; margin-top:20px; font-family:ui-monospace,monospace; letter-spacing:1px; }
+  .note{ font-size:16px; color:var(--muted); margin:22px auto 0; max-width:75ch; line-height:1.6; } .note b{ color:var(--text); }
+  a{ color:var(--pink); } .foot{ text-align:center; font-size:11px; color:#555; margin-top:20px; font-family:'Cronica',ui-monospace,monospace; letter-spacing:1px; }
 </style>
 </head>
 <body>
 <div id="pitchval"></div>
 <div class="wrap">
-  <header><img src="hanan_micro.png" alt="HANAN CUMBIA"></header>
-  <h1>Estudio</h1>
+  <header><img src="hanan-estudio.svg" alt="HANAN CUMBIA · Estudio"></header>
 
-  <div class="pbar">
-    <button id="exportBtn">⬇ Exportar proyecto</button>
-    <label>⬆ Importar proyecto<input type="file" id="importFile" accept=".json" hidden></label>
-  </div>
-
-  <div class="tabs">
-    <button class="tb" data-tab="seq" id="tb-seq">Secuencias</button>
-    <button class="tb" data-tab="grabar" id="tb-grabar">Firmware</button>
+  <div class="topbar">
+    <div class="tabs">
+      <button class="tb" data-tab="seq" id="tb-seq" data-i18n="tab.seq">Secuencias</button>
+      <button class="tb" data-tab="grabar" id="tb-grabar" data-i18n="tab.firmware">Firmware</button>
+      <button class="tb" data-tab="manual" id="tb-manual" data-i18n="tab.manual">Manual</button>
+    </div>
+    <div class="lang" id="lang">
+      <button data-lang="es">ES</button>
+      <button data-lang="en">EN</button>
+    </div>
   </div>
 
   <div class="card">
     <!-- SECUENCIAS -->
     <div id="tab-seq" style="display:none">
       <div class="selrow">
-        <div class="selgroup"><div class="t">Banco</div><div class="sels" id="banksel"></div></div>
-        <div class="selgroup"><div class="t">Preset</div><div class="sels" id="presetsel"></div></div>
+        <div class="selgroup"><div class="t" data-i18n="lbl.banco">Banco</div><div class="sels" id="banksel"></div></div>
+        <div class="selgroup"><div class="t" data-i18n="lbl.preset">Preset</div><div class="sels" id="presetsel"></div></div>
+        <div class="selgroup"><div class="t">BPM</div><input id="bpm" class="bpmbox" type="number" min="40" max="300" step="1" inputmode="numeric" title="BPM del banco"></div>
         <div class="selgroup"><div class="t">&nbsp;</div><button id="playBtn">▶ Play</button></div>
-        <div class="selgroup"><div class="t">&nbsp;</div><button id="clearPreset" class="tool">Limpiar preset</button></div>
+        <div class="selgroup"><div class="t">&nbsp;</div><button id="clearPreset" class="tool" data-i18n="btn.clearPreset">Limpiar preset</button></div>
       </div>
       <div id="grid"></div>
-      <div class="note">Activa/desactiva los pasos; cada pista lleva el color de su botón en la máquina. En <b>Conga</b> y <b>Campana</b>, la fila <i>↳ pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono. <b>▶ Play</b> reproduce el preset (aprox. al sonido del aparato).</div>
+      <div class="note" data-i18nh="note.seq">Activa/desactiva los pasos; cada pista lleva el color de su botón en la máquina. En <b>Conga</b> y <b>Campana</b>, la fila <i>↳ pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono. <b>▶ Play</b> reproduce el preset (aprox. al sonido del aparato).</div>
     </div>
 
     <!-- GRABAR -->
     <div id="tab-grabar" style="display:none">
+      <div class="fwver"><span data-i18n="fw.title">Firmware de fábrica ·</span> <b id="fwver">—</b></div>
       <div class="opts">
-        <label>Bootloader:
-          <select id="baud"><option value="auto">Auto</option><option value="115200">Nuevo (115200)</option><option value="57600">Viejo / clon (57600)</option></select>
+        <label><span data-i18n="opt.bootloader">Bootloader:</span>
+          <select id="baud"><option value="auto" data-i18n="opt.baud.auto">Auto</option><option value="115200" data-i18n="opt.baud.new">Nuevo (115200)</option><option value="57600" data-i18n="opt.baud.old">Viejo / clon (57600)</option></select>
         </label>
-        <label><input type="checkbox" id="verify" checked> Verificar</label>
-        <label><input type="checkbox" id="invert"> Invertir reset</label>
+        <label><input type="checkbox" id="verify" checked> <span data-i18n="opt.verify">Verificar</span></label>
+        <label><input type="checkbox" id="invert"> <span data-i18n="opt.invert">Invertir reset</span></label>
       </div>
-      <div class="note">Conecta el Nano por USB. <b>Grabar</b> escribe <b>los sonidos + tus 4 bancos de secuencias en un solo flasheo</b>. No abras el IDE/monitor serie al mismo tiempo. Requiere Chrome/Edge/Opera de escritorio.</div>
-      <button id="flashFactoryBtn">⬇ Grabar firmware de fábrica (sonidos + presets originales)</button>
-      <div class="note">Sube a la placa conectada el firmware <b>original de fábrica tal cual</b> (los sonidos y presets con los que sale armada la máquina), <b>ignorando</b> lo que tengas editado en Samples/Secuencias. Útil para dejar una placa nueva en estado de fábrica.</div>
+      <button id="flashFactoryBtn" data-i18n="btn.factory">⬇ Grabar firmware de fábrica</button>
+      <div class="note" data-i18nh="note.firmware">Sube a tu máquina el firmware <b>original de fábrica tal cual</b> —los sonidos y presets con los que sale armada—, <b>ignorando</b> lo que tengas editado en Samples/Secuencias. Útil para dejar una placa nueva en estado de fábrica. Conecta el Nano por USB y no abras el IDE/monitor serie al mismo tiempo; requiere Chrome/Edge/Opera de escritorio.</div>
     </div>
 
-    <button id="flashBtn">⚡ Grabar en la placa</button>
+    <!-- MANUAL -->
+    <div id="tab-manual" style="display:none">
+      <!-- HANAN CUMBIA HTR-1 -->
+      <h2 class="manmodel"><img class="wordmark" src="hanan-cumbia-word.svg" alt="Hanan Cumbia"><span class="modeltag">Clasic (HTR-1)</span></h2>
+      <figure class="panelfig"><img src="manual-img/hanan-htr1-panel.svg" alt="Panel Hanan Cumbia HTR-1"></figure>
+      <div class="note" data-i18nh="man.desc">Caja de ritmos con sonidos de cumbia y botones arcade. <b>4 sonidos</b> (pads): <b>Kick</b> (bombo), <b>Güiro</b>, <b>Cow Bell</b> (campana) y <b>Conga</b>. Dos perillas de <b>pitch</b> afinan Conga y Cow Bell. Cuatro botones negros: <b>Play</b>, <b>Rec</b>, <b>Shift</b> y <b>Tap</b>. Se alimenta por USB (5V).</div>
+      <h3 class="manh" data-i18n="man.h.seqbanks">Secuencias y bancos</h3>
+      <div class="note" data-i18nh="man.seqbanks"></div>
+
+      <!-- HANAN CUMBIA MINI -->
+      <h2 class="manmodel second"><img class="wordmark" src="hanan-cumbia-mini-word.svg" alt="Hanan Cumbia Mini"></h2>
+      <figure class="panelfig"><img src="manual-img/hanan-mini-panel.svg" alt="Panel Hanan Cumbia Mini"></figure>
+      <div class="note" data-i18nh="man.desc"></div>
+      <h3 class="manh" data-i18n="man.h.seqbanks">Secuencias y bancos</h3>
+      <div class="note" data-i18nh="man.seqbanks"></div>
+
+      <div class="note credits" data-i18nh="man.credits">Hanan Graphic Art: <b>Yefferson Huaman</b> (Ruta Mare), inspired by cumbia chicha.<br>Design, Circuit &amp; code: <b>Daniel Llermaly</b>.<br>Graphic Design: <b>Joaquín Contreras</b>.</div>
+    </div>
+
+    <div class="projectactions">
+      <div class="actionrow">
+        <button id="flashBtn" data-i18n="btn.flash">⚡ Grabar en tu máquina de ritmos</button>
+        <div class="pbar">
+          <button id="exportBtn" data-i18n="btn.export">⬇ Exportar proyecto</button>
+          <label><span data-i18n="btn.import">⬆ Importar proyecto</span><input type="file" id="importFile" accept=".json" hidden></label>
+        </div>
+      </div>
+      <div class="note" data-i18nh="note.project"><b>Exportar proyecto</b> descarga tus 4 bancos de secuencias como un archivo <b>.json</b> (<i>hanan-proyecto.json</i>) en tu computador: un respaldo de lo que tienes cargado, que puedes volver a abrir con <b>Importar proyecto</b> o llevar a otra máquina. No graba nada en la placa.</div>
+    </div>
     <div class="progress"><div id="bar">0%</div></div>
     <div id="log"></div>
     <div class="meta" id="meta"></div>
@@ -138,7 +214,7 @@
   <div class="foot">oficinadesonido.org · hanan cumbia · <a href="lab.html">lab</a></div>
 </div>
 
-<script src="firmware_studio.js?v=9"></script>
-<script src="studio.js?v=9"></script>
+<script src="firmware_studio.js?v=17"></script>
+<script src="studio.js?v=17"></script>
 </body>
 </html>
