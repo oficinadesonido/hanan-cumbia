@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="150.07486mm" height="75.07486mm" viewBox="0 0 425.40904 212.81061">
+  <title>hanan frontal-cut-mask</title>
+  <g id="cut">
+    <circle cx="371.16012" cy="154.7507" r="34.01575" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+    <circle cx="371.16012" cy="57.94078" r="34.01575" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+    <circle cx="275.10922" cy="154.7507" r="34.01575" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+    <circle cx="275.10922" cy="57.94078" r="34.01575" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+    <circle cx="50.45562" cy="132.90207" r="9.2126" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+    <circle cx="50.45562" cy="176.63738" r="9.2126" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+    <circle cx="144.60323" cy="132.90207" r="9.2126" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+    <circle cx="144.60323" cy="176.63738" r="9.2126" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+    <g>
+      <circle cx="13.1397" cy="13.62213" r="4.53543" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+      <circle cx="13.1397" cy="199.95772" r="4.53543" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+      <circle cx="412.47303" cy="13.62213" r="4.53543" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+      <circle cx="412.47303" cy="199.95772" r="4.53543" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+      <rect x="0.10609" y="0.10609" width="425.19685" height="212.59843" rx="12" ry="12" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+    </g>
+    <g id="g4325-8-3-2">
+      <g id="g262-2-6-2">
+        <path id="path264-6-9-2" d="M171.63553,119.10835a11.44052,11.44052,0,1,0,11.44052-11.452A11.47993,11.47993,0,0,0,171.63553,119.10835Z" transform="translate(-37.82509 -61.26306)" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+      </g>
+    </g>
+    <g id="g4325-8-3-2-2" data-name="g4325-8-3-2">
+      <g id="g262-2-6-2-2" data-name="g262-2-6-2">
+        <path id="path264-6-9-2-2" data-name="path264-6-9-2" d="M78.63553,119.10835a11.44052,11.44052,0,1,0,11.44052-11.452A11.47993,11.47993,0,0,0,78.63553,119.10835Z" transform="translate(-37.82509 -61.26306)" style="fill: none;stroke: #1a171b;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.212187540913658px"/>
+      </g>
+    </g>
+  </g>
+  <g id="MASK">
+    <path d="M251.63754,97.43783c-4.82739,0-7.06366,3.92692-7.06366,8.75349,0,4.82739,2.23627,8.75349,7.06366,8.75349,4.82657,0,7.20165-3.9261,7.20165-8.75349,0-4.82657-2.37508-8.75349-7.20165-8.75349" transform="translate(-37.82509 -61.26306)" style="fill: #cbbb9d"/>
+  </g>
+</svg>
