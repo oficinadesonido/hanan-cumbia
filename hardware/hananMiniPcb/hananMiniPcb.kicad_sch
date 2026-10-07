@@ -7510,7 +7510,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.00mm:PinHeader_1x08_P2.00mm_Vertical"
+		(property "Footprint" "ODS:Hanan_PadsArcade_1x08_Pares"
 			(at 248.92 72.39 0)
 			(effects
 				(font
