@@ -31,8 +31,6 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
 let port=null,reader=null,writer=null,rxQueue=[],rxWaiters=[],readLoopRunning=false;
 let baseImage=null, sampleDesc={}, factorySamples={};
-// tamaño del samplebank: el META no lo trae; los samples de fábrica lo llenan entero (samplebank[20005] en el .ino)
-let SAMPLE_TOTAL=M.sample_total||0;
 let voiceData={kick:null,snare:null,hat:null,bass:null};   // null = fabrica
 let banks=[]; let curBank=0,curPreset=0;
 let audioCtx=null, previewSrc=null, playingBank=-1, playingPreset=-1, previewT0=0, previewDur=0, previewNext=null;
@@ -74,35 +72,27 @@ function findMagic(img,MG){ for(let i=0;i<=img.length-MG.length;i++){ let ok=1; 
 
 /* ---------- Samples ---------- */
 function readSamples(img){ const m=findMagic(img,M.sample_magic), d=m+8, r16=o=>img[o]|(img[o+1]<<8), res={};
-  SAMPLE_ORDER.forEach((v,i)=>{ const off=r16(d+i*4),len=r16(d+i*4+2); sampleDesc[v]={off,len}; res[v]=img.slice(m+off,m+off+len); });
-  if(!SAMPLE_TOTAL) SAMPLE_TOTAL=Math.max(...SAMPLE_ORDER.map(v=>sampleDesc[v].off+sampleDesc[v].len)); return res; }
+  SAMPLE_ORDER.forEach((v,i)=>{ const off=r16(d+i*4),len=r16(d+i*4+2); sampleDesc[v]={off,len}; res[v]=img.slice(m+off,m+off+len); }); return res; }
 function effSample(v){ return voiceData[v]||factorySamples[v]; }
 function sampleUsed(){ return SAMPLE_ORDER.reduce((s,v)=>s+effSample(v).length,0); }
-function sampleCap(){ return SAMPLE_TOTAL-M.sample_header; }
+function sampleCap(){ return M.sample_total-M.sample_header; }
 function patchSamples(img){ const m=findMagic(img,M.sample_magic), H=M.sample_header;
   if(sampleUsed()>sampleCap())throw new Error('los samples exceden el banco');
   let off=H; const desc=[],chunks=[]; for(const v of SAMPLE_ORDER){ const b=effSample(v); desc.push({off,len:b.length}); chunks.push(b); off+=b.length; }
   const d=m+8; for(let i=0;i<4;i++){ img[d+i*4]=desc[i].off&255; img[d+i*4+1]=desc[i].off>>8; img[d+i*4+2]=desc[i].len&255; img[d+i*4+3]=desc[i].len>>8; }
-  let p=m+H; for(const c of chunks){ img.set(c,p); p+=c.length; } for(let q=p;q<m+SAMPLE_TOTAL;q++)img[q]=0; }
-// El firmware no reproduce los samples a 1x: avanza inc/64 muestras por tick de 9804 Hz (bombo 157 = 2.45x,
-// huiro 128 = 2x; conga/campana segun el pitch del paso: inc = 16+16*nivel). Cada voz se guarda a la tasa que,
-// con su inc de referencia, suena en su altura original. Conga: nivel 9 (el de fabrica); campana: nivel 5 (el grave de fabrica).
-const REF_INC={ kick:157, snare:128, hat:16+16*9, bass:16+16*5 };
-const voiceRate=v=>SR*REF_INC[v]/64;   // bombo ~24 kHz, huiro ~19.6, conga ~24.5, campana ~14.7
-// remuestreo con sinc enventanado (Blackman): Web Audio interpola lineal y, al bajar de tasa, eso dobla los agudos como ruido
-function resample(x,fin,fout){ const n=Math.max(1,Math.round(x.length*fout/fin)), out=new Float32Array(n), fc=0.45*fout/fin, Z=12, W=Z/(2*fc);
-  for(let j=0;j<n;j++){ const t=j*fin/fout; let acc=0;
-    for(let k=Math.max(0,Math.ceil(t-W));k<=Math.min(x.length-1,Math.floor(t+W));k++){ const u=k-t, a=Math.abs(u)/W;
-      const w=0.42+0.5*Math.cos(Math.PI*a)+0.08*Math.cos(2*Math.PI*a), h=u===0?2*fc:Math.sin(2*Math.PI*fc*u)/(Math.PI*u); acc+=x[k]*h*w; }
-    out[j]=acc; } return out; }
-async function wavToVoice(ab,v){ const AC=window.AudioContext||window.webkitAudioContext, ac=new AC(); let dec;
+  let p=m+H; for(const c of chunks){ img.set(c,p); p+=c.length; } for(let q=p;q<m+M.sample_total;q++)img[q]=0; }
+async function wavToVoice(ab){ const AC=window.AudioContext||window.webkitAudioContext, ac=new AC(); let dec;
   try{ dec=await ac.decodeAudioData(ab.slice(0)); }finally{ if(ac.close)ac.close(); }
   const n0=dec.length,chs=dec.numberOfChannels,mono=new Float32Array(n0);
   for(let c=0;c<chs;c++){ const ch=dec.getChannelData(c); for(let i=0;i<n0;i++)mono[i]+=ch[i]/chs; }
-  const fl=resample(mono,dec.sampleRate,voiceRate(v));
+  const newLen=Math.max(1,Math.round(n0*SR/dec.sampleRate));
+  const OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext, oac=new OAC(1,newLen,SR);
+  const buf=oac.createBuffer(1,n0,dec.sampleRate); buf.copyToChannel(mono,0);
+  const src=oac.createBufferSource(); src.buffer=buf; src.connect(oac.destination); src.start();
+  const rd=await oac.startRendering(), fl=rd.getChannelData(0);
   let peak=0; for(let i=0;i<fl.length;i++){const a=Math.abs(fl[i]);if(a>peak)peak=a;}
   const norm=($('normalize').checked&&peak>0)?1/peak:1, out=new Uint8Array(fl.length);
-  for(let i=0;i<fl.length;i++){ let q=Math.round(fl[i]*norm*127)+127; out[i]=q<0?0:q>255?255:q; } return out; }
+  for(let i=0;i<fl.length;i++){ let v=Math.round(fl[i]*norm*127)+127; out[i]=v<0?0:v>255?255:v; } return out; }
 
 /* ---------- Presets (bit pack/unpack, igual que el firmware) ---------- */
 function rdr(buf){ let p=0; return n=>{ let v=0; for(let i=0;i<n;i++){ if((buf[p>>3]>>(p&7))&1)v|=1<<i; p++; } return v; }; }
@@ -195,20 +185,20 @@ function showTab(t){ for(const s of ['samples','seq','grabar']){ const el=$('tab
   el.style.display=s===t?'block':'none'; $('tb-'+s).classList.toggle('active',s===t); } if(t!=='seq') stopPreview(); }
 
 /* ---------- UI: samples ---------- */
-function fmtS(b,v){ return b+' B · '+(b/voiceRate(v)).toFixed(2)+' s'; }
+function fmtS(b){ return b+' B · '+(b/SR).toFixed(2)+' s'; }
 function refreshSamples(){ if(!$('sbudgetBar')){ $('flashBtn').disabled=sampleUsed()>sampleCap(); return; }
   for(const v of SAMPLE_ORDER){ const lbl=$('len_'+v),cu=!!voiceData[v];
-  lbl.textContent=(cu?'★ ':'(fábrica) ')+fmtS(effSample(v).length,v); lbl.className='vlen'+(cu?' custom':''); }
+  lbl.textContent=(cu?'★ ':'(fábrica) ')+fmtS(effSample(v).length); lbl.className='vlen'+(cu?' custom':''); }
   const used=sampleUsed(),cap=sampleCap();
   $('sbudgetBar').style.width=Math.min(100,Math.round(used/cap*100))+'%';
   $('sbudgetBar').style.background=used>cap?'var(--err)':'var(--pink)';
-  $('sbudgetTxt').textContent=used+' / '+cap+' bytes';
+  $('sbudgetTxt').textContent=used+' / '+cap+' bytes ('+(used/SR).toFixed(2)+' / '+(cap/SR).toFixed(2)+' s)';
   $('flashBtn').disabled=used>cap; }
 async function onPickSample(v,file){ if(!file)return; try{ log('Procesando '+v+': '+file.name+'...');
-  let bytes=await wavToVoice(await file.arrayBuffer(),v);
+  let bytes=await wavToVoice(await file.arrayBuffer());
   const otros=SAMPLE_ORDER.filter(x=>x!==v).reduce((s,x)=>s+effSample(x).length,0), allow=sampleCap()-otros;
   if(bytes.length>allow){ log('  recortado a '+allow+' B.','warn'); bytes=bytes.slice(0,Math.max(0,allow)); }
-  voiceData[v]=bytes; saveLocal(); log('  '+v+' listo: '+fmtS(bytes.length,v),'ok'); refreshSamples(); }
+  voiceData[v]=bytes; saveLocal(); log('  '+v+' listo: '+fmtS(bytes.length),'ok'); refreshSamples(); }
   catch(e){ log('Error '+v+': '+e.message,'err'); } }
 function clearSample(v){ voiceData[v]=null; $('file_'+v).value=''; saveLocal(); refreshSamples(); }
 
@@ -302,5 +292,5 @@ window.addEventListener('DOMContentLoaded',()=>{
   $('importFile').addEventListener('change',e=>{ if(e.target.files[0]) importProject(e.target.files[0]); });
   document.querySelectorAll('.tb').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
   showTab('seq');
-  $('meta').textContent=(window.HANAN_LAB?'lab':'estudio')+' · banco '+SAMPLE_TOTAL+' B · 4×4 presets · '+SR+' Hz · build '+M.built;
+  $('meta').textContent=(window.HANAN_LAB?'lab':'estudio')+' · banco '+M.sample_total+' B · 4×4 presets · '+SR+' Hz · build '+M.built;
 });
