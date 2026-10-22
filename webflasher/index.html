@@ -15,7 +15,7 @@
   *{ box-sizing:border-box; }
   body{ margin:0; background-color:var(--bg);
     background-image:url('fondo.svg'); background-repeat:no-repeat;
-    background-position:center 320px; background-attachment:fixed; background-size:min(1200px,94vw);
+    background-position:center center; background-attachment:fixed; background-size:cover;
     color:var(--text); font-family:'Arche',"Segoe UI",system-ui,Roboto,sans-serif; min-height:100vh;
     display:flex; flex-direction:column; align-items:center; }
   .wrap{ width:100%; max-width:900px; padding:22px 16px 48px; }
@@ -62,12 +62,7 @@
   .sel{ width:38px; height:38px; border-radius:3px; border:2px solid var(--c); background:transparent; color:var(--c); font-weight:800; font-size:15px; cursor:pointer; transition:all .12s; }
   .sel:hover{ filter:brightness(1.2); } .sel.active{ background-color:var(--c); color:#0a0a0a; }
   #banksel .sel{ border-radius:0; } /* Banco: cuadrados */
-  #presetsel .sel{ border-radius:50%; position:relative; } /* Preset: redondos */
-  /* reflejo elíptico en los redondos; el numero (.n) queda encima */
-  #presetsel .sel.active{ background-image:none; }
-  #presetsel .sel .n{ position:relative; z-index:1; }
-  #presetsel .sel.active::after{ content:''; position:absolute; inset:3px; border-radius:50%; z-index:0; pointer-events:none;
-    background:linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0)); }
+  #presetsel .sel{ border-radius:50%; } /* Preset: redondos */
   .bpmbox{ width:64px; height:38px; background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:3px; text-align:center; font-family:'Cronica',ui-monospace,monospace; font-size:15px; font-weight:700; }
   .bpmbox:focus{ outline:none; border-color:var(--pink); }
   .bpmbox::-webkit-outer-spin-button,.bpmbox::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
@@ -87,12 +82,11 @@
   .pad{ width:18px; height:24px; border-radius:2px; cursor:pointer; transition:filter .07s;
     background:#121212; border:1px solid var(--pc); }
   .pad.on{ background-color:var(--pc); border-color:var(--pc); } .pad:hover{ filter:brightness(1.35); }
-  /* reflejo de material: area interior con degradado blanco 50% -> 0% (no es glow) */
-  .pad.on, .sel.active, .tb.active, .lang button.active, #playBtn, #flashBtn, #flashFactoryBtn{
+  /* reflejo de material solo en los pads del secuenciador: degradado blanco 50% -> 0% (no es glow) */
+  .pad.on{
     background-image:linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0));
     background-repeat:no-repeat; background-position:center;
-    background-size:calc(100% - 6px) calc(100% - 6px); }
-  .pad.on{ background-size:calc(100% - 3px) calc(100% - 3px); }
+    background-size:calc(100% - 3px) calc(100% - 3px); }
   .pad.beat{ margin-left:5px; } .pad.bar{ margin-left:11px; }
   #grid .pad.cursor{ outline:2px solid var(--text); outline-offset:-1px; }
   .pitchrow{ margin:0 0 7px; }
@@ -228,6 +222,6 @@
 </div>
 
 <script src="firmware_studio.js?v=17"></script>
-<script src="studio.js?v=21"></script>
+<script src="studio.js?v=22"></script>
 </body>
 </html>

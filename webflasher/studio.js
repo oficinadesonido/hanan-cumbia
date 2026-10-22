@@ -322,7 +322,7 @@ let previewUpd=0;
 function schedulePreviewUpdate(){ clearTimeout(previewUpd); previewUpd=setTimeout(()=>{ if(!previewSrc) return;
   if(playingBank!==curBank||playingPreset!==curPreset) queuePreviewSwitch(); else playPreview(true); },120); }
 function buildSelectors(){ const mk=(host,onPick)=>{ host.innerHTML=''; SELBTNS.forEach((s,pos)=>{ const b=document.createElement('button');
-    b.className='sel'; b.style.setProperty('--c',s.hex); b.innerHTML='<span class="n">'+(pos+1)+'</span>'; b.title=s.color; b.dataset.idx=s.idx;
+    b.className='sel'; b.style.setProperty('--c',s.hex); b.textContent=pos+1; b.title=s.color; b.dataset.idx=s.idx;
     b.addEventListener('click',()=>{onPick(s.idx);refresh();}); host.appendChild(b); }); };
   mk($('banksel'),i=>{curBank=i;}); mk($('presetsel'),i=>{curPreset=i;}); }
 
