@@ -57,12 +57,12 @@ const I18N={
   'opt.verify':{es:'Verificar',en:'Verify'},
   'opt.invert':{es:'Invertir reset',en:'Invert reset'},
   'btn.factory':{es:'⬇ Grabar firmware de fábrica',en:'⬇ Flash factory firmware'},
-  'btn.flash':{es:'Grabar en tu máquina de ritmos',en:'Flash to your drum machine'},
+  'btn.flash':{es:'Cargar secuencias en tu Hanan',en:'Load sequences into your Hanan'},
   'btn.export':{es:'⬇ Exportar proyecto',en:'⬇ Export project'},
   'btn.import':{es:'⬆ Importar proyecto',en:'⬆ Import project'},
   'note.seq':{
-    es:'Activa/desactiva los pasos; cada pista lleva el color de su botón en la máquina. En <b>Conga</b> y <b>Campana</b>, la fila <i>pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono. <b>▶ Play</b> reproduce el preset (aprox. al sonido del aparato). Hay <b>4 bancos</b> (un color por pad), cada uno con <b>4 secuencias</b>; en la máquina cambias de secuencia con <b>Shift + pad</b> y de banco con <b>Shift + pad (2 s)</b>.',
-    en:'Toggle the steps on and off; each track carries the color of its button on the machine. On <b>Conga</b> and <b>Campana</b>, the <i>pitch</i> row is a set of faders: drag up or down on each step to change its pitch. <b>▶ Play</b> previews the preset (roughly how the unit sounds). There are <b>4 banks</b> (one per pad color), each with <b>4 sequences</b>; on the machine switch sequence with <b>Shift + pad</b> and bank with <b>Shift + pad (hold 2 s)</b>.'},
+    es:'Activa/desactiva los pasos con click. En <b>Conga</b> y <b>Campana</b>, la fila <i>pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono.<ul><li>Hay <b>4 bancos</b> (un color por pad).</li><li>Cada uno con <b>4 secuencias</b> que puedes programar acá o en tu máquina.</li></ul>En la máquina cambias de secuencia con <b>Shift + pad</b> y de banco con <b>Shift + pad (2 s)</b>.',
+    en:'Toggle steps on and off with a click. On <b>Conga</b> and <b>Campana</b>, the <i>pitch</i> row is a set of faders: drag up or down on each step to change its pitch.<ul><li>There are <b>4 banks</b> (one color per pad).</li><li>Each with <b>4 sequences</b> you can program here or on your machine.</li></ul>On the machine switch sequence with <b>Shift + pad</b> and bank with <b>Shift + pad (hold 2 s)</b>.'},
   'note.samples':{
     es:'Carga un WAV (o audio) por voz; lo dejado en <b>fábrica</b> mantiene el original. Se convierte a 9.8&nbsp;kHz · 8-bit · mono. Cada voz lleva el color de su botón en la máquina.',
     en:'Load a WAV (or audio file) per voice; anything left on <b>factory</b> keeps the original. It’s downsampled to 9.8&nbsp;kHz · 8-bit · mono. Each voice carries the color of its button on the machine.'},
@@ -89,9 +89,7 @@ const I18N={
 };
 let LANG=localStorage.getItem('hanan_lang');
 if(LANG!=='es'&&LANG!=='en'){ LANG=(navigator.language||'en').toLowerCase().startsWith('es')?'es':'en'; }
-function setMeta(){ const m=$('meta'); if(!m||!window.FIRMWARE_STUDIO_META) return;
-  const page=window.HANAN_LAB?'lab':(LANG==='es'?'estudio':'studio'), bank=LANG==='es'?'banco':'bank';
-  m.textContent=page+' · '+bank+' '+M.sample_total+' B · 4×4 presets · '+SR+' Hz · build '+M.built; }
+function setMeta(){ const m=$('meta'); if(m) m.textContent=''; }
 function applyLang(){ document.documentElement.lang=LANG;
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=I18N[el.dataset.i18n]; if(v) el.textContent=v[LANG]||v.es; });
   document.querySelectorAll('[data-i18nh]').forEach(el=>{ const v=I18N[el.dataset.i18nh]; if(v) el.innerHTML=v[LANG]||v.es; });
