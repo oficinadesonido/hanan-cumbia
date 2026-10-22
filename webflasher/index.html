@@ -9,15 +9,17 @@
   @font-face{ font-family:'Arche'; src:url('../fonts/CFArcheGrotesk-Bold.woff2') format('woff2'); font-weight:600 700; font-style:normal; font-display:swap; }
   @font-face{ font-family:'Arche'; src:url('../fonts/CFArcheGrotesk-Black.woff2') format('woff2'); font-weight:800 900; font-style:normal; font-display:swap; }
   @font-face{ font-family:'Cronica'; src:url('../fonts/CFCronica-Mono.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-  :root{ --bg:#0a0a0a; --panel:#141414; --pink:#ff1f8e; --yellow:#ffd400; --orange:#ff6a00;
-    --text:#f3f3f3; --muted:#9a9a9a; --ok:#3ddc84; --err:#ff5252; --warn:#ffb300;
-    --rojo:#ff1f8e; --blanco:#eaeaea; --verde:#3ddc84; --amarillo:#ffd400; }
+  :root{ --bg:#1a1a1a; --panel:#141414; --pink:#ff1f8e; --yellow:#ffd400; --orange:#ff6a00;
+    --text:#dbdbdb; --muted:#9a9a9a; --ok:#3ddc84; --err:#ff5252; --warn:#ffb300;
+    --rojo:#ff1f8e; --blanco:#dbdbdb; --verde:#3ddc84; --amarillo:#ffd400; }
   *{ box-sizing:border-box; }
-  body{ margin:0; background:var(--bg);
+  body{ margin:0; background-color:var(--bg);
+    background-image:url('fondo.svg'); background-repeat:no-repeat;
+    background-position:center 320px; background-attachment:fixed; background-size:min(1200px,94vw);
     color:var(--text); font-family:'Arche',"Segoe UI",system-ui,Roboto,sans-serif; min-height:100vh;
     display:flex; flex-direction:column; align-items:center; }
   .wrap{ width:100%; max-width:900px; padding:22px 16px 48px; }
-  header img{ width:100%; max-width:500px; display:block; margin:6px auto 2px; }
+  header img{ width:100%; max-width:none; display:block; margin:4px auto 0; }
   h1{ text-align:center; font-size:13px; letter-spacing:3px; color:var(--pink); text-transform:uppercase; margin:0 0 20px; }
   .card{ background:var(--panel); border:1px solid #262626; border-radius:4px; padding:26px 24px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
   .meta{ font-size:11.5px; color:var(--muted); text-align:center; margin:10px 0 0; font-family:'Cronica',ui-monospace,monospace; }
@@ -29,7 +31,7 @@
   .tb{ background:transparent; border:1px solid #2c2c2c; color:var(--muted); border-radius:3px;
     padding:9px 18px; font-size:13px; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:1px; }
   .tb:hover{ color:var(--text); }
-  .tb.active{ background:var(--yellow); color:#111; border-color:transparent; }
+  .tb.active{ background-color:var(--yellow); color:#111; border-color:transparent; }
 
   .topbar{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:48px 0 24px; }
   .topbar .pagetag{ margin:0; }
@@ -37,7 +39,7 @@
   .lang{ margin-left:auto; display:flex; gap:4px; }
   .lang button{ background:transparent; border:1px solid #2c2c2c; color:var(--muted); border-radius:3px; padding:6px 11px; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer; }
   .lang button:hover{ color:var(--text); }
-  .lang button.active{ background:var(--pink); color:#111; border-color:transparent; }
+  .lang button.active{ background-color:var(--pink); color:#111; border-color:transparent; }
 
   /* samples */
   .voice{ display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid #222; flex-wrap:wrap; }
@@ -58,16 +60,21 @@
   .selgroup{ text-align:center; } .selgroup .t{ font-size:11px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
   .sels{ display:flex; gap:6px; }
   .sel{ width:38px; height:38px; border-radius:3px; border:2px solid var(--c); background:transparent; color:var(--c); font-weight:800; font-size:15px; cursor:pointer; transition:all .12s; }
-  .sel:hover{ filter:brightness(1.2); } .sel.active{ background:var(--c); color:#0a0a0a; }
+  .sel:hover{ filter:brightness(1.2); } .sel.active{ background-color:var(--c); color:#0a0a0a; }
   #banksel .sel{ border-radius:0; } /* Banco: cuadrados */
-  #presetsel .sel{ border-radius:50%; } /* Preset: redondos */
+  #presetsel .sel{ border-radius:50%; position:relative; } /* Preset: redondos */
+  /* reflejo elíptico en los redondos; el numero (.n) queda encima */
+  #presetsel .sel.active{ background-image:none; }
+  #presetsel .sel .n{ position:relative; z-index:1; }
+  #presetsel .sel.active::after{ content:''; position:absolute; inset:3px; border-radius:50%; z-index:0; pointer-events:none;
+    background:linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0)); }
   .bpmbox{ width:64px; height:38px; background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:3px; text-align:center; font-family:'Cronica',ui-monospace,monospace; font-size:15px; font-weight:700; }
   .bpmbox:focus{ outline:none; border-color:var(--pink); }
   .bpmbox::-webkit-outer-spin-button,.bpmbox::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
   .tool{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:3px; height:38px; padding:0 12px; font-size:12px; font-weight:700; cursor:pointer; }
   .tool:hover{ border-color:var(--pink); color:var(--pink); }
   #playBtn{ height:38px; padding:0 20px; border:none; border-radius:3px; font-size:14px; font-weight:800; cursor:pointer; color:#111;
-    background:var(--ok); } #playBtn.on{ background:var(--err); color:#fff; }
+    background-color:var(--ok); } #playBtn.on{ background-color:var(--err); color:#fff; }
   #grid{ overflow-x:auto; padding-bottom:4px; --pc:#ff1f8e; }
   .instr{ width:fit-content; min-width:100%; padding:13px 0; border-bottom:1px solid #2c2c2c; }
   .instr:first-child{ padding-top:0; } .instr:last-child{ padding-bottom:0; border-bottom:none; }
@@ -79,7 +86,13 @@
   .pads{ display:flex; gap:2px; }
   .pad{ width:18px; height:24px; border-radius:2px; cursor:pointer; transition:filter .07s;
     background:#121212; border:1px solid var(--pc); }
-  .pad.on{ background:var(--pc); border-color:var(--pc); } .pad:hover{ filter:brightness(1.35); }
+  .pad.on{ background-color:var(--pc); border-color:var(--pc); } .pad:hover{ filter:brightness(1.35); }
+  /* reflejo de material: area interior con degradado blanco 50% -> 0% (no es glow) */
+  .pad.on, .sel.active, .tb.active, .lang button.active, #playBtn, #flashBtn, #flashFactoryBtn{
+    background-image:linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0));
+    background-repeat:no-repeat; background-position:center;
+    background-size:calc(100% - 6px) calc(100% - 6px); }
+  .pad.on{ background-size:calc(100% - 3px) calc(100% - 3px); }
   .pad.beat{ margin-left:5px; } .pad.bar{ margin-left:11px; }
   #grid .pad.cursor{ outline:2px solid var(--text); outline-offset:-1px; }
   .pitchrow{ margin:0 0 7px; }
@@ -92,14 +105,14 @@
 
   /* grabar + comun */
   button#flashBtn{ display:block; width:100%; padding:13px; font-size:15px; font-weight:800; letter-spacing:1px; text-transform:uppercase; cursor:pointer;
-    border:none; border-radius:4px; color:#111; margin-top:16px; background:var(--orange); transition:transform .05s,filter .15s; }
+    border:none; border-radius:4px; color:#111; margin-top:16px; background-color:var(--orange); transition:transform .05s,filter .15s; }
   button#flashBtn:hover{ filter:brightness(1.08); } button#flashBtn:active{ transform:translateY(1px); } button#flashBtn:disabled{ filter:grayscale(.7) brightness(.6); cursor:wait; }
   .actionrow{ display:flex; gap:12px; align-items:stretch; margin-top:26px; }
   .actionrow #flashBtn{ flex:1; width:auto; margin-top:0; }
   .actionrow .pbar{ flex:1; flex-direction:column; gap:8px; margin:0; }
   .actionrow .pbar>button, .actionrow .pbar>label{ flex:1; display:flex; align-items:center; justify-content:center; }
   button#flashFactoryBtn{ display:block; width:100%; padding:13px; font-size:14px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; cursor:pointer;
-    border:none; border-radius:4px; color:#111; margin-top:24px; background:var(--yellow); transition:transform .05s,filter .15s; }
+    border:none; border-radius:4px; color:#111; margin-top:24px; background-color:var(--yellow); transition:transform .05s,filter .15s; }
   button#flashFactoryBtn:hover{ filter:brightness(1.08); } button#flashFactoryBtn:active{ transform:translateY(1px); }
   button#flashFactoryBtn:disabled{ filter:grayscale(.7) brightness(.6); cursor:wait; }
   body[data-tab="grabar"] .projectactions, body[data-tab="manual"] .projectactions{ display:none; }
@@ -135,7 +148,7 @@
 <body>
 <div id="pitchval"></div>
 <div class="wrap">
-  <header><img src="hanan-estudio.svg" alt="HANAN CUMBIA · Estudio"></header>
+  <header><img src="header-estudio.svg" alt="HANAN CUMBIA · Estudio"></header>
 
   <div class="topbar">
     <div class="tabs">
@@ -160,7 +173,7 @@
         <div class="selgroup"><div class="t">&nbsp;</div><button id="clearPreset" class="tool" data-i18n="btn.clearPreset">Limpiar preset</button></div>
       </div>
       <div id="grid"></div>
-      <div class="note" data-i18nh="note.seq">Activa/desactiva los pasos; cada pista lleva el color de su botón en la máquina. En <b>Conga</b> y <b>Campana</b>, la fila <i>↳ pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono. <b>▶ Play</b> reproduce el preset (aprox. al sonido del aparato).</div>
+      <div class="note" data-i18nh="note.seq">Activa/desactiva los pasos; cada pista lleva el color de su botón en la máquina. En <b>Conga</b> y <b>Campana</b>, la fila <i>pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono. <b>▶ Play</b> reproduce el preset (aprox. al sonido del aparato).</div>
     </div>
 
     <!-- GRABAR -->
@@ -198,7 +211,7 @@
 
     <div class="projectactions">
       <div class="actionrow">
-        <button id="flashBtn" data-i18n="btn.flash">⚡ Grabar en tu máquina de ritmos</button>
+        <button id="flashBtn" data-i18n="btn.flash">Grabar en tu máquina de ritmos</button>
         <div class="pbar">
           <button id="exportBtn" data-i18n="btn.export">⬇ Exportar proyecto</button>
           <label><span data-i18n="btn.import">⬆ Importar proyecto</span><input type="file" id="importFile" accept=".json" hidden></label>
@@ -215,6 +228,6 @@
 </div>
 
 <script src="firmware_studio.js?v=17"></script>
-<script src="studio.js?v=17"></script>
+<script src="studio.js?v=19"></script>
 </body>
 </html>

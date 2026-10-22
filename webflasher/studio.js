@@ -14,14 +14,14 @@ const SAMPLE_ORDER=['kick','snare','hat','bass'];
 // color = boton fisico de la maquina (el boton blanco enciende LED azul; en la web se usa blanco)
 const CH=[
   { key:'B1', name:'Conga',   pitch:'F1', sample:'hat',   inc:null, color:'#ff1f8e' },  // rojo (rosa ODS) · hat sample, pitch por paso
-  { key:'B2', name:'Campana', pitch:'F2', sample:'bass',  inc:null, color:'#eaeaea' },  // blanco · bass sample, pitch por paso
+  { key:'B2', name:'Campana', pitch:'F2', sample:'bass',  inc:null, color:'#dbdbdb' },  // blanco · bass sample, pitch por paso
   { key:'B3', name:'Huiro',   pitch:null, sample:'snare', inc:128,  color:'#3ddc84' },  // verde
   { key:'B4', name:'Bombo',   pitch:null, sample:'kick',  inc:157,  color:'#ffd400' },  // amarillo
 ];
 // selectores de banco/preset en el orden fisico de los botones; idx = indice en el firmware
 const SELBTNS=[
   { idx:2, color:'rojo',     hex:'#ff1f8e' },
-  { idx:0, color:'blanco',   hex:'#eaeaea' },
+  { idx:0, color:'blanco',   hex:'#dbdbdb' },
   { idx:3, color:'verde',    hex:'#3ddc84' },
   { idx:1, color:'amarillo', hex:'#ffd400' },
 ];
@@ -57,12 +57,12 @@ const I18N={
   'opt.verify':{es:'Verificar',en:'Verify'},
   'opt.invert':{es:'Invertir reset',en:'Invert reset'},
   'btn.factory':{es:'⬇ Grabar firmware de fábrica',en:'⬇ Flash factory firmware'},
-  'btn.flash':{es:'⚡ Grabar en tu máquina de ritmos',en:'⚡ Flash to your drum machine'},
+  'btn.flash':{es:'Grabar en tu máquina de ritmos',en:'Flash to your drum machine'},
   'btn.export':{es:'⬇ Exportar proyecto',en:'⬇ Export project'},
   'btn.import':{es:'⬆ Importar proyecto',en:'⬆ Import project'},
   'note.seq':{
-    es:'Activa/desactiva los pasos; cada pista lleva el color de su botón en la máquina. En <b>Conga</b> y <b>Campana</b>, la fila <i>↳ pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono. <b>▶ Play</b> reproduce el preset (aprox. al sonido del aparato). Hay <b>4 bancos</b> (un color por pad), cada uno con <b>4 secuencias</b>; en la máquina cambias de secuencia con <b>Shift + pad</b> y de banco con <b>Shift + pad (2 s)</b>.',
-    en:'Toggle the steps on and off; each track carries the color of its button on the machine. On <b>Conga</b> and <b>Campana</b>, the <i>↳ pitch</i> row is a set of faders: drag up or down on each step to change its pitch. <b>▶ Play</b> previews the preset (roughly how the unit sounds). There are <b>4 banks</b> (one per pad color), each with <b>4 sequences</b>; on the machine switch sequence with <b>Shift + pad</b> and bank with <b>Shift + pad (hold 2 s)</b>.'},
+    es:'Activa/desactiva los pasos; cada pista lleva el color de su botón en la máquina. En <b>Conga</b> y <b>Campana</b>, la fila <i>pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono. <b>▶ Play</b> reproduce el preset (aprox. al sonido del aparato). Hay <b>4 bancos</b> (un color por pad), cada uno con <b>4 secuencias</b>; en la máquina cambias de secuencia con <b>Shift + pad</b> y de banco con <b>Shift + pad (2 s)</b>.',
+    en:'Toggle the steps on and off; each track carries the color of its button on the machine. On <b>Conga</b> and <b>Campana</b>, the <i>pitch</i> row is a set of faders: drag up or down on each step to change its pitch. <b>▶ Play</b> previews the preset (roughly how the unit sounds). There are <b>4 banks</b> (one per pad color), each with <b>4 sequences</b>; on the machine switch sequence with <b>Shift + pad</b> and bank with <b>Shift + pad (hold 2 s)</b>.'},
   'note.samples':{
     es:'Carga un WAV (o audio) por voz; lo dejado en <b>fábrica</b> mantiene el original. Se convierte a 9.8&nbsp;kHz · 8-bit · mono. Cada voz lleva el color de su botón en la máquina.',
     en:'Load a WAV (or audio file) per voice; anything left on <b>factory</b> keeps the original. It’s downsampled to 9.8&nbsp;kHz · 8-bit · mono. Each voice carries the color of its button on the machine.'},
@@ -296,7 +296,7 @@ function buildGrid(){ const g=$('grid'); g.innerHTML='';
       p.dataset.ch=ch.key; p.dataset.s=s; p.addEventListener('click',()=>{ const a=banks[curBank][ch.key]; a[idx(s)]=a[idx(s)]?0:1; saveLocal(); refresh(); }); pads.appendChild(p); }
     row.appendChild(pads); group.appendChild(row);
     if(ch.pitch){ const prow=document.createElement('div'); prow.className='row pitchrow'; prow.style.setProperty('--pc',ch.color);
-      const pl=document.createElement('div'); pl.className='clabel small'; pl.textContent='↳ pitch'; prow.appendChild(pl);
+      const pl=document.createElement('div'); pl.className='clabel small'; pl.textContent='pitch'; prow.appendChild(pl);
       const pp=document.createElement('div'); pp.className='pads';
       for(let s=0;s<STEPS;s++){ const cell=document.createElement('div'); cell.className='pcell'+(s%4===0?' beat':'')+(s%8===0?' bar':'');
         const fill=document.createElement('div'); fill.className='pfill'; cell.appendChild(fill); cell.dataset.s=s; cell.dataset.pitch=ch.pitch;
@@ -324,7 +324,7 @@ let previewUpd=0;
 function schedulePreviewUpdate(){ clearTimeout(previewUpd); previewUpd=setTimeout(()=>{ if(!previewSrc) return;
   if(playingBank!==curBank||playingPreset!==curPreset) queuePreviewSwitch(); else playPreview(true); },120); }
 function buildSelectors(){ const mk=(host,onPick)=>{ host.innerHTML=''; SELBTNS.forEach((s,pos)=>{ const b=document.createElement('button');
-    b.className='sel'; b.style.setProperty('--c',s.hex); b.textContent=pos+1; b.title=s.color; b.dataset.idx=s.idx;
+    b.className='sel'; b.style.setProperty('--c',s.hex); b.innerHTML='<span class="n">'+(pos+1)+'</span>'; b.title=s.color; b.dataset.idx=s.idx;
     b.addEventListener('click',()=>{onPick(s.idx);refresh();}); host.appendChild(b); }); };
   mk($('banksel'),i=>{curBank=i;}); mk($('presetsel'),i=>{curPreset=i;}); }
 
