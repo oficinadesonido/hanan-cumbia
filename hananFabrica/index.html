@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HANAN CUMBIA · Fábrica</title>
 <style>
+  @font-face{ font-family:'Arche'; src:url('../fonts/CFArcheGrotesk-Medium.woff2') format('woff2'); font-weight:400 500; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Arche'; src:url('../fonts/CFArcheGrotesk-Bold.woff2') format('woff2'); font-weight:600 700; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Arche'; src:url('../fonts/CFArcheGrotesk-Black.woff2') format('woff2'); font-weight:800 900; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'Cronica'; src:url('../fonts/CFCronica-Mono.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
   :root {
     --bg: #0a0a0a; --panel: #141414; --pink: #ff1f8e; --yellow: #ffd400;
     --orange: #ff6a00; --text: #f3f3f3; --muted: #9a9a9a;
@@ -13,7 +17,7 @@
   * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--bg);
-    color: var(--text); font-family: "Segoe UI", system-ui, Roboto, sans-serif;
+    color: var(--text); font-family: 'Arche', "Segoe UI", system-ui, Roboto, sans-serif;
     min-height: 100vh; display: flex; flex-direction: column; align-items: center;
   }
   .wrap { width: 100%; max-width: 760px; padding: 24px 18px 48px; }
@@ -21,9 +25,9 @@
   h1 { text-align: center; font-size: 15px; letter-spacing: 3px; color: var(--pink);
        text-transform: uppercase; margin: 0 0 24px; }
   .card { background: var(--panel); border: 1px solid #262626; border-radius: 16px;
-          padding: 22px; box-shadow: 0 10px 40px rgba(0,0,0,.5); }
+          padding: 26px 24px; box-shadow: 0 10px 40px rgba(0,0,0,.5); }
   .meta { font-size: 12px; color: var(--muted); text-align: center; margin: -6px 0 18px;
-          font-family: ui-monospace, "Cascadia Code", monospace; }
+          font-family: 'Cronica', ui-monospace, "Cascadia Code", monospace; }
   button#flashBtn {
     display: block; width: 100%; padding: 18px; font-size: 18px; font-weight: 800;
     letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border: none;
@@ -35,7 +39,7 @@
   button#flashBtn:active { transform: translateY(1px); }
   button#flashBtn:disabled { filter: grayscale(.7) brightness(.6); cursor: wait; }
   .opts { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;
-          margin: 16px 0 4px; font-size: 13px; color: var(--muted); }
+          margin: 20px 0 6px; font-size: 13px; color: var(--muted); }
   .opts label { cursor: pointer; user-select: none; }
   .opts select { background: #000; color: var(--text); border: 1px solid #2c2c2c;
                  border-radius: 6px; padding: 3px 6px; font-size: 13px; }
@@ -45,14 +49,14 @@
          color: #111; font-size: 12px; font-weight: 700; line-height: 22px; text-align: center;
          transition: width .15s ease; }
   #log { background: #000; border: 1px solid #222; border-radius: 8px; padding: 12px;
-         height: 220px; overflow-y: auto; font-family: ui-monospace, monospace; font-size: 12.5px;
+         height: 220px; overflow-y: auto; font-family: 'Cronica', ui-monospace, monospace; font-size: 12.5px;
          line-height: 1.5; white-space: pre-wrap; }
   #log .ok { color: var(--ok); } #log .err { color: var(--err); } #log .warn { color: var(--warn); }
-  .note { font-size: 12px; color: var(--muted); margin-top: 18px; line-height: 1.6; }
+  .note { font-size: 16px; color: var(--muted); margin: 24px auto 0; max-width: 75ch; line-height: 1.6; }
   .note b { color: var(--text); }
   a { color: var(--pink); }
   .foot { text-align: center; font-size: 11px; color: #555; margin-top: 22px;
-          font-family: ui-monospace, monospace; letter-spacing: 1px; }
+          font-family: 'Cronica', ui-monospace, monospace; letter-spacing: 1px; }
 </style>
 </head>
 <body>
