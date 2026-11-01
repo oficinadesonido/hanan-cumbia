@@ -68,6 +68,7 @@
   .bpmbox::-webkit-outer-spin-button,.bpmbox::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
   .tool{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:3px; height:38px; padding:0 12px; font-size:12px; font-weight:700; cursor:pointer; }
   .tool:hover{ border-color:var(--pink); color:var(--pink); }
+  .tool:disabled{ opacity:.35; cursor:default; border-color:#3a3a3a; color:var(--text); }
   #playBtn{ height:38px; padding:0 20px; border:none; border-radius:3px; font-size:14px; font-weight:800; cursor:pointer; color:#111;
     background-color:var(--ok); } #playBtn.on{ background-color:var(--err); color:#fff; }
   #grid{ overflow-x:auto; padding-bottom:4px; --pc:#ff1f8e; }
@@ -164,7 +165,7 @@
         <div class="selgroup"><div class="t" data-i18n="lbl.preset">Preset</div><div class="sels" id="presetsel"></div></div>
         <div class="selgroup"><div class="t">BPM</div><input id="bpm" class="bpmbox" type="number" min="40" max="300" step="1" inputmode="numeric" title="BPM del banco"></div>
         <div class="selgroup"><div class="t">&nbsp;</div><button id="playBtn">▶ Play</button></div>
-        <div class="selgroup"><div class="t">&nbsp;</div><button id="clearPreset" class="tool" data-i18n="btn.clearPreset">Limpiar preset</button></div>
+        <div class="selgroup"><div class="t">&nbsp;</div><button id="copyPreset" class="tool" data-i18n="btn.copyPreset">Copiar</button> <button id="pastePreset" class="tool" data-i18n="btn.pastePreset" disabled>Pegar</button> <button id="clearPreset" class="tool" data-i18n="btn.clearPreset">Borrar</button></div>
       </div>
       <div id="grid"></div>
       <div class="note" data-i18nh="note.seq">Activa/desactiva los pasos con click. En <b>Conga</b> y <b>Campana</b>, la fila <i>pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono.<ul><li>Hay <b>4 bancos</b> (un color por pad).</li><li>Cada uno con <b>4 secuencias</b> que puedes programar acá o en tu máquina.</li></ul>En la máquina cambias de secuencia con <b>Shift + pad</b> y de banco con <b>Shift + pad (2 s)</b>.</div>
@@ -222,6 +223,6 @@
 </div>
 
 <script src="firmware_studio.js?v=17"></script>
-<script src="studio.js?v=22"></script>
+<script src="studio.js?v=24"></script>
 </body>
 </html>

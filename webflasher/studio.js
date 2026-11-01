@@ -46,7 +46,9 @@ const I18N={
   'tab.manual':{es:'Manual',en:'Manual'},
   'lbl.banco':{es:'Banco',en:'Bank'},
   'lbl.preset':{es:'Preset',en:'Preset'},
-  'btn.clearPreset':{es:'Limpiar preset',en:'Clear preset'},
+  'btn.clearPreset':{es:'Borrar',en:'Delete'},
+  'btn.copyPreset':{es:'Copiar',en:'Copy'},
+  'btn.pastePreset':{es:'Pegar',en:'Paste'},
   'voice.factory':{es:'fábrica',en:'factory'},
   'opt.normalize':{es:'Normalizar volumen',en:'Normalize volume'},
   'fw.title':{es:'Firmware de fábrica ·',en:'Factory firmware ·'},
@@ -309,12 +311,18 @@ function showPitchVal(ev,l){ const b=$('pitchval'); b.textContent='pitch '+l; b.
 function hidePitchVal(){ $('pitchval').style.display='none'; }
 function clearChannel(k){ const a=banks[curBank][k]; for(let s=0;s<STEPS;s++)a[idx(s)]=0; saveLocal(); refresh(); }
 function clearPreset(){ for(const ch of CH){ const a=banks[curBank][ch.key]; for(let s=0;s<STEPS;s++)a[idx(s)]=0; } saveLocal(); refresh(); }
+// copiar/pegar un preset completo (pasos + pitch) entre cualquier banco/slot
+const PKEYS=['B1','B2','B3','B4','F1','F2'];
+let presetClip=null;
+function copyPreset(){ const o=curPreset*STEPS; presetClip={}; for(const k of PKEYS) presetClip[k]=banks[curBank][k].slice(o,o+STEPS); refresh(); }
+function pastePreset(){ if(!presetClip) return; for(const k of PKEYS) banks[curBank][k].set(presetClip[k],curPreset*STEPS); saveLocal(); refresh(); }
 function refresh(){
   document.querySelectorAll('.pad').forEach(p=>p.classList.toggle('on',!!banks[curBank][p.dataset.ch][idx(+p.dataset.s)]));
   document.querySelectorAll('.pcell').forEach(c=>{ const f=banks[curBank][c.dataset.pitch][idx(+c.dataset.s)]/31;
     c.firstChild.style.bottom=(2+Math.round(f*40))+'px'; });   // thumb del fader (celda 51px: recorrido 40px)
   document.querySelectorAll('#banksel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curBank));
   document.querySelectorAll('#presetsel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curPreset));
+  { const pb=$('pastePreset'); if(pb) pb.disabled=!presetClip; }
   { const bx=$('bpm'); if(bx) bx.value=bankBPM[curBank]; }
   if(previewSrc) schedulePreviewUpdate();   // en vivo: edicion re-renderiza al toque; banco/preset entra al paso 0
 }
@@ -367,6 +375,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   for(const v of SAMPLE_ORDER){ const fi=$('file_'+v); if(!fi) continue;
     fi.addEventListener('change',e=>onPickSample(v,e.target.files[0])); $('clear_'+v).addEventListener('click',()=>clearSample(v)); }
   $('clearPreset').addEventListener('click',clearPreset);
+  { const cb=$('copyPreset'); if(cb) cb.addEventListener('click',copyPreset); }
+  { const pb=$('pastePreset'); if(pb) pb.addEventListener('click',pastePreset); }
   $('playBtn').addEventListener('click',togglePreview);
   { const bx=$('bpm'); if(bx) bx.addEventListener('change',e=>{ let v=parseInt(e.target.value,10)||90; v=Math.max(40,Math.min(300,v)); bankBPM[curBank]=v; e.target.value=v; saveLocal(); if(previewSrc) schedulePreviewUpdate(); }); }
   $('flashBtn').addEventListener('click',()=>run(false));
