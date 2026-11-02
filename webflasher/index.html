@@ -68,6 +68,9 @@
   .bpmbox::-webkit-outer-spin-button,.bpmbox::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
   .tool{ background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:3px; height:38px; padding:0 12px; font-size:12px; font-weight:700; cursor:pointer; }
   .tool:hover{ border-color:var(--pink); color:var(--pink); }
+  .syncsel{ height:38px; max-width:170px; background:#1d1d1d; border:1px solid #3a3a3a; color:var(--text); border-radius:3px; padding:0 8px; font-size:12px; font-weight:700; cursor:pointer; }
+  .syncsel:focus{ outline:none; border-color:var(--pink); }
+  #playBtn:disabled,.bpmbox:disabled{ opacity:.5; cursor:default; }
   .tool:disabled{ opacity:.35; cursor:default; border-color:#3a3a3a; color:var(--text); }
   #playBtn{ height:38px; padding:0 20px; border:none; border-radius:3px; font-size:14px; font-weight:800; cursor:pointer; color:#111;
     background-color:var(--ok); } #playBtn.on{ background-color:var(--err); color:#fff; }
@@ -165,10 +168,11 @@
         <div class="selgroup"><div class="t" data-i18n="lbl.preset">Preset</div><div class="sels" id="presetsel"></div></div>
         <div class="selgroup"><div class="t">BPM</div><input id="bpm" class="bpmbox" type="number" min="40" max="300" step="1" inputmode="numeric" title="BPM del banco"></div>
         <div class="selgroup"><div class="t">&nbsp;</div><button id="playBtn">▶ Play</button></div>
+        <div class="selgroup"><div class="t">MIDI Sync</div><select id="midiSync" class="syncsel" title="Entrada MIDI por donde llega el clock de tu DAW"></select></div>
         <div class="selgroup"><div class="t">&nbsp;</div><button id="copyPreset" class="tool" data-i18n="btn.copyPreset">Copiar</button> <button id="pastePreset" class="tool" data-i18n="btn.pastePreset" disabled>Pegar</button> <button id="clearPreset" class="tool" data-i18n="btn.clearPreset">Borrar</button></div>
       </div>
       <div id="grid"></div>
-      <div class="note" data-i18nh="note.seq">Activa/desactiva los pasos con click. En <b>Conga</b> y <b>Campana</b>, la fila <i>pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono.<ul><li>Hay <b>4 bancos</b> (un color por pad).</li><li>Cada uno con <b>4 secuencias</b> que puedes programar acá o en tu máquina.</li></ul>En la máquina cambias de secuencia con <b>Shift + pad</b> y de banco con <b>Shift + pad (2 s)</b>.</div>
+      <div class="note" data-i18nh="note.seq">Activa/desactiva los pasos con click. En <b>Conga</b> y <b>Campana</b>, la fila <i>pitch</i> es una fila de faders: arrastra vertical sobre cada paso para subir o bajar el tono.<ul><li>Hay <b>4 bancos</b> (un color por pad). Cada banco funciona como un <b>proyecto</b> distinto.</li><li>Cada uno con <b>4 secuencias</b>, las partes de ese proyecto, que puedes programar acá o en tu máquina.</li></ul>En la máquina cambias de secuencia con <b>Shift + pad</b>, incluso mientras suena: termina la secuencia actual y entra la siguiente. Para cambiar de banco, <b>detén la máquina</b> y mantén <b>Shift + pad (2 s)</b>.</div>
     </div>
 
     <!-- GRABAR -->
@@ -188,7 +192,7 @@
     <!-- MANUAL -->
     <div id="tab-manual" style="display:none">
       <!-- HANAN CUMBIA HTR-1 -->
-      <h2 class="manmodel"><img class="wordmark" src="hanan-cumbia-word.svg" alt="Hanan Cumbia"><span class="modeltag">Clasic (HTR-1)</span></h2>
+      <h2 class="manmodel"><img class="wordmark" src="hanan-cumbia-word.svg" alt="Hanan Cumbia"><span class="modeltag">Classic (HTR-1)</span></h2>
       <figure class="panelfig"><img src="manual-img/hanan-htr1-panel.svg" alt="Panel Hanan Cumbia HTR-1"></figure>
       <div class="note" data-i18nh="man.desc">Caja de ritmos con sonidos de cumbia y botones arcade. <b>4 sonidos</b> (pads): <b>Kick</b> (bombo), <b>Güiro</b>, <b>Cow Bell</b> (campana) y <b>Conga</b>. Dos perillas de <b>pitch</b> afinan Conga y Cow Bell. Cuatro botones negros: <b>Play</b>, <b>Rec</b>, <b>Shift</b> y <b>Tap</b>. Se alimenta por USB (5V).</div>
       <h3 class="manh" data-i18n="man.h.seqbanks">Secuencias y bancos</h3>
@@ -223,6 +227,6 @@
 </div>
 
 <script src="firmware_studio.js?v=17"></script>
-<script src="studio.js?v=24"></script>
+<script src="studio.js?v=25"></script>
 </body>
 </html>
