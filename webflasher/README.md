@@ -23,7 +23,8 @@ Para experimentar tranquilo: trabajar en una rama y pedir merge.
 2. **No tocar:** `sampler.html`, `seq.html`, `studio.html` son solo redirects a `index.html`.
 3. **No editar a mano:** `firmware_studio.js`, `firmware.js`, `firmware_bank.js`, `firmware_presets.js`, `firmware.hex` — se generan del build del firmware (`build/`, `build_bank/`).
 4. **Legacy:** `app.js`, `sampler.js`, `seq.js` son restos de versiones anteriores del flasher; el Studio actual usa solo `studio.js` + `firmware_studio.js`.
-5. La página necesita **Chrome/Edge/Opera de escritorio** (Web Serial) para flashear; el diseño se puede previsualizar en cualquier navegador abriendo `index.html` local con doble clic.
+5. **El Estudio abre en banco 2 / secuencia 2 a propósito:** parte en el índice 0 del firmware (pad blanco = botón 2 en el orden físico), igual que la máquina al encender (`banko=0`). Ahí está el beat completo de fábrica; si partiera en el botón 1 (rojo) sonaría algo incompleto. No "corregirlo" a 1 / 1.
+6. La página necesita **Chrome/Edge/Opera de escritorio** (Web Serial) para flashear; el diseño se puede previsualizar en cualquier navegador abriendo `index.html` local con doble clic.
 
 ## Validado en hardware
 
