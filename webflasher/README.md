@@ -24,7 +24,8 @@ Para experimentar tranquilo: trabajar en una rama y pedir merge.
 3. **No editar a mano:** `firmware_studio.js`, `firmware.js`, `firmware_bank.js`, `firmware_presets.js`, `firmware.hex` — se generan del build del firmware (`build/`, `build_bank/`).
 4. **Legacy:** `app.js`, `sampler.js`, `seq.js` son restos de versiones anteriores del flasher; el Studio actual usa solo `studio.js` + `firmware_studio.js`.
 5. **El Estudio abre en banco 2 / secuencia 2 a propósito:** parte en el índice 0 del firmware (pad blanco = botón 2 en el orden físico), igual que la máquina al encender (`banko=0`). Ahí está el beat completo de fábrica; si partiera en el botón 1 (rojo) sonaría algo incompleto. No "corregirlo" a 1 / 1.
-6. La página necesita **Chrome/Edge/Opera de escritorio** (Web Serial) para flashear; el diseño se puede previsualizar en cualquier navegador abriendo `index.html` local con doble clic.
+6. **Google Analytics:** `index.html` lleva el Google tag con el **mismo ID que oficinadesonido.org (`G-H54VBM81VN`)**, decidido por JKO el 2026-11-06 (no hace falta una propiedad aparte; el Estudio se separa en los informes filtrando por nombre de host `hanancumbia.oficinadesonido.org`). No borrarlo al rediseñar. `lab.html` no lo lleva.
+7. La página necesita **Chrome/Edge/Opera de escritorio** (Web Serial) para flashear; el diseño se puede previsualizar en cualquier navegador abriendo `index.html` local con doble clic.
 
 ## Validado en hardware
 
