@@ -4,6 +4,8 @@ Web en vivo: **https://oficinadesonido.github.io/hanan-cumbia/webflasher/**
 Publica GitHub Pages directo desde la rama `main` → **todo push a `main` queda en producción al toque**.
 Para experimentar tranquilo: trabajar en una rama y pedir merge.
 
+**Sitio público real: https://hanancumbia.oficinadesonido.org/** (servidor Apache propio, no GitHub Pages). Se sube **a mano**: el contenido de `webflasher/` va a la raíz del sitio, y la carpeta `fonts/` de la raíz del repo va como `/fonts/` en el servidor (las páginas la piden como `../fonts/`, que desde la raíz del sitio apunta a `/fonts/`). Si falta, la página se ve con la tipografía del sistema. Al subir un `studio.js` nuevo, subir también `index.html` (lleva el `?v=`).
+
 ## Dónde vive el diseño gráfico
 
 | Archivo | Qué es |
@@ -22,3 +24,7 @@ Para experimentar tranquilo: trabajar en una rama y pedir merge.
 3. **No editar a mano:** `firmware_studio.js`, `firmware.js`, `firmware_bank.js`, `firmware_presets.js`, `firmware.hex` — se generan del build del firmware (`build/`, `build_bank/`).
 4. **Legacy:** `app.js`, `sampler.js`, `seq.js` son restos de versiones anteriores del flasher; el Studio actual usa solo `studio.js` + `firmware_studio.js`.
 5. La página necesita **Chrome/Edge/Opera de escritorio** (Web Serial) para flashear; el diseño se puede previsualizar en cualquier navegador abriendo `index.html` local con doble clic.
+
+## Validado en hardware
+
+- **2026-11-05 · Persistencia de secuencias (JKO):** las secuencias cargadas desde el Estudio con "Cargar secuencias en tu Hanan" siguen en la máquina después de apagar y encender la Hanan física. Se graban dentro de la imagen de firmware que se flashea, así que no dependen de la conexión con la web.

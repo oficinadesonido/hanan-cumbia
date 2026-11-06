@@ -49,8 +49,6 @@ const I18N={
   'btn.clearPreset':{es:'Borrar',en:'Delete'},
   'btn.copyPreset':{es:'Copiar',en:'Copy'},
   'btn.pastePreset':{es:'Pegar',en:'Paste'},
-  'sync.off':{es:'Sin sync',en:'No sync'},
-  'sync.scan':{es:'Buscar MIDI…',en:'Find MIDI…'},
   'voice.factory':{es:'fábrica',en:'factory'},
   'opt.normalize':{es:'Normalizar volumen',en:'Normalize volume'},
   'fw.title':{es:'Firmware de fábrica ·',en:'Factory firmware ·'},
@@ -177,7 +175,7 @@ function patchPresets(img){ const m=findMagic(img,M.preset_magic);
 /* ---------- Preview fiel (motor de audio del firmware en JS) ---------- */
 function pitchInc(level){ return 16+((level&31)<<4); }
 function renderLoop(bank,preset){
-  const bpm=curBPM(), stepN=Math.round((60/bpm/8)*SR), total=stepN*STEPS;   // 8 pasos por beat
+  const bpm=bankBPM[curBank]||M.bpm, stepN=Math.round((60/bpm/8)*SR), total=stepN*STEPS;   // 8 pasos por beat
   const voices=CH.map(c=>({ buf:effSample(c.sample), len:sampleDesc[c.sample].len,
     seq:bank[c.key], freq:c.pitch?bank[c.pitch]:null, fixedInc:c.inc, phase:0, on:false, inc:0 }));
   const eng=new Float32Array(total); let step=-1;
@@ -244,61 +242,7 @@ function stopPreview(){
   if(previewSrc){ previewSrc.onended=null; try{previewSrc.stop();}catch(e){} previewSrc=null; }
   playingBank=-1; playingPreset=-1;
   $('playBtn').textContent='▶ Play'; $('playBtn').classList.remove('on'); }
-function togglePreview(){ if(syncIn) return; if(previewSrc) stopPreview(); else playPreview(); }
-
-/* ---------- MIDI sync: el Estudio sigue el clock de un DAW (Ableton, etc.) ---------- */
-// 24 ticks por negra; el preset (32 pasos, 8 por beat) dura 4 negras = 96 ticks.
-// Cada vuelta se re-ancla al clock (se agenda medio beat antes), asi no se acumula deriva.
-const TPQ=24, LOOPT=96;
-let midiAccess=null, syncIn=null, syncBPM=0, syncTick=-1, syncRun=false, syncTs=[], syncNextLoop=-1;
-function curBPM(){ return (syncIn&&syncBPM)?syncBPM:(bankBPM[curBank]||M.bpm); }
-function midiToAudio(ts){ const o=audioCtx.getOutputTimestamp?audioCtx.getOutputTimestamp():null;   // incluye la latencia de salida
-  return (o&&o.performanceTime)?o.contextTime+(ts-o.performanceTime)/1000:audioCtx.currentTime+(ts-performance.now())/1000; }
-function tickSec(){ return 60/curBPM()/TPQ; }
-function syncLoopAt(t){   // agenda una vuelta del preset abierto en el tiempo de audio t
-  const buf=makePreviewBuffer(), now=audioCtx.currentTime, dur=LOOPT*tickSec();
-  const src=audioCtx.createBufferSource(); src.buffer=buf; src.loop=true; src.connect(audioCtx.destination);
-  if(t<now+0.005) src.start(now,Math.min(buf.duration-0.001,now-t)); else src.start(t,0);   // llego tarde: entra con offset
-  const old=previewSrc, nb=curBank, np=curPreset;
-  if(previewNext){ try{previewNext.stop(0);}catch(e){} previewNext=null; }
-  const take=()=>{ previewSrc=src; previewT0=t; previewDur=dur; playingBank=nb; playingPreset=np; previewNext=null; const bx=$('bpm'); if(bx) bx.value=syncBPM||''; };
-  if(old&&t>now){ previewNext=src; old.onended=()=>{ if(previewNext===src) take(); }; old.stop(t); }
-  else { if(old){ old.onended=null; try{old.stop();}catch(e){} } take(); startCursor(); }
-  $('playBtn').textContent='■ Stop'; $('playBtn').classList.add('on');
-}
-function onMidi(ev){ const d=ev.data, st=d[0];
-  if(st===0xF8){ syncTs.push(ev.timeStamp); if(syncTs.length>TPQ+1) syncTs.shift();
-    if(syncTs.length>TPQ/2){ const bpm=Math.round(60000/((syncTs[syncTs.length-1]-syncTs[0])/(syncTs.length-1)*TPQ)*10)/10;
-      if(bpm>=20&&bpm<=400) syncBPM=bpm; }
-    if(!syncRun||!audioCtx) return;
-    syncTick++; if(!syncBPM) return;   // sin tempo medido todavia: entra apenas lo tenga (a mitad de vuelta)
-    const pos=((syncTick%LOOPT)+LOOPT)%LOOPT, loop=Math.floor(syncTick/LOOPT);
-    if(pos===LOOPT-TPQ/2){ syncNextLoop=loop+1; syncLoopAt(midiToAudio(ev.timeStamp)+(TPQ/2)*tickSec()); }
-    else if(pos===0&&syncNextLoop!==loop){ syncNextLoop=loop; syncLoopAt(midiToAudio(ev.timeStamp)); }
-    else if(!previewSrc){ syncNextLoop=loop; syncLoopAt(midiToAudio(ev.timeStamp)-pos*tickSec()); }   // entro a mitad de vuelta
-    return; }
-  if(st===0xFA){ syncTick=-1; syncNextLoop=-1; syncRun=true; stopPreview(); }   // Start: el proximo tick es el 1
-  else if(st===0xFB){ syncRun=true; }   // Continue
-  else if(st===0xFC){ syncRun=false; stopPreview(); }   // Stop
-  else if(st===0xF2){ syncTick=((d[1]|(d[2]<<7))*6)-1; syncNextLoop=-1; if(previewSrc) stopPreview(); }   // Song Position (en semicorcheas)
-}
-function fillMidiSel(){ const sel=$('midiSync'); if(!sel) return; const cur=syncIn?syncIn.id:'';
-  sel.innerHTML='<option value="" data-i18n="sync.off"></option>';
-  if(!midiAccess) sel.innerHTML+='<option value="?" data-i18n="sync.scan"></option>';
-  else midiAccess.inputs.forEach(i=>{ const o=document.createElement('option'); o.value=i.id; o.textContent=i.name; sel.appendChild(o); });
-  sel.value=cur; applyLang(); }
-function setSync(id){
-  if(syncIn){ syncIn.onmidimessage=null; syncIn=null; }
-  syncRun=false; syncTs=[]; syncBPM=0; syncTick=-1; stopPreview();
-  if(id&&midiAccess){ syncIn=midiAccess.inputs.get(id)||null;
-    if(syncIn){ syncIn.onmidimessage=onMidi;
-      if(!audioCtx){ const AC=window.AudioContext||window.webkitAudioContext; audioCtx=new AC(); }
-      if(audioCtx.state!=='running') audioCtx.resume(); } }   // dentro del gesto del select
-  $('playBtn').disabled=!!syncIn; $('bpm').disabled=!!syncIn; refresh(); }
-async function onMidiSel(e){ const v=e.target.value;
-  if(v==='?'){ try{ midiAccess=await navigator.requestMIDIAccess(); midiAccess.onstatechange=fillMidiSel; }
-    catch(err){ log('MIDI no disponible: '+err.message,'err'); } fillMidiSel(); return; }
-  setSync(v); }
+function togglePreview(){ if(previewSrc) stopPreview(); else playPreview(); }
 
 /* ---------- Proyecto (localStorage + export/import) ---------- */
 const LS='hanan_studio_v1';
@@ -379,12 +323,11 @@ function refresh(){
   document.querySelectorAll('#banksel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curBank));
   document.querySelectorAll('#presetsel .sel').forEach(b=>b.classList.toggle('active',+b.dataset.idx===curPreset));
   { const pb=$('pastePreset'); if(pb) pb.disabled=!presetClip; }
-  { const bx=$('bpm'); if(bx) bx.value=syncIn?(syncBPM||''):bankBPM[curBank]; }
+  { const bx=$('bpm'); if(bx) bx.value=bankBPM[curBank]; }
   if(previewSrc) schedulePreviewUpdate();   // en vivo: edicion re-renderiza al toque; banco/preset entra al paso 0
 }
 let previewUpd=0;
 function schedulePreviewUpdate(){ clearTimeout(previewUpd); previewUpd=setTimeout(()=>{ if(!previewSrc) return;
-  if(syncIn){ if(playingBank===curBank&&playingPreset===curPreset&&!previewNext) syncLoopAt(previewT0); return; }   // en sync: la edicion entra al toque; banco/preset en la proxima vuelta
   if(playingBank!==curBank||playingPreset!==curPreset) queuePreviewSwitch(); else playPreview(true); },120); }
 function buildSelectors(){ const mk=(host,onPick)=>{ host.innerHTML=''; SELBTNS.forEach((s,pos)=>{ const b=document.createElement('button');
     b.className='sel'; b.style.setProperty('--c',s.hex); b.textContent=pos+1; b.title=s.color; b.dataset.idx=s.idx;
@@ -435,7 +378,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   { const cb=$('copyPreset'); if(cb) cb.addEventListener('click',copyPreset); }
   { const pb=$('pastePreset'); if(pb) pb.addEventListener('click',pastePreset); }
   $('playBtn').addEventListener('click',togglePreview);
-  { const ms=$('midiSync'); if(ms){ if(navigator.requestMIDIAccess){ fillMidiSel(); ms.addEventListener('change',onMidiSel); } else ms.closest('.selgroup').style.display='none'; } }
   { const bx=$('bpm'); if(bx) bx.addEventListener('change',e=>{ let v=parseInt(e.target.value,10)||90; v=Math.max(40,Math.min(300,v)); bankBPM[curBank]=v; e.target.value=v; saveLocal(); if(previewSrc) schedulePreviewUpdate(); }); }
   $('flashBtn').addEventListener('click',()=>run(false));
   $('flashFactoryBtn').addEventListener('click',()=>run(true));
